@@ -32,9 +32,9 @@ const formSchema = z.object({
   fullName: z
     .string()
     .min(2, { message: "Full name must be at least 2 characters." }),
-  email: z.string().email({ message: "Invalid email address." }),
+  email: z.string().trim().toLowerCase().email({ message: "Invalid email address." }),
   password: z.string().min(8, { message: "8 characters password" }),
-  studentId: z.string().min(5, { message: "Student ID is required." }),
+  studentId: z.string().trim().toUpperCase().min(5, { message: "Student ID is required." }),
   faculty: z.string().min(1, { message: "Please select your faculty." }),
   year: z.string().min(1, { message: "Please select your year." }),
   contactNumber: z
@@ -52,12 +52,28 @@ const formSchema = z.object({
   }),
   linkedin: z
     .string()
-    .url({ message: "Please enter a valid LinkedIn URL." })
+    .trim()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        const url = val.startsWith("http://") || val.startsWith("https://") ? val : `https://${val}`;
+        try { new URL(url); return true; } catch { return false; }
+      },
+      { message: "Please enter a valid LinkedIn URL." }
+    )
     .optional()
     .or(z.literal("")),
   github: z
     .string()
-    .url({ message: "Please enter a valid GitHub URL." })
+    .trim()
+    .refine(
+      (val) => {
+        if (!val) return true;
+        const url = val.startsWith("http://") || val.startsWith("https://") ? val : `https://${val}`;
+        try { new URL(url); return true; } catch { return false; }
+      },
+      { message: "Please enter a valid GitHub URL." }
+    )
     .optional()
     .or(z.literal("")),
 });
@@ -90,6 +106,21 @@ export default function JoinUsForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     setIsSubmitting(true);
+
+    const formatUrl = (url?: string) => {
+      if (!url || !url.trim()) return "";
+      const trimmed = url.trim();
+      return trimmed.startsWith("http://") || trimmed.startsWith("https://") ? trimmed : `https://${trimmed}`;
+    };
+
+    const payload = {
+      ...values,
+      email: values.email.trim().toLowerCase(),
+      studentId: values.studentId.trim().toUpperCase(),
+      linkedin: formatUrl(values.linkedin),
+      github: formatUrl(values.github),
+    };
+
     try {
       const check = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/applications/check-if-exists`,
@@ -98,7 +129,7 @@ export default function JoinUsForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify(payload),
         },
       );
       if (!check.ok) throw new Error("Failed to submit application");
@@ -106,9 +137,20 @@ export default function JoinUsForm() {
       const checkData = await check.json();
       if (checkData.exists) {
         toast.error(checkData.message, {
-          duration: 2000,
+          duration: 5000,
           position: "top-center",
         });
+        if (checkData.message?.toLowerCase().includes("student id")) {
+          form.setError("studentId", {
+            type: "manual",
+            message: checkData.message,
+          });
+        } else if (checkData.message?.toLowerCase().includes("email")) {
+          form.setError("email", {
+            type: "manual",
+            message: checkData.message,
+          });
+        }
         return;
       }
       const res = await fetch(
@@ -118,7 +160,7 @@ export default function JoinUsForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(values),
+          body: JSON.stringify(payload),
         },
       );
 
@@ -401,7 +443,7 @@ export default function JoinUsForm() {
                     <SelectContent>
                       <SelectItem value="Mother">Mother</SelectItem>
                       <SelectItem value="Father">Father</SelectItem>
-                      <SelectItem value="Guadian">Guardian</SelectItem>
+                      <SelectItem value="Guardian">Guardian</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

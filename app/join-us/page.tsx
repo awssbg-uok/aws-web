@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-// import JoinUsForm from "@/components/join-us-form";
+import JoinUsForm from "@/components/join-us-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, GraduationCap, Users, Award } from "lucide-react";
 
@@ -15,7 +15,7 @@ export default function JoinUs() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl font-bold mb-4">Join AWS Cloud Club UOK</h1>
+          <h1 className="text-4xl font-bold mb-4">Join AWS Student Builder Group UOK</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Take your first step towards becoming a cloud computing expert
           </p>
@@ -29,11 +29,9 @@ export default function JoinUs() {
           >
             <Card>
               <CardHeader>
-                <CardTitle>Membership Registration Closed</CardTitle>
-                <h5 className="font-semibold text-blue-600 my-2">
-                  Opens again on March 2027.
-                </h5>
-                {/* <div className="space-y-4 text-sm mt-4">
+                <CardTitle>Membership Registration 2026</CardTitle>
+                <h5 className="font-semibold text-green-600 my-2">Open Now.</h5>
+                <div className="space-y-4 text-sm mt-4">
                   <div>
                     <span className="font-semibold">STEP 1:</span> Join our
                     members only whatsapp group.
@@ -50,7 +48,7 @@ export default function JoinUs() {
                   </div>
                   <div>
                     <span className="font-semibold">STEP 2:</span> Join the
-                    official meetup page for AWS Cloud Club UOK.
+                    official meetup page for AWS Student Builder Group UOK.
                     <div className="mt-1">
                       <a
                         href="https://www.meetup.com/aws-cloud-club-at-university-of-kelaniya/"
@@ -74,20 +72,10 @@ export default function JoinUs() {
                     </span>
                     Login to renew your membership for the year 2026.
                   </div>
-                </div> */}
+                </div>
               </CardHeader>
               <CardContent>
-                {/* Empty blur box */}
-                <div className="bg-gray-200 border-2 border-dashed rounded-xl p-4 mb-4">
-                  Past members can{" "}
-                  <a href="/login" className="text-blue-600 hover:underline">
-                    log in
-                  </a>{" "}
-                  to renew their membership for 2026, while new members can
-                  submit the registration form when it opens again in March
-                  2027.
-                </div>
-                {/* <JoinUsForm /> */}
+                <JoinUsForm />
               </CardContent>
             </Card>
           </motion.div>

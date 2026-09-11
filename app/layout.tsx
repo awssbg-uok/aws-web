@@ -7,12 +7,18 @@ import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AWS Cloud Club - University of Kelaniya",
+  title: "AWS Student Builder Group - University of Kelaniya",
   description:
-    "Official website of the AWS Cloud Club at the University of Kelaniya",
+    "Official website of the AWS Student Builder Group at the University of Kelaniya",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({

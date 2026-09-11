@@ -23,6 +23,8 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 35 100% 50%;
+    --accent-purple: 268 100% 68%;
+    --accent-purple-foreground: 210 40% 98%;
     --radius: 0.5rem;
   }
 }
@@ -89,7 +91,16 @@
 } 
 
 .gradient-text {
-  background: linear-gradient(45deg, #FF9900, #bf7407);
+  background: linear-gradient(45deg, hsl(var(--primary)), #bf7407);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+.gradient-text-purple {
+  background: linear-gradient(135deg, hsl(var(--accent-purple)) 0%, hsl(285 95% 75%) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -113,5 +124,42 @@
 .card-hover:hover {
   transform: translateY(-5px);
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+@keyframes hero-float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+@keyframes hero-float-reverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(-1deg);
+  }
+}
+
+.animate-hero-float-1 {
+  animation: hero-float-slow 6s ease-in-out infinite;
+}
+
+.animate-hero-float-2 {
+  animation: hero-float-reverse 7s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+.animate-hero-float-3 {
+  animation: hero-float-slow 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.animate-hero-float-4 {
+  animation: hero-float-reverse 6.5s ease-in-out infinite;
+  animation-delay: 1.5s;
 }
 
