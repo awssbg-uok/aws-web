@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -191,80 +192,116 @@ export default function JoinUsForm() {
   return (
     <Form {...form}>
       {responseMessage && (
-        <div className="flex flex-col gap-6 items-center justify-center py-8">
-          <div className="text-green-600 text-lg font-medium text-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.96, y: 12 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
+          className="flex flex-col gap-6 items-center justify-center py-8"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-semibold shadow-[0_4px_12px_rgba(16,185,129,0.2)]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
             {responseMessage}
           </div>
-          <div className="bg-muted p-6 rounded-xl border max-w-md w-full text-center space-y-4">
-            <h3 className="font-semibold text-lg">
+          
+          <motion.div 
+            whileHover={{ y: -3 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="relative group overflow-hidden bg-gradient-to-b from-white/[0.06] to-transparent bg-[#0c1220]/90 p-6 rounded-2xl border border-white/[0.12] max-w-md w-full text-center space-y-4 shadow-[0_15px_35px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)]"
+          >
+            <div className="pointer-events-none absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/15 rounded-full blur-2xl" />
+            <h3 className="font-bold text-lg text-white">
               Join our WhatsApp Community
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-400">
               Get the latest updates, connect with other members, and stay
               informed about our events.
             </p>
-            <Button
-              asChild
-              className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white"
-            >
-              <a
-                href="https://chat.whatsapp.com/LwH3BiTgyxQCcqQXYPvMhj"
-                target="_blank"
-                rel="noopener noreferrer"
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                asChild
+                className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold h-11 rounded-xl shadow-[0_8px_20px_-4px_rgba(16,185,129,0.4),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-emerald-300/30 transition-all duration-200"
               >
-                Join WhatsApp Group
-              </a>
-            </Button>
-          </div>
-          <div className="bg-muted p-6 rounded-xl border max-w-md w-full text-center space-y-4">
-            <h3 className="font-semibold text-lg">Join our Meetup Group</h3>
-            <p className="text-sm text-muted-foreground">
+                <a
+                  href="https://chat.whatsapp.com/LwH3BiTgyxQCcqQXYPvMhj"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Join WhatsApp Group
+                </a>
+              </Button>
+            </motion.div>
+          </motion.div>
+
+          <motion.div 
+            whileHover={{ y: -3 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="relative group overflow-hidden bg-gradient-to-b from-white/[0.06] to-transparent bg-[#0c1220]/90 p-6 rounded-2xl border border-white/[0.12] max-w-md w-full text-center space-y-4 shadow-[0_15px_35px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)]"
+          >
+            <div className="pointer-events-none absolute -top-12 -right-12 w-32 h-32 bg-rose-500/15 rounded-full blur-2xl" />
+            <h3 className="font-bold text-lg text-white">Join our Meetup Group</h3>
+            <p className="text-sm text-gray-400">
               We track RSVP to our upcoming in-person and virtual events on
               Meetup. All members must join the Meetup group to attend our
               events and stay updated.
             </p>
-            <Button
-              asChild
-              className="w-full bg-[#F64060] hover:bg-[#F64060]/90 text-white"
-            >
-              <a
-                href="https://www.meetup.com/aws-cloud-club-at-university-of-kelaniya/"
-                target="_blank"
-                rel="noopener noreferrer"
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                asChild
+                className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-semibold h-11 rounded-xl shadow-[0_8px_20px_-4px_rgba(244,63,94,0.4),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-rose-300/30 transition-all duration-200"
               >
-                Join our Meetup Group
-              </a>
-            </Button>
-          </div>
-        </div>
+                <a
+                  href="https://www.meetup.com/aws-cloud-club-at-university-of-kelaniya/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Join our Meetup Group
+                </a>
+              </Button>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       )}
       {!submitted && (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Section 1: Account Info */}
+          <div className="flex items-center gap-3 pt-2 pb-1">
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
+              Account Info
+            </span>
+            <div className="flex-1 h-px bg-gradient-to-r from-white/[0.12] via-white/[0.04] to-transparent"></div>
+          </div>
+
           <FormField
             control={form.control}
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel className="text-gray-300 text-xs font-medium">Full Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="" {...field} />
+                  <Input 
+                    placeholder="e.g. John Doe" 
+                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                    {...field} 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="text-gray-300 text-xs font-medium">Email</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
                       placeholder="john@example.com"
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
                       {...field}
                     />
                   </FormControl>
@@ -278,13 +315,13 @@ export default function JoinUsForm() {
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="text-gray-300 text-xs font-medium">Password</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
-                          placeholder="password"
-                          className="pr-10"
+                          placeholder="At least 8 characters"
+                          className="pr-10 h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
                           autoComplete="new-password"
                           {...field}
                         />
@@ -293,7 +330,7 @@ export default function JoinUsForm() {
                           variant="ghost"
                           size="icon"
                           onClick={() => setShowPassword((prev) => !prev)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2"
+                          className="absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white hover:bg-white/[0.08] rounded-lg h-8 w-8 transition-colors"
                         >
                           {showPassword ? (
                             <EyeOff className="h-4 w-4" />
@@ -303,24 +340,38 @@ export default function JoinUsForm() {
                         </Button>
                       </div>
                     </FormControl>
-                    <FormDescription>
-                      Please remember this password. You will use it to log in
-                      to the AWS UOK website.
+                    <FormDescription className="text-gray-500 text-[11px]">
+                      Used to log in to the AWS UOK website.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
                 );
               }}
             />
+          </div>
 
+          {/* Section 2: University Details */}
+          <div className="flex items-center gap-3 pt-4 pb-1">
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
+              University Details
+            </span>
+            <div className="flex-1 h-px bg-gradient-to-r from-white/[0.12] via-white/[0.04] to-transparent"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <FormField
               control={form.control}
               name="studentId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Student ID</FormLabel>
+                  <FormLabel className="text-gray-300 text-xs font-medium">Student ID</FormLabel>
                   <FormControl>
-                    <Input placeholder="PS/2020/001" {...field} />
+                    <Input 
+                      placeholder="PS/2020/001" 
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -331,9 +382,13 @@ export default function JoinUsForm() {
               name="contactNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>ContactNumber(Whatsapp)</FormLabel>
+                  <FormLabel className="text-gray-300 text-xs font-medium">Contact Number (WhatsApp)</FormLabel>
                   <FormControl>
-                    <Input placeholder="+94*********" {...field} />
+                    <Input 
+                      placeholder="+94 7X XXX XXXX" 
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -341,39 +396,39 @@ export default function JoinUsForm() {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <FormField
               control={form.control}
               name="faculty"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Faculty</FormLabel>
+                  <FormLabel className="text-gray-300 text-xs font-medium">Faculty</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
+                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus:ring-2 focus:ring-[#AD5CFF]/50 focus:border-[#AD5CFF]/60 [&>span]:text-gray-300 transition-all duration-200">
+                        <SelectValue placeholder="Select Faculty" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="science">
+                    <SelectContent className="rounded-xl border border-white/[0.12] bg-[#0c1220]/95 backdrop-blur-xl shadow-[0_15px_35px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)]">
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="science">
                         Faculty of Science
                       </SelectItem>
-                      <SelectItem value="computing">
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="computing">
                         Faculty of Computing and Technology
                       </SelectItem>
-                      <SelectItem value="business">
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="business">
                         Faculty of Commerce & Management Studies
                       </SelectItem>
-                      <SelectItem value="medicine">
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="medicine">
                         Faculty of Medicine
                       </SelectItem>
-                      <SelectItem value="humanities">
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="humanities">
                         Faculty of Humanities and Social Sciences
                       </SelectItem>
-                      <SelectItem value="graduate">
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="graduate">
                         Faculty of Graduate Studies
                       </SelectItem>
                     </SelectContent>
@@ -388,21 +443,21 @@ export default function JoinUsForm() {
               name="year"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Year of Study</FormLabel>
+                  <FormLabel className="text-gray-300 text-xs font-medium">Year of Study</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
+                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus:ring-2 focus:ring-[#AD5CFF]/50 focus:border-[#AD5CFF]/60 [&>span]:text-gray-300 transition-all duration-200">
+                        <SelectValue placeholder="Select Year" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="1">1st Year</SelectItem>
-                      <SelectItem value="2">2nd Year</SelectItem>
-                      <SelectItem value="3">3rd Year</SelectItem>
-                      <SelectItem value="4">4th Year</SelectItem>
+                    <SelectContent className="rounded-xl border border-white/[0.12] bg-[#0c1220]/95 backdrop-blur-xl shadow-[0_15px_35px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)]">
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="1">1st Year</SelectItem>
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="2">2nd Year</SelectItem>
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="3">3rd Year</SelectItem>
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="4">4th Year</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -411,39 +466,62 @@ export default function JoinUsForm() {
             />
           </div>
 
+          {/* Section 3: Personal Info */}
+          <div className="flex items-center gap-3 pt-4 pb-1">
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
+              Personal Info
+            </span>
+            <div className="flex-1 h-px bg-gradient-to-r from-white/[0.12] via-white/[0.04] to-transparent"></div>
+          </div>
+
           <FormField
             control={form.control}
             name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Address</FormLabel>
+                <FormLabel className="text-gray-300 text-xs font-medium">Home Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="Home Address" {...field} />
+                  <Input 
+                    placeholder="Enter your home address" 
+                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                    {...field} 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          {/* Section 4: Emergency Contact */}
+          <div className="flex items-center gap-3 pt-4 pb-1">
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
+              Emergency Contact
+            </span>
+            <div className="flex-1 h-px bg-gradient-to-r from-white/[0.12] via-white/[0.04] to-transparent"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <FormField
               control={form.control}
               name="emergencyContactPerson"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Emergency Contact Person</FormLabel>
+                  <FormLabel className="text-gray-300 text-xs font-medium">Contact Person</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
+                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus:ring-2 focus:ring-[#AD5CFF]/50 focus:border-[#AD5CFF]/60 [&>span]:text-gray-300 transition-all duration-200">
+                        <SelectValue placeholder="Select Person" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Mother">Mother</SelectItem>
-                      <SelectItem value="Father">Father</SelectItem>
-                      <SelectItem value="Guardian">Guardian</SelectItem>
+                    <SelectContent className="rounded-xl border border-white/[0.12] bg-[#0c1220]/95 backdrop-blur-xl shadow-[0_15px_35px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)]">
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="Mother">Mother</SelectItem>
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="Father">Father</SelectItem>
+                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="Guardian">Guardian</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -455,9 +533,13 @@ export default function JoinUsForm() {
               name="emergencyContactNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Emergency Person Contact Number</FormLabel>
+                  <FormLabel className="text-gray-300 text-xs font-medium">Emergency Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="+94*********" {...field} />
+                    <Input 
+                      placeholder="+94 7X XXX XXXX" 
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -465,18 +547,27 @@ export default function JoinUsForm() {
             />
           </div>
 
+          {/* Section 5: Interests & Links */}
+          <div className="flex items-center gap-3 pt-4 pb-1">
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
+              Interests & Links
+            </span>
+            <div className="flex-1 h-px bg-gradient-to-r from-white/[0.12] via-white/[0.04] to-transparent"></div>
+          </div>
+
           <FormField
             control={form.control}
             name="interests"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
+                <FormLabel className="text-gray-300 text-xs font-medium">
                   Why do you want to join AWS Cloud Club UOK?
                 </FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Tell us about your interests and what you hope to achieve..."
-                    className="min-h-[100px]"
+                    placeholder="Tell us about your technical interests, cloud experience, and what you hope to achieve..."
+                    className="min-h-[110px] rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
                     {...field}
                   />
                 </FormControl>
@@ -485,16 +576,17 @@ export default function JoinUsForm() {
             )}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <FormField
               control={form.control}
               name="linkedin"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>LinkedIn Profile (Optional)</FormLabel>
+                  <FormLabel className="text-gray-300 text-xs font-medium">LinkedIn Profile (Optional)</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="https://www.linkedin.com/in/..."
+                      placeholder="https://linkedin.com/in/username"
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
                       {...field}
                     />
                   </FormControl>
@@ -508,9 +600,13 @@ export default function JoinUsForm() {
               name="github"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>GitHub Profile (Optional)</FormLabel>
+                  <FormLabel className="text-gray-300 text-xs font-medium">GitHub Profile (Optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://github.com/..." {...field} />
+                    <Input 
+                      placeholder="https://github.com/username" 
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -518,16 +614,37 @@ export default function JoinUsForm() {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              "Submit Application"
-            )}
-          </Button>
+          {/* Solid Accent Purple Submit Button */}
+          <div className="pt-3 relative group">
+            {/* Ambient breathing underglow on hover */}
+            <div className="absolute -inset-1 bg-[#AD5CFF] rounded-2xl blur-lg opacity-25 group-hover:opacity-50 transition duration-300 pointer-events-none" />
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <Button 
+                type="submit" 
+                className="relative overflow-hidden w-full rounded-xl bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold h-12 text-base shadow-[0_8px_25px_rgba(173,92,255,0.4),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-white/20 hover:shadow-[0_8px_32px_rgba(173,92,255,0.65),inset_0_1px_2px_rgba(255,255,255,0.5)] transition-all duration-200 cursor-pointer disabled:opacity-60"
+                disabled={isSubmitting}
+              >
+                {/* 3D Glass Light Sweep */}
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none transition-transform" />
+                
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Submitting Application...
+                  </>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    Submit Application
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                )}
+              </Button>
+            </motion.div>
+          </div>
         </form>
       )}
     </Form>
