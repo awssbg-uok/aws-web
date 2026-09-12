@@ -108,6 +108,25 @@ export const teamMembers: TeamMember[] = [
     },
   },
   {
+    name: "Adhithya Fernando",
+    position: "Designing Head",
+    image: "/ayodhya.png",
+    category: "Executive Board",
+    linkedin: "https://linkedin.com",
+    github: "https://github.com",
+    responsibilities: [
+      "Creates visual content for events and promotions",
+      "Designs posters, banners, and social media creatives",
+      "Maintains brand consistency across all platforms",
+      "Works with content team to produce engaging visuals",
+      "Supports media coverage for events (photos, videos, reels)",
+    ],
+    links: {
+      linkedin: "https://linkedin.com",
+      github: "https://github.com",
+    },
+  },
+  {
     name: "Sarani Piyumali",
     position: "Vice Secretary",
     image: "/sarani.png",
@@ -158,25 +177,6 @@ export const teamMembers: TeamMember[] = [
       "Writes and manages articles for the official website",
       "Ensures consistent communication tone across all platforms",
       "Works closely with PR Coordinator and Designing Head for content alignment",
-    ],
-    links: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com",
-    },
-  },
-  {
-    name: "Adhithya Fernando",
-    position: "Designing Head",
-    image: "/ayodhya.png",
-    category: "Leads & Coordinators",
-    linkedin: "https://linkedin.com",
-    github: "https://github.com",
-    responsibilities: [
-      "Creates visual content for events and promotions",
-      "Designs posters, banners, and social media creatives",
-      "Maintains brand consistency across all platforms",
-      "Works with content team to produce engaging visuals",
-      "Supports media coverage for events (photos, videos, reels)",
     ],
     links: {
       linkedin: "https://linkedin.com",
