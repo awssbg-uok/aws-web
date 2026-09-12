@@ -90,18 +90,18 @@ export default function ContactForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel className="text-gray-300 text-xs font-medium">Name</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Your name"
-                    className="bg-gray-50"
+                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0 focus-visible:border-purple-400/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
                     {...field}
                   />
                 </FormControl>
@@ -114,12 +114,12 @@ export default function ContactForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-gray-300 text-xs font-medium">Email</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="Your email"
-                    className="bg-gray-50"
+                    placeholder="john@example.com"
+                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0 focus-visible:border-purple-400/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
                     {...field}
                   />
                 </FormControl>
@@ -133,11 +133,11 @@ export default function ContactForm() {
           name="subject"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Subject</FormLabel>
+              <FormLabel className="text-gray-300 text-xs font-medium">Subject</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Message subject"
-                  className="bg-gray-50"
+                  placeholder="What would you like to ask or discuss?"
+                  className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0 focus-visible:border-purple-400/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
                   {...field}
                 />
               </FormControl>
@@ -150,11 +150,11 @@ export default function ContactForm() {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Message</FormLabel>
+              <FormLabel className="text-gray-300 text-xs font-medium">Message</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Your message"
-                  className="min-h-[150px] bg-gray-50"
+                  placeholder="Write your message here..."
+                  className="min-h-[140px] rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0 focus-visible:border-purple-400/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
                   {...field}
                 />
               </FormControl>
@@ -163,17 +163,20 @@ export default function ContactForm() {
           )}
         />
         {responseMessage && (
-          <div className="text-green-600 text-sm">{responseMessage}</div>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold shadow-[0_4px_12px_rgba(16,185,129,0.2)]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            {responseMessage}
+          </div>
         )}
         <Button
           type="submit"
-          className="w-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-white"
+          className="w-full bg-gradient-to-r from-[#AD5CFF] to-[#8c32e6] hover:from-[#9d4eed] hover:to-[#7928ca] text-white font-semibold h-11 rounded-xl shadow-[0_8px_20px_-4px_rgba(173,92,255,0.4),inset_0_1px_1px_rgba(255,255,255,0.3)] border border-purple-400/30 transition-all duration-200 disabled:opacity-60"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Sending...
+              Sending Message...
             </>
           ) : (
             "Send Message"

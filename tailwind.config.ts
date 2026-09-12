@@ -57,6 +57,10 @@ const config: Config = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			'squid-ink': {
+  				deep: 'var(--squid-ink-deep)',
+  				card: 'var(--squid-ink-card)',
   			}
   		},
   		borderRadius: {
