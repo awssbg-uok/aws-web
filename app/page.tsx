@@ -4,120 +4,44 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Cloud, Users, Zap, Award, ArrowRight } from "lucide-react";
+import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Cloud, Users, Zap, Award, ArrowRight, Sparkles } from "lucide-react";
 import HeroSection from "@/components/hero-section";
+import TeamSection from "@/components/team-section";
 
 export default function Home() {
-  // OLD Hero Section variables - COMMENTED OUT
-  // const targetRef = useRef<HTMLDivElement>(null);
-  // const { scrollYProgress } = useScroll({
-  //   target: targetRef,
-  //   offset: ["start start", "end start"],
-  // });
-  // const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  // const position = useTransform(scrollYProgress, (pos) => {
-  //   return `${pos * 50}% 50%`;
-  // });
-
   return (
-    <div className="bg-gray-50">
-      {/* NEW Hero Section from aws-clone-project */}
+    <div data-header-theme="dark" className="bg-[var(--squid-ink-deep)] text-white min-h-screen overflow-hidden">
+      {/* Hero Section */}
       <HeroSection />
 
-      {/* OLD Hero Section - COMMENTED OUT */}
-      {/* 
-      <motion.section
-        ref={targetRef}
-        style={{ opacity }}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      >
-        <motion.div
-          className="absolute inset-0 z-0"
-          style={{ backgroundPosition: position }}
-        >
-          <Image
-            src="/hero-background2.jpg"
-            alt="Cloud computing background"
-            fill
-            style={{ objectFit: "cover" }}
-            quality={100}
-            priority
-          />
-          <div className="absolute inset-0 hero-gradient" />
-        </motion.div>
-        <div className="container mx-auto px-4 z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center text-white"
-          >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Welcome to{" "}
-              <span className="gradient-text">AWS Cloud Club UOK</span>
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90">
-              Empowering students with cloud computing skills at the University
-              of Kelaniya
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                asChild
-                size="lg"
-                className="bg-[#FF9900] text-[#232F3E] hover:bg-[#FF9900]/90"
-              >
-                <Link href="#about">
-                  Learn More
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-white bg-transparent text-white hover:bg-white hover:text-[#232F3E]"
-              >
-                <Link href="/contact-us">Contact Us</Link>
-              </Button>
-            </div>
-          </motion.div>
-        </div>
-        <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
-          <Link href="#about" className="text-white animate-bounce block">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 14l-7 7m0 0l-7-7m7 7V3"
-              />
-            </svg>
-          </Link>
-        </div>
-      </motion.section>
-      */}
+      {/* Features Section (Why Join) */}
+      <section className="relative py-24 sm:py-32 bg-[var(--squid-ink-deep)] overflow-hidden border-t border-white/[0.06]">
+        {/* Soft Ambient Spotlight */}
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-[#AD5CFF]/[0.06] rounded-full blur-[160px]" />
 
-      {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            transition={{ duration: 0.5 }}
+            className="text-center max-w-3xl mx-auto mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4">
-              Why Join AWS Cloud Club UOK?
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#AD5CFF]/30 bg-[#0c1220]/80 px-3.5 py-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-xl">
+              <span className="flex h-4 w-4 items-center justify-center rounded-md bg-[#AD5CFF]/20 text-[#AD5CFF]">
+                <Sparkles className="h-2.5 w-2.5" />
+              </span>
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-purple-200">
+                Community Benefits
+              </span>
+            </div>
+
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
+              Why Join AWS Student Builder Group?
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Join a community of cloud enthusiasts and future tech leaders
+            <p className="mt-4 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              Accelerate your cloud career through hands-on architectures, mentorship from industry experts, and a thriving community of student developers.
             </p>
           </motion.div>
 
@@ -127,22 +51,22 @@ export default function Home() {
                 icon: Cloud,
                 title: "Learn AWS Services",
                 description:
-                  "Get hands-on experience with the latest AWS technologies and services.",
-                delay: 0.2,
+                  "Get hands-on experience building scalable applications with Serverless, Bedrock, DynamoDB, and ECS.",
+                delay: 0.1,
               },
               {
                 icon: Users,
                 title: "Network with Experts",
                 description:
-                  "Connect with AWS professionals and like-minded students.",
-                delay: 0.4,
+                  "Connect with AWS Community Heroes, Solutions Architects, and passionate student builders across Sri Lanka.",
+                delay: 0.2,
               },
               {
                 icon: Award,
                 title: "Earn Certifications",
                 description:
-                  "Get support in achieving AWS certifications and advancing your career.",
-                delay: 0.6,
+                  "Access structured study groups, practice labs, and exam voucher guidance for AWS Cloud Practitioner and Solutions Architect certifications.",
+                delay: 0.3,
               },
             ].map((feature, index) => (
               <motion.div
@@ -150,120 +74,146 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: feature.delay, duration: 0.6 }}
+                transition={{ delay: feature.delay, duration: 0.5 }}
+                whileHover={{ y: -5 }}
               >
-                <Card className="card-hover text-center h-full">
-                  <CardHeader>
-                    <div className="mx-auto rounded-full bg-[#FF9900]/10 p-3 w-16 h-16 flex items-center justify-center mb-4">
-                      <feature.icon className="w-8 h-8 text-[#FF9900]" />
+                <div className="premium-card h-full text-center p-8 flex flex-col justify-between">
+                  <CardHeader className="p-0 mb-6">
+                    <div className="mx-auto rounded-2xl bg-[#AD5CFF]/15 border border-[#AD5CFF]/30 p-3.5 w-16 h-16 flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(173,92,255,0.25)] text-[#AD5CFF]">
+                      <feature.icon className="w-8 h-8" />
                     </div>
-                    <CardTitle className="text-xl mb-2">
+                    <CardTitle className="text-xl font-bold text-white tracking-tight">
                       {feature.title}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">{feature.description}</p>
+                  <CardContent className="p-0">
+                    <p className="text-slate-400 text-sm leading-relaxed">{feature.description}</p>
                   </CardContent>
-                </Card>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section id="about" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      {/* About Section ("Who We Are") */}
+      <section id="about" className="relative py-24 sm:py-32 bg-[var(--squid-ink-deep)] overflow-hidden border-t border-white/[0.06]">
+        {/* Soft Ambient Spotlight */}
+        <div className="pointer-events-none absolute top-1/3 -right-28 w-[600px] h-[600px] bg-[#7928CA]/[0.10] rounded-full blur-[160px]" />
+        <div className="pointer-events-none absolute bottom-10 -left-28 w-[500px] h-[500px] bg-[#AD5CFF]/[0.06] rounded-full blur-[150px]" />
+
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: Text & Key Highlights */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="space-y-6"
+              transition={{ duration: 0.55 }}
+              className="space-y-7"
             >
-              <h2 className="text-4xl font-bold mb-6">Who We Are</h2>
-              <p className="text-lg text-gray-600">
-                AWS Cloud Club Captains are student leaders passionate about
-                sharing their knowledge with the cloud computing community on
-                campus. Join us to unlock opportunities in:
+              {/* Pill Badge */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#AD5CFF]/30 bg-[#0c1220]/80 px-3.5 py-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-xl">
+                <span className="flex h-4 w-4 items-center justify-center rounded-md bg-[#AD5CFF]/20 text-[#AD5CFF]">
+                  <Sparkles className="h-2.5 w-2.5" />
+                </span>
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-purple-200">
+                  Leadership &bull; University of Kelaniya
+                </span>
+              </div>
+
+              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Who We <span className="text-[#AD5CFF]">Are</span>
+              </h2>
+
+              <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
+                AWS Student Builder Group Captains and coordinators are passionate student leaders dedicated to sharing cloud computing knowledge with the developer community on campus. Join us to unlock opportunities in:
               </p>
-              <ul className="space-y-4">
+
+              <ul className="space-y-4 pt-2">
                 {[
                   {
                     icon: Cloud,
-                    text: "Organizing and leading AWS-focused events",
+                    text: "Organizing and leading AWS-focused technical events",
                   },
                   {
                     icon: Users,
-                    text: "Growing your network with AWS experts",
+                    text: "Growing your network with AWS experts and industry leaders",
                   },
-                  { icon: Zap, text: "Gaining hands-on experience with AWS" },
-                  { icon: Award, text: "Receiving AWS credits and swag" },
+                  { icon: Zap, text: "Gaining hands-on experience building on AWS infrastructure" },
+                  { icon: Award, text: "Receiving official AWS credits, exam discounts, and swag" },
                 ].map((item, index) => (
                   <motion.li
                     key={index}
-                    initial={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -16 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: index * 0.1, duration: 0.6 }}
-                    className="flex items-center space-x-3"
+                    transition={{ delay: index * 0.08, duration: 0.45 }}
+                    className="flex items-center space-x-3.5"
                   >
-                    <div className="rounded-full bg-[#FF9900]/10 p-2">
-                      <item.icon className="w-5 h-5 text-[#FF9900]" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#AD5CFF]/15 border border-[#AD5CFF]/30 text-[#AD5CFF] shadow-[0_0_15px_rgba(173,92,255,0.25)] shrink-0">
+                      <item.icon className="w-4 h-4" />
                     </div>
-                    <span className="text-gray-700">{item.text}</span>
+                    <span className="text-slate-200 font-medium text-sm sm:text-base">{item.text}</span>
                   </motion.li>
                 ))}
               </ul>
             </motion.div>
+
+            {/* Right: Premium Framed Team Photo */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative h-[500px] rounded-lg overflow-hidden shadow-2xl"
+              transition={{ duration: 0.55 }}
+              className="relative h-[440px] sm:h-[480px] rounded-3xl overflow-hidden border border-white/[0.12] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] group"
             >
               <Image
                 src="/team-photo.jpg"
-                alt="AWS Cloud Club Team"
+                alt="AWS Student Builder Group Team"
                 fill
                 style={{ objectFit: "cover" }}
-                className="transform hover:scale-105 transition-transform duration-700"
+                className="transform group-hover:scale-105 transition-transform duration-700 ease-out"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--squid-ink-deep)] via-transparent to-transparent opacity-80 pointer-events-none" />
+              <div className="absolute inset-0 bg-purple-950/15 mix-blend-color pointer-events-none" />
             </motion.div>
           </div>
         </div>
       </section>
 
+      {/* Team Carousel Section */}
+      <TeamSection />
+
       {/* CTA Section */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[#232F3E]">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#FF9900]/20 to-transparent" />
-        </div>
-        <div className="container mx-auto px-4 relative">
+      <section
+        data-header-theme="dark"
+        className="relative py-24 sm:py-32 overflow-hidden bg-[radial-gradient(ellipse_at_50%_0%,#1e1038_0%,var(--squid-ink-card)_60%,var(--squid-ink-deep)_100%)] border-t border-white/[0.10]"
+      >
+        <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[#AD5CFF]/20 rounded-full blur-[140px]" />
+        
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto text-center text-white"
+            transition={{ duration: 0.55 }}
+            className="max-w-3xl mx-auto text-center"
           >
-            <h2 className="text-4xl font-bold mb-6">
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-5 tracking-tight">
               Ready to Start Your Cloud Journey?
             </h2>
-            <p className="text-xl mb-8 opacity-90">
-              Join AWS Cloud Club today and take your first step towards
-              becoming a cloud expert!
+            <p className="text-base sm:text-xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
+              Join the AWS Student Builder Group at University of Kelaniya today and take your first step towards building production cloud architectures.
             </p>
             <Button
               asChild
               size="lg"
-              className="bg-white text-[#232F3E] hover:bg-white/90"
+              className="rounded-full bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold px-8 h-12 shadow-[0_8px_25px_rgba(173,92,255,0.45),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-white/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <Link href="/join-us">
-                Join Now
-                <ArrowRight className="ml-2 h-5 w-5" />
+                Join the builder community
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </motion.div>
