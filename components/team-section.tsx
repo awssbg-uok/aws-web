@@ -109,7 +109,7 @@ export default function TeamSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.55, delay: 0.08 }}
-            className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.12]"
+            className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.12] font-ember"
           >
             Steered by passionate <br />
             <span className="font-serif italic font-normal text-[#AD5CFF]">

@@ -77,14 +77,14 @@ export default function HeroSection() {
               {/* Metadata Row */}
               <div className="flex flex-wrap items-center justify-between gap-3 select-none pb-4 border-b border-white/[0.06]">
                 <div className="flex items-center gap-2.5">
-                  <span className="bg-[#AD5CFF] text-white text-[11px] font-mono font-bold px-2.5 py-1 rounded-md tracking-wider uppercase">
+                  <span className="bg-[#AD5CFF] text-white text-[11px] font-ember-mono font-bold px-2.5 py-1 rounded-md tracking-wider uppercase">
                     BUILDER SPOTLIGHT
                   </span>
-                  <span className="text-xs font-mono text-slate-400 font-medium">
+                  <span className="text-xs font-ember-mono text-slate-400 font-medium">
                     #AWS-SBG-01 &bull; UoK Campus
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs font-mono text-[#00E582] font-semibold">
+                <div className="flex items-center gap-1.5 text-xs font-ember-mono text-[#00E582] font-semibold">
                   <span className="w-2 h-2 rounded-full bg-[#00E582]" />
                   <span>Live Sandbox Open</span>
                 </div>
@@ -93,7 +93,7 @@ export default function HeroSection() {
               {/* Main Content: 2-Column Split (Copy + Large Mascot Illustration) */}
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center my-6">
                 <div className="sm:col-span-7 space-y-4 text-left">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug font-ember">
                     Weekend Challenge: Deploy your first app on AWS
                   </h2>
                   <p className="text-sm text-slate-300 leading-relaxed font-normal">
@@ -106,7 +106,7 @@ export default function HeroSection() {
                     >
                       <Link href="/join-us">Get started</Link>
                     </Button>
-                    <span className="text-xs font-mono text-slate-400 tracking-wide font-medium">
+                    <span className="text-xs font-ember-mono text-slate-400 tracking-wide font-medium">
                       Win $100 AWS credits
                     </span>
                   </div>
@@ -168,13 +168,13 @@ export default function HeroSection() {
           >
             <div>
               {/* Top Tag */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.10] text-xs font-mono text-slate-300 w-fit select-none mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.10] text-xs font-ember-mono text-slate-300 w-fit select-none mb-6">
                 <span className="w-2 h-2 rounded-full bg-[#00E582]" />
                 <span>AWS Student Builder Group &bull; University of Kelaniya</span>
               </div>
 
               {/* Headline with Solid Color-Block Highlight */}
-              <h1 className="text-3xl sm:text-4xl md:text-[42px] font-black text-white tracking-tight leading-[1.18] mb-5">
+              <h1 className="text-3xl sm:text-4xl md:text-[42px] font-black text-white tracking-tight leading-[1.18] mb-5 font-ember">
                 Where student builders turn ideas into{" "}
                 <span className="bg-[#AD5CFF] text-white px-3 py-1 rounded-xl inline-block mt-1 sm:mt-0 font-black">
                   cloud reality
@@ -223,12 +223,12 @@ export default function HeroSection() {
           {/* Left: Builder Pathways */}
           <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
             <div className="flex items-center gap-3 select-none mr-2">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[11px] font-ember-mono font-bold uppercase tracking-wider text-slate-400">
                 BUILDER PATHWAYS
               </span>
               <Link
                 href="/resources"
-                className="text-xs font-mono text-[#AD5CFF] hover:underline font-semibold"
+                className="text-xs font-ember-mono text-[#AD5CFF] hover:underline font-semibold"
               >
                 View all 4 tracks &rarr;
               </Link>
@@ -262,7 +262,7 @@ export default function HeroSection() {
             <div className="flex items-center gap-2.5">
               <IconBadge name="teams" variant="secondary" size="sm" />
               <div className="text-left">
-                <div className="text-sm font-bold text-white leading-tight">500+</div>
+                <div className="text-sm font-bold text-white leading-tight font-ember">500+</div>
                 <div className="text-[11px] text-slate-400 leading-tight">Student builders</div>
               </div>
             </div>
@@ -270,7 +270,7 @@ export default function HeroSection() {
             <div className="flex items-center gap-2.5">
               <IconBadge name="wrench" variant="secondary" size="sm" />
               <div className="text-left">
-                <div className="text-sm font-bold text-white leading-tight">15+</div>
+                <div className="text-sm font-bold text-white leading-tight font-ember">15+</div>
                 <div className="text-[11px] text-slate-400 leading-tight">Cloud projects</div>
               </div>
             </div>
@@ -278,7 +278,7 @@ export default function HeroSection() {
             <div className="flex items-center gap-2.5">
               <IconBadge name="trophy" variant="secondary" size="sm" />
               <div className="text-left">
-                <div className="text-sm font-bold text-white leading-tight">50+</div>
+                <div className="text-sm font-bold text-white leading-tight font-ember">50+</div>
                 <div className="text-[11px] text-slate-400 leading-tight">AWS certified</div>
               </div>
             </div>

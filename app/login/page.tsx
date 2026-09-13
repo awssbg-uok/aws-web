@@ -41,7 +41,7 @@ export default function LoginPage() {
               Official Builder Community Portal
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-ember">
               AWS Student Builder Group{" "}
               <span className="text-[#AD5CFF]">Login</span>
             </h1>

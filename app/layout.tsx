@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Toaster } from "react-hot-toast";
+import { fontEmber, fontEmberMono } from "./fonts";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -31,7 +32,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body
         suppressHydrationWarning
-        className={`${inter.className} flex flex-col min-h-screen bg-gray-50`}
+        className={`${inter.className} ${fontEmber.variable} ${fontEmberMono.variable} flex flex-col min-h-screen bg-gray-50`}
       >
         <Header />
         <main className="flex-grow">{children}</main>

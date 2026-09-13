@@ -63,7 +63,7 @@ export default function JoinUs() {
             <Sparkles className="w-3.5 h-3.5 text-[#AD5CFF]" />
             Join the Community
           </motion.div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white mb-4 font-ember">
             Join AWS Student Builder Group <span className="text-[#AD5CFF]">UOK</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto font-normal">
@@ -86,10 +86,10 @@ export default function JoinUs() {
               className="premium-card p-7 sm:p-8"
             >
               <div className="relative z-10">
-                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight font-ember">
                   Students by day.
                 </h2>
-                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#AD5CFF] leading-tight mb-4">
+                <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#AD5CFF] leading-tight mb-4 font-ember">
                   Cloud builders by night.
                 </h2>
                 <p className="text-sm sm:text-base text-gray-300/90 leading-relaxed font-normal mb-8">
@@ -99,13 +99,13 @@ export default function JoinUs() {
                 {/* Stat Counters with 3D Dividers */}
                 <div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/[0.08]">
                   <div className="space-y-1">
-                    <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">500+</div>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-ember">500+</div>
                     <div className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
                       Community Builders
                     </div>
                   </div>
                   <div className="space-y-1 border-l border-white/[0.08] pl-4">
-                    <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">20+</div>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-ember">20+</div>
                     <div className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
                       Hands-on Sessions
                     </div>

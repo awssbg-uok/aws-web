@@ -107,7 +107,7 @@ export default function ForgotPassword() {
               Account Security
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-ember">
               Reset <span className="text-[#AD5CFF]">Password</span>
             </h1>
             <p className="mt-2 text-sm text-slate-400">

@@ -53,7 +53,7 @@ export default function ContactUs() {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-4 text-white">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-4 text-white font-ember">
             Have Any <span className="text-[#AD5CFF]">Questions?</span>
           </h1>
           <p className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
@@ -105,7 +105,7 @@ export default function ContactUs() {
             transition={{ duration: 0.5 }}
             className="text-center mb-12 sm:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-3 font-ember">
               Let&apos;s <span className="text-[#AD5CFF]">Talk</span>
             </h2>
             <p className="text-base sm:text-lg text-slate-400">
@@ -164,7 +164,7 @@ export default function ContactUs() {
             transition={{ duration: 0.5 }}
             className="max-w-2xl mx-auto"
           >
-            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight text-white">
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight text-white font-ember">
               Looking to <span className="text-[#AD5CFF]">Get Involved?</span>
             </h2>
             <p className="text-base text-slate-400 mb-8 leading-relaxed">

@@ -47,7 +47,7 @@ export default function Resources() {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white font-ember">
             Learning{" "}
             <span className="text-[#AD5CFF]">
               Resources
@@ -69,7 +69,7 @@ export default function Resources() {
               className="flex items-center gap-3 mb-8"
             >
               <div className="h-7 w-1.5 rounded-full bg-[#AD5CFF] shadow-[0_0_12px_#AD5CFF]" />
-              <h2 className="text-2xl font-bold text-white tracking-tight">
+              <h2 className="text-2xl font-bold text-white tracking-tight font-ember">
                 Learning Materials
               </h2>
             </motion.div>
@@ -124,7 +124,7 @@ export default function Resources() {
               className="flex items-center gap-3 mb-8"
             >
               <div className="h-7 w-1.5 rounded-full bg-[#AD5CFF] shadow-[0_0_12px_#AD5CFF]" />
-              <h2 className="text-2xl font-bold text-white tracking-tight">
+              <h2 className="text-2xl font-bold text-white tracking-tight font-ember">
                 Tools &amp; Utilities
               </h2>
             </motion.div>
@@ -176,7 +176,7 @@ export default function Resources() {
           >
             <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#AD5CFF]/20 rounded-full blur-[100px]" />
             <div className="relative z-10 max-w-2xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 tracking-tight font-ember">
                 Need More Resources?
               </h2>
               <p className="text-slate-300 text-sm sm:text-base mb-7 leading-relaxed">

@@ -90,7 +90,7 @@ export default function TeamPage() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.08 }}
-            className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.12] mb-5 text-white"
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.12] mb-5 text-white font-ember"
           >
             AWS Student Builder Group <br />
             <span className="font-serif italic font-normal text-[#AD5CFF]">
@@ -301,7 +301,7 @@ export default function TeamPage() {
                     {activeMember.category}
                   </div>
 
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight font-ember">
                     {activeMember.name}
                   </h2>
 

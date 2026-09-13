@@ -81,7 +81,7 @@ export default function Dashboard() {
           <p className="text-xs uppercase tracking-[0.2em] text-orange-300">
             Member Dashboard
           </p>
-          <h1 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl">
+          <h1 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl font-ember">
             Welcome back, {user.fullName}
           </h1>
           <p className="mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
@@ -93,7 +93,7 @@ export default function Dashboard() {
         <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
           <section className="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-black/20 backdrop-blur-md sm:p-7">
             <div className="mb-6 flex items-start justify-between gap-3">
-              <h2 className="text-xl font-semibold text-white sm:text-2xl">
+              <h2 className="text-xl font-semibold text-white sm:text-2xl font-ember">
                 Profile Snapshot
               </h2>
               <span
@@ -142,7 +142,7 @@ export default function Dashboard() {
 
           <section className="space-y-6">
             <article className="rounded-3xl border border-orange-300/20 bg-orange-500/10 p-6 backdrop-blur-md">
-              <h2 className="text-xl font-semibold text-orange-100">
+              <h2 className="text-xl font-semibold text-orange-100 font-ember">
                 Community Access
               </h2>
               <p className="mt-2 text-sm text-orange-50/90">

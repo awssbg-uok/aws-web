@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			ember: ['var(--font-ember)', 'sans-serif'],
+  			'ember-mono': ['var(--font-ember-mono)', 'monospace'],
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

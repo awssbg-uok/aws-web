@@ -38,7 +38,7 @@ export default function Home() {
               </span>
             </div>
 
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white font-ember">
               Why Join AWS Student Builder Group?
             </h2>
             <p className="mt-4 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
@@ -126,7 +126,7 @@ export default function Home() {
                 </span>
               </div>
 
-              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight font-ember">
                 Who We <span className="text-[#AD5CFF]">Are</span>
               </h2>
 
@@ -211,7 +211,7 @@ export default function Home() {
             transition={{ duration: 0.55 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-5 tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-5 tracking-tight font-ember">
               Ready to Start Your Cloud Journey?
             </h2>
             <p className="text-base sm:text-xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">

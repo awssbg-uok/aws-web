@@ -48,7 +48,7 @@ export default function Events() {
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white font-ember">
             Upcoming{" "}
             <span className="text-[#AD5CFF]">
               Events
@@ -145,7 +145,7 @@ export default function Events() {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-red-500/15 border border-red-500/30 text-red-400 mb-4 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
             <Youtube className="w-6 h-6" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight font-ember">
             Missed a Previous Session?
           </h2>
           <p className="text-sm sm:text-base text-slate-400 mb-5 leading-relaxed">

@@ -80,7 +80,7 @@ export default function AboutUs() {
           </motion.div>
 
           <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-6 tracking-tight"
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-6 tracking-tight font-ember"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
@@ -114,7 +114,7 @@ export default function AboutUs() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="h-6 w-1.5 rounded-full bg-[#AD5CFF] shadow-[0_0_12px_#AD5CFF]" />
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-ember">
                     Our <span className="text-[#AD5CFF]">Vision</span>
                   </h2>
                 </div>
@@ -127,7 +127,7 @@ export default function AboutUs() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="h-6 w-1.5 rounded-full bg-[#AD5CFF] shadow-[0_0_12px_#AD5CFF]" />
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-ember">
                     Our <span className="text-[#AD5CFF]">Mission</span>
                   </h2>
                 </div>
@@ -182,7 +182,7 @@ export default function AboutUs() {
       >
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <motion.div variants={itemVariants} className="text-center max-w-2xl mx-auto mb-14">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4 font-ember">
               What We <span className="text-[#AD5CFF]">Offer</span>
             </h2>
             <p className="text-slate-400 text-base leading-relaxed">
