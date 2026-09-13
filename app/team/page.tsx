@@ -122,7 +122,7 @@ export default function TeamPage() {
                   onClick={() => setSelectedCategory(cat.label)}
                   className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 select-none ${
                     isSelected
-                      ? "bg-[#AD5CFF] text-white shadow-[0_4px_16px_rgba(173,92,255,0.4)]"
+                      ? "bg-[#AD5CFF] text-white shadow-none"
                       : "text-slate-300 hover:text-white hover:bg-white/[0.06]"
                   }`}
                 >
@@ -158,7 +158,7 @@ export default function TeamPage() {
                 transition={{ duration: 0.4, delay: (index % 8) * 0.04 }}
                 whileHover={{ y: -6, scale: 1.02 }}
                 onClick={() => setActiveMember(member)}
-                className="group relative h-[400px] sm:h-[420px] rounded-[28px] overflow-hidden border border-white/[0.08] bg-[radial-gradient(ellipse_at_50%_35%,#151f38_0%,var(--squid-ink-card)_55%,var(--squid-ink-deep)_100%)] shadow-[0_16px_40px_rgba(0,0,0,0.6)] hover:border-[#AD5CFF]/50 hover:shadow-[0_20px_50px_rgba(173,92,255,0.25)] transition-all duration-500 cursor-pointer"
+                className="group relative h-[400px] sm:h-[420px] rounded-[28px] overflow-hidden border border-white/[0.08] bg-[radial-gradient(ellipse_at_50%_35%,#151f38_0%,var(--squid-ink-card)_55%,var(--squid-ink-deep)_100%)] shadow-[0_16px_40px_rgba(0,0,0,0.6)] hover:border-[#AD5CFF]/60 hover:shadow-none transition-all duration-500 cursor-pointer"
               >
                 {/* Blueprint Grid */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none opacity-25" />

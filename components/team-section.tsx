@@ -144,7 +144,7 @@ export default function TeamSection() {
                   }}
                   className={`relative px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 ${
                     isActive
-                      ? "bg-purple-600/20 text-purple-200 border border-purple-500/35 shadow-[0_0_20px_rgba(168,85,247,0.25)]"
+                      ? "bg-purple-600/20 text-purple-200 border border-purple-500/35 shadow-none"
                       : "text-slate-400 hover:text-white hover:bg-white/[0.04] border border-transparent"
                   }`}
                 >
@@ -152,7 +152,7 @@ export default function TeamSection() {
                   {isActive && (
                     <motion.span
                       layoutId="activeFilterUnderline"
-                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-[2px] bg-purple-400 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.9)]"
+                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-[2px] bg-[#AD5CFF] rounded-full"
                     />
                   )}
                 </button>
@@ -218,7 +218,7 @@ export default function TeamSection() {
         <div className="mt-10 text-center">
           <Link
             href="/team"
-            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold text-sm shadow-[0_4px_20px_rgba(173,92,255,0.4)] hover:shadow-[0_4px_28px_rgba(173,92,255,0.65)] border border-white/20 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold text-sm shadow-none border border-transparent transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
           >
             <span>Meet the Full Team</span>
             <ArrowRight className="w-4 h-4" />
@@ -238,7 +238,7 @@ function TeamCard({ member, index }: { member: TeamMember; index: number }) {
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.55, delay: (index % 6) * 0.08, ease: "easeOut" }}
       whileHover={{ scale: 1.035 }}
-      className="group relative flex-none w-[265px] sm:w-[285px] h-[390px] sm:h-[415px] rounded-[28px] overflow-hidden border border-white/[0.08] bg-[radial-gradient(ellipse_at_50%_35%,#151f38_0%,var(--squid-ink-card)_55%,var(--squid-ink-deep)_100%)] shadow-[0_16px_40px_rgba(0,0,0,0.6)] hover:border-purple-500/50 hover:shadow-[0_20px_50px_rgba(168,85,247,0.25)] transition-all duration-500"
+      className="group relative flex-none w-[265px] sm:w-[285px] h-[390px] sm:h-[415px] rounded-[28px] overflow-hidden border border-white/[0.08] bg-[radial-gradient(ellipse_at_50%_35%,#151f38_0%,var(--squid-ink-card)_55%,var(--squid-ink-deep)_100%)] shadow-[0_16px_40px_rgba(0,0,0,0.6)] hover:border-[#AD5CFF]/60 hover:shadow-none transition-all duration-500"
     >
       {/* Subtle Studio Blueprint Grid (Unified with hero tech aesthetic) */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none opacity-25" />

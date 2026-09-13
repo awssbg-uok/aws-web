@@ -5,9 +5,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Cloud, Users, Zap, Award, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import HeroSection from "@/components/hero-section";
 import TeamSection from "@/components/team-section";
+import { IconBadge, SbgIconName } from "@/components/icon-badge";
 
 export default function Home() {
   return (
@@ -48,21 +49,21 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                icon: Cloud,
+                iconName: "drop" as SbgIconName,
                 title: "Learn AWS Services",
                 description:
                   "Get hands-on experience building scalable applications with Serverless, Bedrock, DynamoDB, and ECS.",
                 delay: 0.1,
               },
               {
-                icon: Users,
+                iconName: "teams" as SbgIconName,
                 title: "Network with Experts",
                 description:
                   "Connect with AWS Community Heroes, Solutions Architects, and passionate student builders across Sri Lanka.",
                 delay: 0.2,
               },
               {
-                icon: Award,
+                iconName: "trophy" as SbgIconName,
                 title: "Earn Certifications",
                 description:
                   "Access structured study groups, practice labs, and exam voucher guidance for AWS Cloud Practitioner and Solutions Architect certifications.",
@@ -79,9 +80,12 @@ export default function Home() {
               >
                 <div className="premium-card h-full text-center p-8 flex flex-col justify-between">
                   <CardHeader className="p-0 mb-6">
-                    <div className="mx-auto rounded-2xl bg-[#AD5CFF]/15 border border-[#AD5CFF]/30 p-3.5 w-16 h-16 flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(173,92,255,0.25)] text-[#AD5CFF]">
-                      <feature.icon className="w-8 h-8" />
-                    </div>
+                    <IconBadge
+                      name={feature.iconName}
+                      variant="primary"
+                      size="2xl"
+                      className="mx-auto mb-5"
+                    />
                     <CardTitle className="text-xl font-bold text-white tracking-tight">
                       {feature.title}
                     </CardTitle>
@@ -133,15 +137,21 @@ export default function Home() {
               <ul className="space-y-4 pt-2">
                 {[
                   {
-                    icon: Cloud,
+                    iconName: "clock" as SbgIconName,
                     text: "Organizing and leading AWS-focused technical events",
                   },
                   {
-                    icon: Users,
+                    iconName: "teams" as SbgIconName,
                     text: "Growing your network with AWS experts and industry leaders",
                   },
-                  { icon: Zap, text: "Gaining hands-on experience building on AWS infrastructure" },
-                  { icon: Award, text: "Receiving official AWS credits, exam discounts, and swag" },
+                  {
+                    iconName: "wrench" as SbgIconName,
+                    text: "Gaining hands-on experience building on AWS infrastructure",
+                  },
+                  {
+                    iconName: "trophy" as SbgIconName,
+                    text: "Receiving official AWS credits, exam discounts, and swag",
+                  },
                 ].map((item, index) => (
                   <motion.li
                     key={index}
@@ -151,9 +161,12 @@ export default function Home() {
                     transition={{ delay: index * 0.08, duration: 0.45 }}
                     className="flex items-center space-x-3.5"
                   >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#AD5CFF]/15 border border-[#AD5CFF]/30 text-[#AD5CFF] shadow-[0_0_15px_rgba(173,92,255,0.25)] shrink-0">
-                      <item.icon className="w-4 h-4" />
-                    </div>
+                    <IconBadge
+                      name={item.iconName}
+                      variant="primary"
+                      size="lg"
+                      className="shrink-0"
+                    />
                     <span className="text-slate-200 font-medium text-sm sm:text-base">{item.text}</span>
                   </motion.li>
                 ))}
@@ -190,8 +203,6 @@ export default function Home() {
         data-header-theme="dark"
         className="relative py-24 sm:py-32 overflow-hidden bg-[radial-gradient(ellipse_at_50%_0%,#1e1038_0%,var(--squid-ink-card)_60%,var(--squid-ink-deep)_100%)] border-t border-white/[0.10]"
       >
-        <div className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[#AD5CFF]/20 rounded-full blur-[140px]" />
-        
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -209,7 +220,7 @@ export default function Home() {
             <Button
               asChild
               size="lg"
-              className="rounded-full bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold px-8 h-12 shadow-[0_8px_25px_rgba(173,92,255,0.45),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-white/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="rounded-full bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold px-8 h-12 border border-transparent transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <Link href="/join-us">
                 Join the builder community

@@ -90,7 +90,7 @@ export default function Events() {
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--squid-ink-card)] via-transparent to-black/30 pointer-events-none" />
 
                   {/* Category Pill Badge with Purple Accent */}
-                  <div className="absolute top-4 right-4 bg-[#AD5CFF] text-white font-bold text-xs px-3 py-1 rounded-full shadow-[0_4px_15px_rgba(173,92,255,0.45)] border border-white/20 backdrop-blur-md">
+                  <div className="absolute top-4 right-4 bg-[#AD5CFF] text-white font-bold text-xs px-3 py-1 rounded-full border border-white/20 backdrop-blur-md">
                     {event.category}
                   </div>
                 </div>
@@ -121,7 +121,7 @@ export default function Events() {
                   </CardDescription>
                   <Button
                     asChild
-                    className="w-full rounded-full border border-[#AD5CFF]/40 bg-[#AD5CFF]/15 text-[#E0AAFF] hover:bg-[#AD5CFF] hover:text-white transition-all shadow-[0_4px_16px_rgba(173,92,255,0.2)] font-semibold h-11"
+                    className="w-full rounded-full border border-[#AD5CFF]/40 bg-[#AD5CFF]/15 text-[#E0AAFF] hover:bg-[#AD5CFF] hover:text-white transition-all shadow-none font-semibold h-11"
                   >
                     <Link href={event.registrationLink}>
                       {event.registrationLinkText}

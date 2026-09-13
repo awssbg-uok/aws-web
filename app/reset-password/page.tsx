@@ -115,7 +115,7 @@ const ResetPasswordPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
-                  className="h-11 pr-11 rounded-xl bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.12] text-white placeholder:text-slate-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.06] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25)] transition-all duration-200"
+                  className="h-11 pr-11 rounded-xl bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.12] text-white placeholder:text-slate-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                 />
                 <Button
                   type="button"
@@ -142,7 +142,7 @@ const ResetPasswordPage: React.FC = () => {
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   placeholder="Re-enter your new password"
-                  className="h-11 pr-11 rounded-xl bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.12] text-white placeholder:text-slate-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.06] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25)] transition-all duration-200"
+                  className="h-11 pr-11 rounded-xl bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.12] text-white placeholder:text-slate-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                 />
                 <Button
                   type="button"
@@ -159,7 +159,7 @@ const ResetPasswordPage: React.FC = () => {
             <div className="pt-2">
               <Button
                 type="submit"
-                className="w-full h-11 bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold rounded-xl shadow-[0_4px_20px_rgba(173,92,255,0.4)] hover:shadow-[0_4px_28px_rgba(173,92,255,0.65)] border border-white/20 transition-all duration-300 active:scale-[0.99] disabled:opacity-60"
+                className="w-full h-11 bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold rounded-xl shadow-none border border-transparent transition-colors duration-200 active:scale-[0.99] disabled:opacity-60"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (

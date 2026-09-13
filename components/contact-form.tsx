@@ -101,7 +101,7 @@ export default function ContactForm() {
                 <FormControl>
                   <Input
                     placeholder="Your name"
-                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0 focus-visible:border-purple-400/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                     {...field}
                   />
                 </FormControl>
@@ -119,7 +119,7 @@ export default function ContactForm() {
                   <Input
                     type="email"
                     placeholder="john@example.com"
-                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0 focus-visible:border-purple-400/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                     {...field}
                   />
                 </FormControl>
@@ -137,7 +137,7 @@ export default function ContactForm() {
               <FormControl>
                 <Input
                   placeholder="What would you like to ask or discuss?"
-                  className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0 focus-visible:border-purple-400/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                  className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                   {...field}
                 />
               </FormControl>
@@ -154,7 +154,7 @@ export default function ContactForm() {
               <FormControl>
                 <Textarea
                   placeholder="Write your message here..."
-                  className="min-h-[140px] rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0 focus-visible:border-purple-400/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                  className="min-h-[140px] rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                   {...field}
                 />
               </FormControl>
@@ -170,7 +170,7 @@ export default function ContactForm() {
         )}
         <Button
           type="submit"
-          className="w-full bg-gradient-to-r from-[#AD5CFF] to-[#8c32e6] hover:from-[#9d4eed] hover:to-[#7928ca] text-white font-semibold h-11 rounded-xl shadow-[0_8px_20px_-4px_rgba(173,92,255,0.4),inset_0_1px_1px_rgba(255,255,255,0.3)] border border-purple-400/30 transition-all duration-200 disabled:opacity-60"
+          className="w-full bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold h-11 rounded-xl shadow-none border border-transparent transition-colors duration-200 disabled:opacity-60"
           disabled={isSubmitting}
         >
           {isSubmitting ? (

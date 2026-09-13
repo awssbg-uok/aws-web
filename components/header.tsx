@@ -4,9 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { 
+  Menu, 
+  X, 
+  LayoutDashboard
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { IconBadge, SbgIconName } from "@/components/icon-badge";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -168,24 +173,22 @@ export default function Header() {
 
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
 
-  const NAV_ITEMS = [
-    { href: "/", label: "Home" },
-    { href: "/about-us", label: "About Us" },
-    { href: "/events", label: "Events" },
-    { href: "/resources", label: "Resources" },
-    { href: "/newsletter", label: "Newsletters" },
-    { href: "/faq", label: "FAQ" },
-    { href: "/contact-us", label: "Contact" },
+  const NAV_ITEMS: { href: string; label: string; iconName: SbgIconName }[] = [
+    { href: "/", label: "Home", iconName: "single-bracket-smile" },
+    { href: "/about-us", label: "About Us", iconName: "teams" },
+    { href: "/events", label: "Events", iconName: "clock" },
+    { href: "/resources", label: "Resources", iconName: "wrench" },
+    { href: "/contact-us", label: "Contact", iconName: "speaker" },
   ];
 
   return (
     <header className="fixed top-3 sm:top-4 left-0 right-0 z-50 px-3 sm:px-6 transition-all duration-300">
       <div className="max-w-7xl mx-auto">
         <div
-          className={`relative flex justify-between items-center h-16 sm:h-[68px] px-4 sm:px-6 rounded-2xl border transition-all duration-300 ease-in-out backdrop-blur-2xl backdrop-saturate-150 ${
+          className={`relative flex justify-between items-center h-16 sm:h-[68px] px-3.5 sm:px-5 lg:px-4 xl:px-6 rounded-2xl border transition-all duration-300 ease-in-out backdrop-blur-2xl backdrop-saturate-150 ${
             isDark
-              ? "bg-[#0c1220]/75 border-white/[0.12] hover:border-[#AD5CFF]/30 shadow-[0_12px_40px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12),0_0_20px_rgba(173,92,255,0.06)]"
-              : "bg-white/80 border-slate-200/90 hover:border-[#AD5CFF]/40 shadow-[0_12px_35px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.9),0_0_20px_rgba(173,92,255,0.05)]"
+              ? "bg-[#0c1220]/90 border-white/[0.12] shadow-lg shadow-black/40"
+              : "bg-white/90 border-slate-200 shadow-md shadow-slate-900/5"
           }`}
         >
           {/* Logo with increased size and two-line brand label */}
@@ -216,9 +219,9 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Desktop Navigation with Framer Motion Shared-Element Sliding Indicator */}
+          {/* Desktop Navigation with Flat Builder Center Pill Highlights */}
           <nav
-            className="hidden lg:flex items-center gap-0.5 xl:gap-1"
+            className="hidden lg:flex items-center gap-0.5 xl:gap-1.5"
             onMouseLeave={() => setHoveredNav(null)}
           >
             {NAV_ITEMS.map((item) => {
@@ -230,47 +233,36 @@ export default function Header() {
                   key={item.href}
                   href={item.href}
                   onMouseEnter={() => setHoveredNav(item.href)}
-                  className={`relative px-3 py-1.5 text-[13.5px] xl:text-[14px] font-semibold transition-colors duration-200 z-10 select-none rounded-xl ${
-                    isHovered
+                  className={`relative px-2.5 py-1.5 xl:px-3 text-[13px] xl:text-[14px] font-semibold transition-colors duration-200 z-10 select-none rounded-xl whitespace-nowrap ${
+                    isActive
+                      ? "text-white"
+                      : isHovered
                       ? isDark
                         ? "text-white"
                         : "text-slate-950"
-                      : isActive
-                      ? isDark
-                        ? "text-[#AD5CFF]"
-                        : "text-[#7928CA]"
                       : isDark
                       ? "text-slate-300 hover:text-white"
                       : "text-slate-600 hover:text-slate-900"
                   }`}
                 >
-                  {/* Shared-Element Sliding Pill on Hover */}
-                  {isHovered && (
+                  {/* Active Solid Flat Purple Badge (AWS Builder Center language) */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="navActivePill"
+                      className="absolute inset-0 rounded-xl bg-[#AD5CFF] -z-10"
+                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                    />
+                  )}
+
+                  {/* Hover Flat Pill for Inactive Links */}
+                  {!isActive && isHovered && (
                     <motion.div
                       layoutId="navHoverPill"
                       className={`absolute inset-0 rounded-xl -z-10 ${
                         isDark
-                          ? "bg-white/[0.09] border border-white/[0.12] shadow-[0_0_16px_rgba(173,92,255,0.22)]"
-                          : "bg-purple-100/80 border border-purple-200/90 shadow-sm"
+                          ? "bg-white/[0.08] border border-white/[0.12]"
+                          : "bg-slate-100 border border-slate-200"
                       }`}
-                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
-                    />
-                  )}
-
-                  {/* Shared-Element Sliding Underline on Hover */}
-                  {isHovered && (
-                    <motion.div
-                      layoutId="navHoverUnderline"
-                      className="absolute bottom-0.5 left-2.5 right-2.5 h-[2px] rounded-full bg-gradient-to-r from-[#AD5CFF] via-[#D946EF] to-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.9)]"
-                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
-                    />
-                  )}
-
-                  {/* Active Indicator when not hovered */}
-                  {isActive && !hoveredNav && (
-                    <motion.div
-                      layoutId="navActiveIndicator"
-                      className="absolute bottom-0.5 left-2.5 right-2.5 h-[2px] rounded-full bg-[#AD5CFF] shadow-[0_0_6px_rgba(173,92,255,0.8)]"
                       transition={{ type: "spring", stiffness: 450, damping: 32 }}
                     />
                   )}
@@ -284,42 +276,33 @@ export default function Header() {
               <Link
                 href="/dashboard"
                 onMouseEnter={() => setHoveredNav("/dashboard")}
-                className={`relative px-3 py-1.5 text-[13.5px] xl:text-[14px] font-semibold transition-colors duration-200 z-10 select-none rounded-xl ${
-                  hoveredNav === "/dashboard"
+                className={`relative px-3 py-1.5 text-[13.5px] xl:text-[14px] font-semibold transition-colors duration-200 z-10 select-none rounded-xl whitespace-nowrap ${
+                  pathname === "/dashboard"
+                    ? "text-white"
+                    : hoveredNav === "/dashboard"
                     ? isDark
                       ? "text-white"
                       : "text-slate-950"
-                    : pathname === "/dashboard"
-                    ? isDark
-                      ? "text-[#AD5CFF]"
-                      : "text-[#7928CA]"
                     : isDark
                     ? "text-slate-300 hover:text-white"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
-                {hoveredNav === "/dashboard" && (
+                {pathname === "/dashboard" && (
+                  <motion.div
+                    layoutId="navActivePill"
+                    className="absolute inset-0 rounded-xl bg-[#AD5CFF] -z-10"
+                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                  />
+                )}
+                {pathname !== "/dashboard" && hoveredNav === "/dashboard" && (
                   <motion.div
                     layoutId="navHoverPill"
                     className={`absolute inset-0 rounded-xl -z-10 ${
                       isDark
-                        ? "bg-white/[0.09] border border-white/[0.12] shadow-[0_0_16px_rgba(173,92,255,0.22)]"
-                        : "bg-purple-100/80 border border-purple-200/90 shadow-sm"
+                        ? "bg-white/[0.08] border border-white/[0.12]"
+                        : "bg-slate-100 border border-slate-200"
                     }`}
-                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
-                  />
-                )}
-                {hoveredNav === "/dashboard" && (
-                  <motion.div
-                    layoutId="navHoverUnderline"
-                    className="absolute bottom-0.5 left-2.5 right-2.5 h-[2px] rounded-full bg-gradient-to-r from-[#AD5CFF] via-[#D946EF] to-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.9)]"
-                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
-                  />
-                )}
-                {pathname === "/dashboard" && !hoveredNav && (
-                  <motion.div
-                    layoutId="navActiveIndicator"
-                    className="absolute bottom-0.5 left-2.5 right-2.5 h-[2px] rounded-full bg-[#AD5CFF] shadow-[0_0_6px_rgba(173,92,255,0.8)]"
                     transition={{ type: "spring", stiffness: 450, damping: 32 }}
                   />
                 )}
@@ -328,13 +311,13 @@ export default function Header() {
             )}
           </nav>
 
-          {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* Desktop Actions - Flat simplicity, no neon glow */}
+          <div className="hidden lg:flex items-center gap-2 xl:gap-3">
             {userLoggedIn ? (
               <Button
                 onClick={handleLogout}
                 variant={isDark ? "outline" : "default"}
-                className={`rounded-xl transition-all duration-300 ${
+                className={`rounded-xl transition-all duration-200 px-3.5 py-1.5 xl:px-5 xl:py-2 text-xs xl:text-sm ${
                   isDark
                     ? "text-white border-slate-700 hover:bg-slate-800"
                     : "text-slate-900 border-slate-300 hover:bg-slate-100"
@@ -346,17 +329,17 @@ export default function Header() {
               <>
                 <Button
                   asChild
-                  className="bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold shadow-[0_4px_20px_rgba(173,92,255,0.4)] hover:shadow-[0_4px_28px_rgba(173,92,255,0.65)] border border-white/20 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] px-5 py-2 rounded-full text-sm"
+                  className="bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold border border-transparent transition-all duration-200 px-3.5 py-1.5 xl:px-5 xl:py-2 rounded-xl text-xs xl:text-sm"
                 >
                   <Link href="/join-us">Join Us</Link>
                 </Button>
                 <Button
                   asChild
                   variant="outline"
-                  className={`rounded-full transition-all duration-300 ${
+                  className={`rounded-xl transition-all duration-200 px-3.5 py-1.5 xl:px-5 xl:py-2 text-xs xl:text-sm ${
                     isDark
-                      ? "text-slate-200 hover:text-white border-slate-700/80 bg-slate-900/60 hover:bg-slate-800 hover:border-[#AD5CFF]/50"
-                      : "text-slate-800 hover:text-black border-slate-300 bg-white/90 hover:bg-slate-50 hover:border-purple-400 shadow-sm"
+                      ? "text-slate-200 hover:text-white border-slate-700/80 bg-slate-900/60 hover:bg-slate-800 hover:border-slate-500"
+                      : "text-slate-800 hover:text-black border-slate-300 bg-white hover:bg-slate-50 shadow-sm"
                   }`}
                 >
                   <Link href="/login">Login</Link>
@@ -398,6 +381,7 @@ export default function Header() {
                     href="/dashboard"
                     isDark={isDark}
                     isActive={pathname === "/dashboard"}
+                    iconName="wrench"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Dashboard
@@ -409,6 +393,7 @@ export default function Header() {
                     href={item.href}
                     isDark={isDark}
                     isActive={pathname === item.href}
+                    iconName={item.iconName}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {item.label}
@@ -424,7 +409,7 @@ export default function Header() {
                     <Button
                       onClick={handleLogout}
                       variant={isDark ? "outline" : "default"}
-                      className={`w-full max-w-xs rounded-xl transition-all duration-300 ${
+                      className={`w-full max-w-xs rounded-xl transition-all duration-200 ${
                         isDark ? "text-white border-slate-700 hover:bg-slate-800" : "text-slate-900 border-slate-300 hover:bg-slate-100"
                       }`}
                     >
@@ -434,7 +419,7 @@ export default function Header() {
                     <>
                       <Button
                         asChild
-                        className="bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold w-full max-w-xs rounded-full shadow-[0_4px_20px_rgba(173,92,255,0.4)]"
+                        className="bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold w-full max-w-xs rounded-xl border border-transparent transition-all duration-200 py-2.5"
                       >
                         <Link
                           href="/join-us"
@@ -446,17 +431,19 @@ export default function Header() {
                       <Button
                         asChild
                         variant="outline"
-                        className={`w-full max-w-xs rounded-full transition-all duration-300 ${
+                        className={`w-full max-w-xs rounded-xl transition-all duration-200 ${
                           isDark
-                            ? "text-slate-200 hover:text-white border-slate-700 bg-slate-900/60"
-                            : "text-slate-800 hover:text-black border-slate-300 bg-white/90 shadow-sm"
+                            ? "text-slate-200 hover:text-white border-slate-700 bg-slate-900/60 hover:bg-slate-800"
+                            : "text-slate-800 hover:text-black border-slate-300 bg-white shadow-sm"
                         }`}
                       >
                         <Link
                           href="/login"
                           onClick={() => setIsMobileMenuOpen(false)}
+                          className="inline-flex items-center justify-center gap-2"
                         >
-                          Login
+                          <IconBadge name="key" variant="secondary" size="xs" />
+                          <span>Login</span>
                         </Link>
                       </Button>
                     </>
@@ -474,25 +461,37 @@ export default function Header() {
 function MobileNavLink({
   href,
   children,
+  iconName,
   isDark = false,
   isActive = false,
   ...props
-}: React.ComponentPropsWithoutRef<typeof Link> & { isDark?: boolean; isActive?: boolean }) {
+}: React.ComponentPropsWithoutRef<typeof Link> & { 
+  iconName?: SbgIconName;
+  isDark?: boolean; 
+  isActive?: boolean;
+}) {
   return (
     <Link
       href={href}
-      className={`relative w-full text-center py-2 px-4 rounded-xl text-sm font-semibold transition-all duration-200 ${
+      className={`relative w-full flex items-center gap-3 py-2 px-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
         isActive
           ? isDark
-            ? "bg-[#AD5CFF]/15 text-[#AD5CFF] border border-[#AD5CFF]/30"
+            ? "bg-white/[0.08] text-white border border-white/[0.12]"
             : "bg-purple-50 text-[#7928CA] border border-purple-200"
           : isDark
-          ? "text-slate-200 hover:text-white hover:bg-white/5"
-          : "text-slate-700 hover:text-black hover:bg-slate-100"
+          ? "text-slate-200 hover:text-white hover:bg-white/5 border border-transparent"
+          : "text-slate-700 hover:text-black hover:bg-slate-100 border border-transparent"
       }`}
       {...props}
     >
-      {children}
+      {iconName && (
+        <IconBadge
+          name={iconName}
+          variant={isActive ? "primary" : "secondary"}
+          size="md"
+        />
+      )}
+      <span>{children}</span>
     </Link>
   );
 }

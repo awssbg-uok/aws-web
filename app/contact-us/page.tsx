@@ -154,7 +154,7 @@ export default function ContactUs() {
         </div>
       </section>
 
-      {/* FAQ Section */}
+      {/* Community Resources Callout */}
       <section className="py-20 bg-[var(--squid-ink-deep)] border-t border-white/[0.08] text-white relative">
         <div className="container mx-auto px-4 sm:px-6 text-center relative z-10">
           <motion.div
@@ -165,16 +165,16 @@ export default function ContactUs() {
             className="max-w-2xl mx-auto"
           >
             <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight text-white">
-              Still Have <span className="text-[#AD5CFF]">Questions?</span>
+              Looking to <span className="text-[#AD5CFF]">Get Involved?</span>
             </h2>
             <p className="text-base text-slate-400 mb-8 leading-relaxed">
-              Check out our comprehensive FAQ section or reach out directly across our official social channels.
+              Explore our builder learning resources, workshop pathways, and join our active student developer community.
             </p>
             <Link
-              href="/faq"
-              className="inline-flex items-center justify-center px-7 py-3 rounded-xl border border-[#AD5CFF]/40 bg-[#AD5CFF]/10 text-purple-200 hover:bg-[#AD5CFF] hover:text-white font-semibold transition-all duration-300 shadow-[0_0_20px_rgba(173,92,255,0.2)] hover:shadow-[0_0_25px_rgba(173,92,255,0.4)]"
+              href="/resources"
+              className="inline-flex items-center justify-center px-7 py-3 rounded-xl bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold transition-all duration-200"
             >
-              Visit FAQ Page
+              Explore Learning Resources
             </Link>
           </motion.div>
         </div>

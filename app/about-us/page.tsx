@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Cloud, Users, Zap, Award, Sparkles, ExternalLink } from "lucide-react";
+import { Sparkles, ExternalLink } from "lucide-react";
 import TeamSection from "@/components/team-section";
 import Link from "next/link";
+import { IconBadge, SbgIconName } from "@/components/icon-badge";
 
 export default function AboutUs() {
   const containerVariants = {
@@ -192,22 +193,22 @@ export default function AboutUs() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {[
               {
-                icon: Cloud,
+                iconName: "wrench" as SbgIconName,
                 title: "AWS Workshops",
                 description: "Hands-on technical sessions to master official AWS cloud services, architecture, and deployment patterns.",
               },
               {
-                icon: Users,
+                iconName: "teams" as SbgIconName,
                 title: "Networking",
                 description: "Connect with certified peers, alumni, AWS community heroes, and industry cloud architects.",
               },
               {
-                icon: Zap,
+                iconName: "bolt" as SbgIconName,
                 title: "Hackathons",
                 description: "Compete in builder hackathons to solve real-world industry problems using cutting-edge AWS technologies.",
               },
               {
-                icon: Award,
+                iconName: "trophy" as SbgIconName,
                 title: "Certifications",
                 description: "Guidance, study groups, and architectural reviews to help you earn recognized AWS certifications.",
               },
@@ -221,9 +222,12 @@ export default function AboutUs() {
               >
                 <div className="premium-card h-full p-6 sm:p-7 flex flex-col justify-between">
                   <div>
-                    <div className="w-14 h-14 rounded-2xl bg-[#AD5CFF]/15 border border-[#AD5CFF]/30 p-3.5 flex items-center justify-center mb-6 text-[#AD5CFF] shadow-[0_0_20px_rgba(173,92,255,0.25)]">
-                      <item.icon className="w-7 h-7" />
-                    </div>
+                    <IconBadge
+                      name={item.iconName}
+                      variant="primary"
+                      size="xl"
+                      className="mb-6"
+                    />
                     <h3 className="text-xl font-bold text-white tracking-tight mb-2.5">
                       {item.title}
                     </h3>

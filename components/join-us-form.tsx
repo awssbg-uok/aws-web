@@ -265,7 +265,7 @@ export default function JoinUsForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Section 1: Account Info */}
           <div className="flex items-center gap-3 pt-2 pb-1">
-            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF]" />
             <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
               Account Info
             </span>
@@ -281,7 +281,7 @@ export default function JoinUsForm() {
                 <FormControl>
                   <Input 
                     placeholder="e.g. John Doe" 
-                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                     {...field} 
                   />
                 </FormControl>
@@ -301,7 +301,7 @@ export default function JoinUsForm() {
                     <Input
                       type="email"
                       placeholder="john@example.com"
-                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                       {...field}
                     />
                   </FormControl>
@@ -321,7 +321,7 @@ export default function JoinUsForm() {
                         <Input
                           type={showPassword ? "text" : "password"}
                           placeholder="At least 8 characters"
-                          className="pr-10 h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                          className="pr-10 h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                           autoComplete="new-password"
                           {...field}
                         />
@@ -352,7 +352,7 @@ export default function JoinUsForm() {
 
           {/* Section 2: University Details */}
           <div className="flex items-center gap-3 pt-4 pb-1">
-            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF]" />
             <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
               University Details
             </span>
@@ -369,7 +369,7 @@ export default function JoinUsForm() {
                   <FormControl>
                     <Input 
                       placeholder="PS/2020/001" 
-                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                       {...field} 
                     />
                   </FormControl>
@@ -386,7 +386,7 @@ export default function JoinUsForm() {
                   <FormControl>
                     <Input 
                       placeholder="+94 7X XXX XXXX" 
-                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                       {...field} 
                     />
                   </FormControl>
@@ -408,7 +408,7 @@ export default function JoinUsForm() {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus:ring-2 focus:ring-[#AD5CFF]/50 focus:border-[#AD5CFF]/60 [&>span]:text-gray-300 transition-all duration-200">
+                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white focus:ring-0 focus:border-[#AD5CFF] shadow-none [&>span]:text-gray-300 transition-colors duration-200">
                         <SelectValue placeholder="Select Faculty" />
                       </SelectTrigger>
                     </FormControl>
@@ -449,7 +449,7 @@ export default function JoinUsForm() {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus:ring-2 focus:ring-[#AD5CFF]/50 focus:border-[#AD5CFF]/60 [&>span]:text-gray-300 transition-all duration-200">
+                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white focus:ring-0 focus:border-[#AD5CFF] shadow-none [&>span]:text-gray-300 transition-colors duration-200">
                         <SelectValue placeholder="Select Year" />
                       </SelectTrigger>
                     </FormControl>
@@ -468,7 +468,7 @@ export default function JoinUsForm() {
 
           {/* Section 3: Personal Info */}
           <div className="flex items-center gap-3 pt-4 pb-1">
-            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF]" />
             <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
               Personal Info
             </span>
@@ -484,7 +484,7 @@ export default function JoinUsForm() {
                 <FormControl>
                   <Input 
                     placeholder="Enter your home address" 
-                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                    className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                     {...field} 
                   />
                 </FormControl>
@@ -495,7 +495,7 @@ export default function JoinUsForm() {
 
           {/* Section 4: Emergency Contact */}
           <div className="flex items-center gap-3 pt-4 pb-1">
-            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF]" />
             <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
               Emergency Contact
             </span>
@@ -514,7 +514,7 @@ export default function JoinUsForm() {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus:ring-2 focus:ring-[#AD5CFF]/50 focus:border-[#AD5CFF]/60 [&>span]:text-gray-300 transition-all duration-200">
+                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white focus:ring-0 focus:border-[#AD5CFF] shadow-none [&>span]:text-gray-300 transition-colors duration-200">
                         <SelectValue placeholder="Select Person" />
                       </SelectTrigger>
                     </FormControl>
@@ -537,7 +537,7 @@ export default function JoinUsForm() {
                   <FormControl>
                     <Input 
                       placeholder="+94 7X XXX XXXX" 
-                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                       {...field} 
                     />
                   </FormControl>
@@ -549,7 +549,7 @@ export default function JoinUsForm() {
 
           {/* Section 5: Interests & Links */}
           <div className="flex items-center gap-3 pt-4 pb-1">
-            <div className="h-2 w-2 rounded-full bg-[#AD5CFF] shadow-[0_0_8px_rgba(173,92,255,0.8)]" />
+            <div className="h-2 w-2 rounded-full bg-[#AD5CFF]" />
             <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
               Interests & Links
             </span>
@@ -562,12 +562,12 @@ export default function JoinUsForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-gray-300 text-xs font-medium">
-                  Why do you want to join AWS Cloud Club UOK?
+                  Why do you want to join AWS Student Builder Group UOK?
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Tell us about your technical interests, cloud experience, and what you hope to achieve..."
-                    className="min-h-[110px] rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                    className="min-h-[110px] rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                     {...field}
                   />
                 </FormControl>
@@ -586,7 +586,7 @@ export default function JoinUsForm() {
                   <FormControl>
                     <Input
                       placeholder="https://linkedin.com/in/username"
-                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                       {...field}
                     />
                   </FormControl>
@@ -604,7 +604,7 @@ export default function JoinUsForm() {
                   <FormControl>
                     <Input 
                       placeholder="https://github.com/username" 
-                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-gray-500 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4),0_1px_0_rgba(255,255,255,0.06)] focus-visible:ring-2 focus-visible:ring-[#AD5CFF]/50 focus-visible:ring-offset-0 focus-visible:border-[#AD5CFF]/60 focus-visible:bg-white/[0.05] focus-visible:shadow-[0_0_16px_rgba(173,92,255,0.25),inset_0_1px_2px_rgba(0,0,0,0.5)] transition-all duration-200"
+                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                       {...field} 
                     />
                   </FormControl>
@@ -615,9 +615,7 @@ export default function JoinUsForm() {
           </div>
 
           {/* Solid Accent Purple Submit Button */}
-          <div className="pt-3 relative group">
-            {/* Ambient breathing underglow on hover */}
-            <div className="absolute -inset-1 bg-[#AD5CFF] rounded-2xl blur-lg opacity-25 group-hover:opacity-50 transition duration-300 pointer-events-none" />
+          <div className="pt-3">
             <motion.div
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
@@ -625,12 +623,9 @@ export default function JoinUsForm() {
             >
               <Button 
                 type="submit" 
-                className="relative overflow-hidden w-full rounded-xl bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold h-12 text-base shadow-[0_8px_25px_rgba(173,92,255,0.4),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-white/20 hover:shadow-[0_8px_32px_rgba(173,92,255,0.65),inset_0_1px_2px_rgba(255,255,255,0.5)] transition-all duration-200 cursor-pointer disabled:opacity-60"
+                className="w-full rounded-xl bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold h-12 text-base shadow-none border border-transparent transition-colors duration-200 cursor-pointer disabled:opacity-60"
                 disabled={isSubmitting}
               >
-                {/* 3D Glass Light Sweep */}
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none transition-transform" />
-                
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />

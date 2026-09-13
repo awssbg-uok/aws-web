@@ -185,7 +185,7 @@ export default function Resources() {
               <Button
                 asChild
                 size="lg"
-                className="rounded-full bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold px-8 h-12 shadow-[0_8px_25px_rgba(173,92,255,0.45),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-white/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="rounded-full bg-[#AD5CFF] hover:bg-[#9d4eed] text-white font-bold px-8 h-12 shadow-none border border-transparent transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Link href="/join-us">
                   Become a Member
