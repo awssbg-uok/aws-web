@@ -141,7 +141,7 @@ const ResetPasswordPage: React.FC = () => {
                   required
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
-                  placeholder="Re-enter your new password"
+                  placeholder="Reenter your new password"
                   className="h-11 pr-11 rounded-xl bg-white/[0.04] hover:bg-white/[0.06] border border-white/[0.12] text-white placeholder:text-slate-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
                 />
                 <Button

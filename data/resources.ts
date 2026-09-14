@@ -22,7 +22,7 @@ export const resources = {
       },
       {
         title: "Video Tutorials",
-        description: "Watch step-by-step AWS service tutorials",
+        description: "Watch step by step AWS service tutorials",
         icon: Video,
         link: "https://www.youtube.com/channel/UCd6MoB9NC6uYN2grvUNT-Zg"
       }

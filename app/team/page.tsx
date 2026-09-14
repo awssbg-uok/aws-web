@@ -95,7 +95,7 @@ export default function TeamPage() {
             transition={{ duration: 0.5, delay: 0.16 }}
             className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed"
           >
-            Meet the student cloud builders, architects, and coordinators steering our active community, hands-on workshops, and AWS initiatives at University of Kelaniya.
+            Meet the student cloud builders, architects, and coordinators steering our active community, hands on workshops, and AWS initiatives at University of Kelaniya.
           </motion.p>
 
           {/* Filter Tabs matching homepage team styling */}

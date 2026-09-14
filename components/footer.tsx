@@ -39,7 +39,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-sm text-slate-400 max-w-md leading-relaxed pr-2">
-              Empowering students and builders at University of Kelaniya through hands-on cloud architectures, workshops, and real-world AWS projects.
+              Empowering students and builders at University of Kelaniya through hands on cloud architectures, workshops, and real world AWS projects.
             </p>
           </div>
 

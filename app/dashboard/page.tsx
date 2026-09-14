@@ -343,7 +343,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-2.5 mb-2">
                 <IconBadge name="bolt" variant="secondary" size="xs" />
                 <h3 className="text-lg font-bold text-white tracking-tight font-ember">
-                  Stay Event-Ready
+                  Stay Event Ready
                 </h3>
               </div>
               <p className="text-sm text-slate-300 leading-relaxed">

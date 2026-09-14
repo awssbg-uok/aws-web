@@ -156,7 +156,7 @@ export default function HeroSection() {
 
               {/* Description */}
               <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl font-normal mb-8">
-                Learn AWS by building real systems. Explore generative AI with Amazon Bedrock, architect serverless cloud infrastructure, and launch production-grade projects with the student developer community at the University of Kelaniya.
+                Learn AWS by building real systems. Explore generative AI with Amazon Bedrock, architect serverless cloud infrastructure, and launch production grade projects with the student developer community at the University of Kelaniya.
               </p>
             </div>
 

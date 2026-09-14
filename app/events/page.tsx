@@ -55,7 +55,7 @@ export default function Events() {
             </span>
           </h1>
           <p className="mt-4 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Join us for hands-on workshops, architecture deep dives, hackathons, and networking sessions. Join our{" "}
+            Join us for hands on workshops, architecture deep dives, hackathons, and networking sessions. Join our{" "}
             <Link
               href="https://www.meetup.com/aws-cloud-club-at-university-of-kelaniya/"
               className="text-[#AD5CFF] hover:text-[#c084fc] font-semibold underline underline-offset-4 decoration-[#AD5CFF]/50 transition-colors"
@@ -159,7 +159,7 @@ export default function Events() {
             Missed a Previous Session?
           </h2>
           <p className="text-sm sm:text-base text-slate-400 mb-5 leading-relaxed">
-            Recordings, technical slide decks, and code walk-throughs from past workshops are archived on our official YouTube channel.
+            Recordings, technical slide decks, and code walk throughs from past workshops are archived on our official YouTube channel.
           </p>
           <Button
             asChild

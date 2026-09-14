@@ -51,7 +51,7 @@ export default function JoinUs() {
             Join AWS Student Builder Group <span className="text-[#AD5CFF]">UOK</span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto font-normal">
-            Take your first step towards becoming a cloud computing practitioner and industry-ready architect.
+            Take your first step towards becoming a cloud computing practitioner and industry ready architect.
           </p>
         </motion.div>
 
@@ -77,7 +77,7 @@ export default function JoinUs() {
                   Cloud builders by night.
                 </h2>
                 <p className="text-sm sm:text-base text-gray-300/90 leading-relaxed font-normal mb-8">
-                  Fostering an active ecosystem of student cloud builders at the University of Kelaniya — turning fundamental concepts into hands-on cloud deployments and production-grade architectures.
+                  Fostering an active ecosystem of student cloud builders at the University of Kelaniya — turning fundamental concepts into hands on cloud deployments and production grade architectures.
                 </p>
 
                 {/* Stat Counters with 3D Dividers */}
@@ -91,7 +91,7 @@ export default function JoinUs() {
                   <div className="space-y-1 border-l border-white/[0.08] pl-4">
                     <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-ember">20+</div>
                     <div className="text-[11px] font-semibold tracking-wider text-gray-400 uppercase">
-                      Hands-on Sessions
+                      Hands on Sessions
                     </div>
                   </div>
                 </div>

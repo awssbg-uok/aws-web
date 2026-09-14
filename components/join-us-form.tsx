@@ -232,7 +232,7 @@ export default function JoinUsForm() {
             <div className="pointer-events-none absolute -top-12 -right-12 w-32 h-32 bg-rose-500/15 rounded-full blur-2xl" />
             <h3 className="font-bold text-lg text-white">Join our Meetup Group</h3>
             <p className="text-sm text-gray-400">
-              We track RSVP to our upcoming in-person and virtual events on
+              We track RSVP to our upcoming in person and virtual events on
               Meetup. All members must join the Meetup group to attend our
               events and stay updated.
             </p>

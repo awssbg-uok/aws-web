@@ -54,7 +54,7 @@ export default function Resources() {
             </span>
           </h1>
           <p className="mt-4 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            Access our curated collection of AWS documentation, hands-on tutorials, official whitepapers, and cloud architecture tools.
+            Access our curated collection of AWS documentation, hands on tutorials, official whitepapers, and cloud architecture tools.
           </p>
         </motion.div>
 

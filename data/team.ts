@@ -25,7 +25,7 @@ export const teamMembers: TeamMember[] = [
     bio: "Passionate about cloud architecture and student leadership, driving cloud computing innovation across University of Kelaniya.",
     responsibilities: [
       "Provides overall vision and strategic direction",
-      "Represents the group in high-level university and external engagements",
+      "Represents the group in high level university and external engagements",
       "Oversees major decisions and approvals",
       "Leads execution of all ongoing activities",
     ],
@@ -78,7 +78,7 @@ export const teamMembers: TeamMember[] = [
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     responsibilities: [
-      "Handles day-to-day financial tracking (income/expenses)",
+      "Handles day to day financial tracking (income/expenses)",
       "Maintains transaction records and reports",
       "Prepares event budgets and cost breakdowns",
       "Assists in sponsorship fund management",
@@ -100,7 +100,7 @@ export const teamMembers: TeamMember[] = [
       "Builds partnerships with organizations and sponsors",
       "Oversees and grows the group's social media presence",
       "Plans and schedules posts using a PR tracker",
-      "Coordinates with Designing Head and Content Writing Head to deliver timely, high-quality content",
+      "Coordinates with Designing Head and Content Writing Head to deliver timely, high quality content",
     ],
     links: {
       linkedin: "https://linkedin.com",
@@ -135,7 +135,7 @@ export const teamMembers: TeamMember[] = [
     github: "https://github.com",
     responsibilities: [
       "Steps in for secretary when required",
-      "Manages meeting schedules, notes, and follow-ups",
+      "Manages meeting schedules, notes, and follow ups",
       "Handles internal communications and updates",
       "Tracks tasks and ensures completion across teams",
     ],
@@ -151,7 +151,7 @@ export const teamMembers: TeamMember[] = [
     category: "Leads & Coordinators",
     linkedin: "https://www.linkedin.com/in/isharakashohan/",
     github: "https://github.com/shohan-001",
-    bio: "Electronics and Computer Science student passionate about technologies that shape the future — especially AI, embedded systems, IoT, cloud computing, and cybersecurity. Enjoys exploring how these fields intersect to solve real-world problems in smart and secure ways, mixing hands-on engineering with innovative thinking while guiding technical initiatives and platforms for the AWS Student Builder Group.",
+    bio: "Electronics and Computer Science student passionate about technologies that shape the future — especially AI, embedded systems, IoT, cloud computing, and cybersecurity. Enjoys exploring how these fields intersect to solve real world problems in smart and secure ways, mixing hands on engineering with innovative thinking while guiding technical initiatives and platforms for the AWS Student Builder Group.",
     responsibilities: [
       "Guides team on technical implementation",
       "Manages and maintains the official website of the community",
@@ -208,7 +208,7 @@ export const teamMembers: TeamMember[] = [
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     responsibilities: [
-      "Handles day-to-day financial tracking (income/expenses)",
+      "Handles day to day financial tracking (income/expenses)",
       "Maintains transaction records and reports",
       "Prepares event budgets and cost breakdowns",
       "Assists in sponsorship fund management",

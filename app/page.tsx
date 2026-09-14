@@ -41,7 +41,7 @@ export default function Home() {
               Why Join AWS Student Builder Group?
             </h2>
             <p className="mt-4 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-              Accelerate your cloud career through hands-on architectures, mentorship from industry experts, and a thriving community of student developers.
+              Accelerate your cloud career through hands on architectures, mentorship from industry experts, and a thriving community of student developers.
             </p>
           </motion.div>
 
@@ -51,7 +51,7 @@ export default function Home() {
                 iconName: "drop" as SbgIconName,
                 title: "Learn AWS Services",
                 description:
-                  "Get hands-on experience building scalable applications with Serverless, Bedrock, DynamoDB, and ECS.",
+                  "Get hands on experience building scalable applications with Serverless, Bedrock, DynamoDB, and ECS.",
                 delay: 0.1,
               },
               {
@@ -137,7 +137,7 @@ export default function Home() {
                 {[
                   {
                     iconName: "clock" as SbgIconName,
-                    text: "Organizing and leading AWS-focused technical events",
+                    text: "Organizing and leading AWS focused technical events",
                   },
                   {
                     iconName: "teams" as SbgIconName,
@@ -145,7 +145,7 @@ export default function Home() {
                   },
                   {
                     iconName: "wrench" as SbgIconName,
-                    text: "Gaining hands-on experience building on AWS infrastructure",
+                    text: "Gaining hands on experience building on AWS infrastructure",
                   },
                   {
                     iconName: "trophy" as SbgIconName,

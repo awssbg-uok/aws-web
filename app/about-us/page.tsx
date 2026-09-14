@@ -119,7 +119,7 @@ export default function AboutUs() {
                   </h2>
                 </div>
                 <p className="text-slate-300 text-base sm:text-lg leading-relaxed pl-4 border-l border-white/[0.08]">
-                  To become the premier student-driven community advancing Cloud Computing education, hands-on architectural design, and technology leadership in Sri Lanka.
+                  To become the premier student driven community advancing Cloud Computing education, hands on architectural design, and technology leadership in Sri Lanka.
                 </p>
               </div>
 
@@ -133,7 +133,7 @@ export default function AboutUs() {
                 </div>
                 <div className="text-slate-300 text-base sm:text-lg leading-relaxed space-y-4 pl-4 border-l border-white/[0.08]">
                   <p>
-                    The AWS Student Builder Group at the University of Kelaniya is dedicated to fostering a collaborative ecosystem of cloud builders. We equip students with in-demand cloud skills through industry-relevant events, hands-on workshops, competitive hackathons, and technical publications.
+                    The AWS Student Builder Group at the University of Kelaniya is dedicated to fostering a collaborative ecosystem of cloud builders. We equip students with in demand cloud skills through industry relevant events, hands on workshops, competitive hackathons, and technical publications.
                   </p>
                   <p className="text-sm sm:text-base text-slate-400">
                     Through practical experience, we bridge the gap between academic theory and production cloud environments. To learn more about official student builder initiatives, visit{" "}
@@ -195,7 +195,7 @@ export default function AboutUs() {
               {
                 iconName: "wrench" as SbgIconName,
                 title: "AWS Workshops",
-                description: "Hands-on technical sessions to master official AWS cloud services, architecture, and deployment patterns.",
+                description: "Hands on technical sessions to master official AWS cloud services, architecture, and deployment patterns.",
               },
               {
                 iconName: "teams" as SbgIconName,
@@ -205,7 +205,7 @@ export default function AboutUs() {
               {
                 iconName: "bolt" as SbgIconName,
                 title: "Hackathons",
-                description: "Compete in builder hackathons to solve real-world industry problems using cutting-edge AWS technologies.",
+                description: "Compete in builder hackathons to solve real world industry problems using cutting edge AWS technologies.",
               },
               {
                 iconName: "trophy" as SbgIconName,

@@ -22,7 +22,7 @@ export const events: Event[] = [
     time: "8 am - 6 pm",
     location: "A8 Auditorium, Faculty of Science,University of Kelaniya",
     description:
-      "Get ready for the first AWS Student Community Day in Sri Lanka. Join us for a day filled with insightful sessions, hands-on workshops, and networking opportunities with AWS experts and fellow cloud enthusiasts.",
+      "Get ready for the first AWS Student Community Day in Sri Lanka. Join us for a day filled with insightful sessions, hands on workshops, and networking opportunities with AWS experts and fellow cloud enthusiasts.",
     image: "/event-1.png",
     category: "Conference",
     status: "ended",
