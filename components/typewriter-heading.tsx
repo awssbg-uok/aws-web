@@ -39,7 +39,8 @@ export default function TypewriterHeading() {
 
   const displayedText = FULL_TEXT.slice(0, charCount);
   const ifPart = displayedText.slice(0, 2);
-  const restPart = displayedText.slice(2);
+  const restPart = displayedText.slice(2).trimStart();
+  const hasSpace = charCount >= 3;
 
   return (
     <div
@@ -55,7 +56,9 @@ export default function TypewriterHeading() {
 
       {/* Rendered Animated Typing Layer */}
       <div className="absolute inset-0 px-3 py-1.5 flex items-center" aria-hidden="true">
-        <span className="text-[#AD5CFF] font-semibold">{ifPart}</span>
+        <span className={`text-[#AD5CFF] font-semibold ${hasSpace ? "mr-[1ch]" : ""}`}>
+          {ifPart}
+        </span>
         <span className="text-[#e2e8f0]">{restPart}</span>
         <span
           className={`inline-block w-[2px] h-[1.15em] ml-1 bg-[#AD5CFF] transition-opacity duration-100 ${
