@@ -65,7 +65,7 @@ export default function ContactUs() {
       {/* Contact Information Cards */}
       <section className="py-16 sm:py-20 relative bg-[var(--squid-ink-deep)]">
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto">
             {contacts.map((item, index) => (
               <motion.div
                 key={index}
