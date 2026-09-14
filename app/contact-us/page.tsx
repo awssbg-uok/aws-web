@@ -27,7 +27,7 @@ export default function ContactUs() {
       <section className="relative pt-32 pb-20 sm:pt-36 sm:pb-24 flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/contact-us-hero.jpg"
+            src="/contact-us-hero-purple.jpg"
             alt="Contact Us"
             fill
             sizes="100vw"
