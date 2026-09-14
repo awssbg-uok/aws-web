@@ -51,11 +51,12 @@ export default function AboutUs() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <Image
             src="/about-us-background.jpg"
             alt="About Us background"
             fill
+            style={{ objectFit: "cover", transform: "translateY(-90px) scale(1.2)" }}
             className="object-cover opacity-25"
             quality={90}
             priority
