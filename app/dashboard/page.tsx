@@ -105,9 +105,23 @@ export default function Dashboard() {
       })
     : "Recently";
 
-  // Find next upcoming event or fallback to the first event
-  const nextEvent =
-    events.find((e) => e.status !== "ended" && e.status !== "past") || events[0];
+  // Filter for events strictly after today's date, sorted ascending
+  const now = new Date();
+  const upcomingEvents = events
+    .map((e) => ({
+      ...e,
+      parsedDate: new Date(e.date),
+    }))
+    .filter(
+      (e) =>
+        !isNaN(e.parsedDate.getTime()) &&
+        e.parsedDate > now &&
+        e.status !== "ended" &&
+        e.status !== "past"
+    )
+    .sort((a, b) => a.parsedDate.getTime() - b.parsedDate.getTime());
+
+  const nextEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
 
   return (
     <div className="relative isolate min-h-screen overflow-hidden bg-[var(--squid-ink-deep)] pt-28 pb-20 text-slate-100">
@@ -146,7 +160,7 @@ export default function Dashboard() {
             links below to stay connected with AWS Student Builder Group UOK.
           </p>
 
-          {/* Prominent Next Event Highlight */}
+          {/* Prominent Next Event Highlight (Hidden if no upcoming events exist) */}
           {nextEvent && (
             <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.08] bg-[#0c1220]/80 p-4 backdrop-blur-md">
               <div className="flex items-center gap-3">
@@ -203,16 +217,16 @@ export default function Dashboard() {
 
               {/* Clean, Uniform 2-Column Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15">
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[96px] flex flex-col justify-between">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
                     Full Name
                   </p>
-                  <p className="mt-1.5 text-base font-semibold text-white truncate">
+                  <p className="mt-1.5 text-base font-semibold text-white leading-snug break-words">
                     {user.fullName}
                   </p>
                 </article>
 
-                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15">
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[96px] flex flex-col justify-between">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
                     Student Number
                   </p>
@@ -221,25 +235,27 @@ export default function Dashboard() {
                   </p>
                 </article>
 
-                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15">
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[96px] flex flex-col justify-between">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
                     Email Address
                   </p>
-                  <p className="mt-1.5 text-base font-semibold text-white break-all">
+                  <p className="mt-1.5 text-sm sm:text-[15px] font-semibold text-white leading-snug break-words [word-break:break-word] [overflow-wrap:break-word]">
                     {user.email}
                   </p>
                 </article>
 
-                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15">
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[96px] flex flex-col justify-between">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
                     Member Since
                   </p>
-                  <p className="mt-1.5 text-base font-semibold text-white">
-                    Member for {memberDays} {memberDays === 1 ? "day" : "days"}
-                  </p>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Joined {formattedMemberSince}
-                  </p>
+                  <div>
+                    <p className="mt-1.5 text-base font-semibold text-white">
+                      Member for {memberDays} {memberDays === 1 ? "day" : "days"}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Joined {formattedMemberSince}
+                    </p>
+                  </div>
                 </article>
               </div>
             </div>
