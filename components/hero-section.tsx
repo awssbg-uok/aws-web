@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar } from "lucide-react";
 import { IconBadge, SbgIcon } from "@/components/icon-badge";
+import { QRCodeSVG } from "qrcode.react";
 
 export const ACCENT_PURPLE = "#AD5CFF";
 
@@ -58,9 +59,9 @@ export default function HeroSection() {
     >
       {/* Background Grid Mesh - Zero Neon Glows */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.55] purple-grid-mesh [mask-image:radial-gradient(ellipse_85%_70%_at_50%_35%,black_70%,transparent_100%)]" />
+        <div className="absolute inset-0 opacity-[0.55] purple-grid-mesh [mask-image:radial-gradient(ellipse_80%_48%_at_50%_28%,black_30%,transparent_100%)]" />
         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[var(--squid-ink-deep)] to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--squid-ink-deep)] to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-72 bg-gradient-to-t from-[var(--squid-ink-deep)] via-[var(--squid-ink-deep)] to-transparent" />
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
@@ -86,36 +87,47 @@ export default function HeroSection() {
                 </div>
                 <div className="flex items-center gap-1.5 text-xs font-ember-mono text-[#00E582] font-semibold">
                   <span className="w-2 h-2 rounded-full bg-[#00E582]" />
-                  <span>Live Sandbox Open</span>
+                  <span>Official Meetup Group</span>
                 </div>
               </div>
 
-              {/* Main Content: 2-Column Split (Copy + Large Mascot Illustration) */}
+              {/* Main Content: 2-Column Split (Copy + Scannable Meetup QR Code) */}
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center my-6">
                 <div className="sm:col-span-7 space-y-4 text-left">
                   <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug font-ember">
-                    Weekend Challenge: Deploy your first app on AWS
+                    Join our Meetup community
                   </h2>
                   <p className="text-sm text-slate-300 leading-relaxed font-normal">
-                    Join our weekly serverless sprint. Build real solutions on AWS free sandbox environments with campus mentors. Enter to earn Builder XP and AWS credits.
+                    RSVP to upcoming cloud workshops, architecture hackathons, and technical sessions via our official Meetup group. Connect with student builders across campus.
                   </p>
                   <div className="pt-2 flex flex-wrap items-center gap-4 select-none">
                     <Button
                       asChild
                       className="bg-white hover:bg-slate-100 text-black font-bold text-sm px-6 py-2.5 rounded-xl transition-all shadow-none border-0"
                     >
-                      <Link href="/join-us">Get started</Link>
+                      <a
+                        href="https://www.meetup.com/aws-sbg-at-university-of-kelaniya/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Join on Meetup
+                      </a>
                     </Button>
                     <span className="text-xs font-ember-mono text-slate-400 tracking-wide font-medium">
-                      Win $100 AWS credits
+                      Scan or click to RSVP
                     </span>
                   </div>
                 </div>
 
-                {/* Right: Dedicated Mascot Focal Container */}
+                {/* Right: Dedicated Scannable QR Code Container */}
                 <div className="sm:col-span-5 flex justify-center sm:justify-end">
-                  <div className="w-full max-w-[200px] aspect-square rounded-2xl bg-[#080d18] border border-white/[0.08] p-4 flex items-center justify-center select-none">
-                    <BuilderMascotFocal className="w-32 h-32" />
+                  <div className="w-full max-w-[170px] aspect-square rounded-2xl bg-white p-3.5 flex flex-col items-center justify-center select-none shadow-xl border border-white/20">
+                    <QRCodeSVG
+                      value="https://www.meetup.com/aws-sbg-at-university-of-kelaniya/"
+                      size={142}
+                      level="H"
+                      className="w-full h-full"
+                    />
                   </div>
                 </div>
               </div>
@@ -212,78 +224,6 @@ export default function HeroSection() {
             </div>
           </motion.div>
         </div>
-
-        {/* BOTTOM BAR: Builder Pathways & Stats Row */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="rounded-2xl bg-[#0c1220]/90 border border-white/[0.12] p-4 sm:p-5 mt-6 sm:mt-8 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-xl"
-        >
-          {/* Left: Builder Pathways */}
-          <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-            <div className="flex items-center gap-3 select-none mr-2">
-              <span className="text-[11px] font-ember-mono font-bold uppercase tracking-wider text-slate-400">
-                BUILDER PATHWAYS
-              </span>
-              <Link
-                href="/resources"
-                className="text-xs font-ember-mono text-[#AD5CFF] hover:underline font-semibold"
-              >
-                View all 4 tracks &rarr;
-              </Link>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2 select-none">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#131b2e]/80 border border-white/[0.10] text-xs font-medium text-slate-200">
-                <IconBadge name="wrench" variant="primary" size="xs" />
-                <span>Learning</span>
-              </div>
-
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#131b2e]/80 border border-white/[0.10] text-xs font-medium text-slate-200">
-                <IconBadge name="teams" variant="secondary" size="xs" />
-                <span>Community</span>
-              </div>
-
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#131b2e]/80 border border-white/[0.10] text-xs font-medium text-slate-200">
-                <IconBadge name="ladder" variant="secondary" size="xs" />
-                <span>Career</span>
-              </div>
-
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#131b2e]/80 border border-white/[0.10] text-xs font-medium text-slate-200">
-                <IconBadge name="trophy" variant="secondary" size="xs" />
-                <span>Awards</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: Stats Counter */}
-          <div className="flex flex-wrap items-center gap-6 sm:gap-8 justify-start lg:justify-end w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-white/[0.08] select-none">
-            <div className="flex items-center gap-2.5">
-              <IconBadge name="teams" variant="secondary" size="sm" />
-              <div className="text-left">
-                <div className="text-sm font-bold text-white leading-tight font-ember">500+</div>
-                <div className="text-[11px] text-slate-400 leading-tight">Student builders</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <IconBadge name="wrench" variant="secondary" size="sm" />
-              <div className="text-left">
-                <div className="text-sm font-bold text-white leading-tight font-ember">15+</div>
-                <div className="text-[11px] text-slate-400 leading-tight">Cloud projects</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <IconBadge name="trophy" variant="secondary" size="sm" />
-              <div className="text-left">
-                <div className="text-sm font-bold text-white leading-tight font-ember">50+</div>
-                <div className="text-[11px] text-slate-400 leading-tight">AWS certified</div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
