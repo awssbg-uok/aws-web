@@ -46,17 +46,18 @@ export default function TypewriterHeading() {
     <div
       role="text"
       aria-label={FULL_TEXT}
-      className="relative inline-flex items-center px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] font-ember-mono text-xs sm:text-sm font-medium w-fit select-none"
+      className="relative inline-flex items-center px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] font-ember-mono text-xs sm:text-sm font-medium w-fit select-none whitespace-nowrap"
     >
       {/* Reserved Layout Ghost: Prevents width/height layout shift while typing */}
-      <span className="invisible pointer-events-none flex items-center" aria-hidden="true">
-        <span>{FULL_TEXT}</span>
+      <span className="invisible pointer-events-none flex items-center whitespace-nowrap leading-none" aria-hidden="true">
+        <span className="font-semibold mr-1">if</span>
+        <span>learning: build_with_aws()</span>
         <span className="inline-block w-[2px] h-[1.15em] ml-1 bg-transparent" />
       </span>
 
       {/* Rendered Animated Typing Layer */}
-      <div className="absolute inset-0 px-3 py-1.5 flex items-center" aria-hidden="true">
-        <span className={`text-[#AD5CFF] font-semibold ${hasSpace ? "mr-[1ch]" : ""}`}>
+      <div className="absolute inset-0 px-3 py-1.5 flex items-center whitespace-nowrap leading-none" aria-hidden="true">
+        <span className={`text-[#AD5CFF] font-semibold ${hasSpace ? "mr-1" : ""}`}>
           {ifPart}
         </span>
         <span className="text-[#e2e8f0]">{restPart}</span>
