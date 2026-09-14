@@ -42,12 +42,6 @@ const formSchema = z.object({
     .string()
     .min(10, { message: "Contact number is requirred." }),
   address: z.string().min(10, { message: "Address is requirred." }),
-  emergencyContactPerson: z
-    .string()
-    .min(1, { message: "Person is requirred." }),
-  emergencyContactNumber: z
-    .string()
-    .min(10, { message: "Contact number is requirred." }),
   interests: z.string().min(10, {
     message: "Please tell us about your interests (min 10 characters).",
   }),
@@ -96,8 +90,6 @@ export default function JoinUsForm() {
       year: "",
       contactNumber: "",
       address: "",
-      emergencyContactPerson: "",
-      emergencyContactNumber: "",
       interests: "",
       linkedin: "",
       github: "",
@@ -493,61 +485,7 @@ export default function JoinUsForm() {
             )}
           />
 
-          {/* Section 4: Emergency Contact */}
-          <div className="flex items-center gap-3 pt-4 pb-1">
-            <div className="h-2 w-2 rounded-full bg-[#AD5CFF]" />
-            <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
-              Emergency Contact
-            </span>
-            <div className="flex-1 h-px bg-gradient-to-r from-white/[0.12] via-white/[0.04] to-transparent"></div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <FormField
-              control={form.control}
-              name="emergencyContactPerson"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-300 text-xs font-medium">Contact Person</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white focus:ring-0 focus:border-[#AD5CFF] shadow-none [&>span]:text-gray-300 transition-colors duration-200">
-                        <SelectValue placeholder="Select Person" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="rounded-xl border border-white/[0.12] bg-[#0c1220]/95 backdrop-blur-xl shadow-[0_15px_35px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)]">
-                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="Mother">Mother</SelectItem>
-                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="Father">Father</SelectItem>
-                      <SelectItem className="rounded-lg text-gray-200 hover:text-white focus:bg-[#AD5CFF]/20 focus:text-white transition-colors cursor-pointer" value="Guardian">Guardian</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="emergencyContactNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-gray-300 text-xs font-medium">Emergency Phone Number</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="+94 7X XXX XXXX" 
-                      className="h-11 rounded-xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/[0.12] text-white placeholder:text-gray-500 focus-visible:border-[#AD5CFF] shadow-none transition-colors duration-200"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {/* Section 5: Interests & Links */}
+          {/* Section 4: Interests & Links */}
           <div className="flex items-center gap-3 pt-4 pb-1">
             <div className="h-2 w-2 rounded-full bg-[#AD5CFF]" />
             <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gray-200 to-gray-400 bg-clip-text text-transparent">
