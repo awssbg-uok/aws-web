@@ -1,4 +1,20 @@
-export const events = [
+export type EventStatus = "open" | "closed" | "opening-soon" | "ended" | "past";
+
+export interface Event {
+  id: number;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  description: string;
+  image: string;
+  category: string;
+  status: EventStatus;
+  registrationLink: string;
+  registrationLinkText: string;
+}
+
+export const events: Event[] = [
   {
     id: 1,
     title: "AWS Student Community Day Sri Lanka 2026",
@@ -9,8 +25,9 @@ export const events = [
       "Get ready for the first AWS Student Community Day in Sri Lanka. Join us for a day filled with insightful sessions, hands-on workshops, and networking opportunities with AWS experts and fellow cloud enthusiasts.",
     image: "/event-1.png",
     category: "Conference",
+    status: "ended",
     registrationLink: "#",
-    registrationLinkText: "Registrations Closed",
+    registrationLinkText: "Event Ended",
   },
   {
     id: 2,
@@ -22,7 +39,8 @@ export const events = [
       "Join us for our annual general meeting where we'll discuss the year's achievements, plan for the coming year, and elect the new board members.",
     image: "/event-2.png",
     category: "Meeting",
+    status: "ended",
     registrationLink: "#",
-    registrationLinkText: "Registrations Opening Soon",
+    registrationLinkText: "Event Ended",
   },
 ];

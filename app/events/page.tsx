@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar, MapPin, Clock, ArrowRight, Sparkles, Youtube } from "lucide-react";
+import { Calendar, MapPin, Clock, ArrowRight, Sparkles, Youtube, Check } from "lucide-react";
 import { events } from "@/data/events";
 
 export default function Events() {
@@ -119,15 +119,25 @@ export default function Events() {
                   <CardDescription className="text-sm text-slate-400 mb-6 leading-relaxed">
                     {event.description}
                   </CardDescription>
-                  <Button
-                    asChild
-                    className="w-full rounded-full border border-[#AD5CFF]/40 bg-[#AD5CFF]/15 text-[#E0AAFF] hover:bg-[#AD5CFF] hover:text-white transition-all shadow-none font-semibold h-11"
-                  >
-                    <Link href={event.registrationLink}>
-                      {event.registrationLinkText}
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
+                  {event.status === "ended" || event.status === "past" ? (
+                    <Button
+                      disabled
+                      className="w-full rounded-full border border-white/10 bg-white/[0.04] text-slate-400 cursor-not-allowed shadow-none font-semibold h-11 disabled:opacity-100"
+                    >
+                      Event Ended
+                      <Check className="ml-2 h-4 w-4 text-slate-400" />
+                    </Button>
+                  ) : (
+                    <Button
+                      asChild
+                      className="w-full rounded-full border border-[#AD5CFF]/40 bg-[#AD5CFF]/15 text-[#E0AAFF] hover:bg-[#AD5CFF] hover:text-white transition-all shadow-none font-semibold h-11"
+                    >
+                      <Link href={event.registrationLink}>
+                        {event.registrationLinkText}
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  )}
                 </CardContent>
               </div>
             </motion.div>
