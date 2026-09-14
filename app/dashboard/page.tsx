@@ -65,18 +65,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     setGreeting(getTimeGreeting());
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("preview") === "true") {
-      setUser({
-        fullName: "E.Isharaka Shohan Weerasinghe",
-        email: "isharakashohan2003@gmail.com",
-        studentID: "PS/2022/104",
-        membershipStatus: "active",
-        memberSince: "2025-02-15T00:00:00.000Z",
-      });
-      return;
-    }
-
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
