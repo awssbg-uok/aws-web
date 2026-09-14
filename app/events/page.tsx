@@ -157,7 +157,7 @@ export default function Events() {
             className="rounded-full border border-white/15 bg-white/[0.03] text-slate-200 hover:text-white hover:bg-white/[0.08] hover:border-red-500/50 transition-all font-semibold px-6"
           >
             <Link
-              href="https://youtube.com/@awscloudclubkelaniya?si=iIQeppQfq_Hd2fNM"
+              href="https://www.youtube.com/@AWSSBG_UOK"
               target="_blank"
             >
               Visit YouTube Channel
