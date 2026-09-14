@@ -72,100 +72,61 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="rounded-3xl bg-[#0c1220] border border-white/[0.12] p-6 sm:p-8 flex flex-col justify-between shadow-xl"
+            className="rounded-3xl bg-[#0c1220] border border-white/[0.12] p-6 sm:p-8 flex flex-col shadow-xl"
           >
-            <div>
-              {/* Metadata Row */}
-              <div className="flex flex-wrap items-center justify-between gap-3 select-none pb-4 border-b border-white/[0.06]">
-                <div className="flex items-center gap-2.5">
-                  <span className="bg-[#AD5CFF] text-white text-[11px] font-ember-mono font-bold px-2.5 py-1 rounded-md tracking-wider uppercase">
-                    BUILDER SPOTLIGHT
-                  </span>
-                  <span className="text-xs font-ember-mono text-slate-400 font-medium">
-                    #AWS-SBG-01 &bull; UoK Campus
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs font-ember-mono text-[#00E582] font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-[#00E582]" />
-                  <span>Official Meetup Group</span>
-                </div>
+            {/* Metadata Row */}
+            <div className="flex flex-wrap items-center justify-between gap-3 select-none pb-4 border-b border-white/[0.06]">
+              <div className="flex items-center gap-2.5">
+                <span className="bg-[#AD5CFF] text-white text-[11px] font-ember-mono font-bold px-2.5 py-1 rounded-md tracking-wider uppercase">
+                  BUILDER SPOTLIGHT
+                </span>
+                <span className="text-xs font-ember-mono text-slate-400 font-medium">
+                  #AWS-SBG-01 &bull; UoK Campus
+                </span>
               </div>
-
-              {/* Main Content: 2-Column Split (Copy + Scannable Meetup QR Code) */}
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center my-6">
-                <div className="sm:col-span-7 space-y-4 text-left">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug font-ember">
-                    Join our Meetup community
-                  </h2>
-                  <p className="text-sm text-slate-300 leading-relaxed font-normal">
-                    RSVP to upcoming cloud workshops, architecture hackathons, and technical sessions via our official Meetup group. Connect with student builders across campus.
-                  </p>
-                  <div className="pt-2 flex flex-wrap items-center gap-4 select-none">
-                    <Button
-                      asChild
-                      className="bg-white hover:bg-slate-100 text-black font-bold text-sm px-6 py-2.5 rounded-xl transition-all shadow-none border-0"
-                    >
-                      <a
-                        href="https://www.meetup.com/aws-sbg-at-university-of-kelaniya/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Join on Meetup
-                      </a>
-                    </Button>
-                    <span className="text-xs font-ember-mono text-slate-400 tracking-wide font-medium">
-                      Scan or click to RSVP
-                    </span>
-                  </div>
-                </div>
-
-                {/* Right: Dedicated Scannable QR Code Container */}
-                <div className="sm:col-span-5 flex justify-center sm:justify-end">
-                  <div className="w-full max-w-[170px] aspect-square rounded-2xl bg-white p-3.5 flex flex-col items-center justify-center select-none shadow-xl border border-white/20">
-                    <QRCodeSVG
-                      value="https://www.meetup.com/aws-sbg-at-university-of-kelaniya/"
-                      size={142}
-                      level="H"
-                      className="w-full h-full"
-                    />
-                  </div>
-                </div>
+              <div className="flex items-center gap-1.5 text-xs font-ember-mono text-[#00E582] font-semibold">
+                <span className="w-2 h-2 rounded-full bg-[#00E582]" />
+                <span>Official Meetup Group</span>
               </div>
             </div>
 
-            {/* Bottom Service Chips inside Left Panel */}
-            <div className="pt-4 border-t border-white/[0.06]">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#131b2e]/80 border border-white/[0.10]">
-                  <IconBadge name="bolt" variant="primary" size="sm" />
-                  <div className="text-left min-w-0">
-                    <div className="text-xs font-bold text-white leading-tight truncate">Serverless</div>
-                    <div className="text-[10px] text-slate-400 leading-tight truncate">AWS Lambda</div>
-                  </div>
+            {/* Main Content: 2-Column Split (Copy + Scannable Meetup QR Code) */}
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center my-auto py-6 sm:py-8">
+              <div className="sm:col-span-7 space-y-4 text-left">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug font-ember">
+                  Join our Meetup community
+                </h2>
+                <p className="text-sm text-slate-300 leading-relaxed font-normal">
+                  RSVP to upcoming cloud workshops, architecture hackathons, and technical sessions via our official Meetup group. Connect with student builders across campus.
+                </p>
+                <div className="pt-2 flex flex-wrap items-center gap-4 select-none">
+                  <Button
+                    asChild
+                    className="bg-white hover:bg-slate-100 text-black font-bold text-sm px-6 py-2.5 rounded-xl transition-all shadow-none border-0"
+                  >
+                    <a
+                      href="https://www.meetup.com/aws-sbg-at-university-of-kelaniya/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Join on Meetup
+                    </a>
+                  </Button>
+                  <span className="text-xs font-ember-mono text-slate-400 tracking-wide font-medium">
+                    Scan or click to RSVP
+                  </span>
                 </div>
+              </div>
 
-                <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#131b2e]/80 border border-white/[0.10]">
-                  <IconBadge name="bolt" variant="primary" size="sm" />
-                  <div className="text-left min-w-0">
-                    <div className="text-xs font-bold text-white leading-tight truncate">Bedrock</div>
-                    <div className="text-[10px] text-slate-400 leading-tight truncate">Generative AI</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#131b2e]/80 border border-white/[0.10]">
-                  <IconBadge name="drop" variant="secondary" size="sm" />
-                  <div className="text-left min-w-0">
-                    <div className="text-xs font-bold text-white leading-tight truncate">DynamoDB</div>
-                    <div className="text-[10px] text-slate-400 leading-tight truncate">NoSQL Store</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#131b2e]/80 border border-white/[0.10]">
-                  <IconBadge name="drop" variant="secondary" size="sm" />
-                  <div className="text-left min-w-0">
-                    <div className="text-xs font-bold text-white leading-tight truncate">Amazon S3</div>
-                    <div className="text-[10px] text-slate-400 leading-tight truncate">Object Store</div>
-                  </div>
+              {/* Right: Dedicated Scannable QR Code Container */}
+              <div className="sm:col-span-5 flex justify-center sm:justify-end">
+                <div className="w-full max-w-[170px] aspect-square rounded-2xl bg-white p-3.5 flex flex-col items-center justify-center select-none shadow-xl border border-white/20">
+                  <QRCodeSVG
+                    value="https://www.meetup.com/aws-sbg-at-university-of-kelaniya/"
+                    size={142}
+                    level="H"
+                    className="w-full h-full"
+                  />
                 </div>
               </div>
             </div>
