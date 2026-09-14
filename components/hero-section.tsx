@@ -94,7 +94,7 @@ export default function HeroSection() {
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center my-auto py-6 sm:py-8">
               <div className="sm:col-span-7 space-y-4 text-left">
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug font-ember">
-                  Join our Meetup community
+                  Join our Meetup Group
                 </h2>
                 <p className="text-sm text-slate-300 leading-relaxed font-normal">
                   RSVP to upcoming cloud workshops, architecture hackathons, and technical sessions via our official Meetup group. Connect with student builders across campus.
@@ -113,7 +113,7 @@ export default function HeroSection() {
                     </a>
                   </Button>
                   <span className="text-xs font-ember-mono text-slate-400 tracking-wide font-medium">
-                    Scan or click to RSVP
+                    Scan to RSVP
                   </span>
                 </div>
               </div>
