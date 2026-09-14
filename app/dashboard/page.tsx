@@ -58,6 +58,36 @@ function calculateMembershipDays(dateString: string): number {
   return Math.floor(diffTime / (1000 * 60 * 60 * 24));
 }
 
+function formatEmailWithBreaks(email: string) {
+  if (!email || !email.includes("@")) return email;
+  const atIndex = email.indexOf("@");
+  const local = email.slice(0, atIndex);
+  const domain = email.slice(atIndex);
+
+  const lastDotIndex = domain.lastIndexOf(".");
+  if (lastDotIndex > 0) {
+    const domainName = domain.slice(0, lastDotIndex);
+    const tld = domain.slice(lastDotIndex);
+    return (
+      <>
+        <span>{local}</span>
+        <wbr />
+        <span>{domainName}</span>
+        <wbr />
+        <span>{tld}</span>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <span>{local}</span>
+      <wbr />
+      <span>{domain}</span>
+    </>
+  );
+}
+
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -215,18 +245,30 @@ export default function Dashboard() {
                 </span>
               </div>
 
-              {/* Clean, Uniform 2-Column Grid */}
+              {/* Restructured Profile Grid: Full Width Name & Email, 2-Column Row for Student Number & Member Since */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[96px] flex flex-col justify-between">
+                {/* Full Name (Full Width) */}
+                <article className="sm:col-span-2 rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[88px] flex flex-col justify-between">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
                     Full Name
                   </p>
-                  <p className="mt-1.5 text-base font-semibold text-white leading-snug break-words">
+                  <p className="mt-1.5 text-base sm:text-lg font-semibold text-white leading-snug break-words">
                     {user.fullName}
                   </p>
                 </article>
 
-                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[96px] flex flex-col justify-between">
+                {/* Email Address (Full Width) */}
+                <article className="sm:col-span-2 rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[88px] flex flex-col justify-between">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
+                    Email Address
+                  </p>
+                  <p className="mt-1.5 text-base font-semibold text-white leading-snug break-normal">
+                    {formatEmailWithBreaks(user.email)}
+                  </p>
+                </article>
+
+                {/* Student Number (Left Column) */}
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[88px] flex flex-col justify-between">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
                     Student Number
                   </p>
@@ -235,16 +277,8 @@ export default function Dashboard() {
                   </p>
                 </article>
 
-                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[96px] flex flex-col justify-between">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
-                    Email Address
-                  </p>
-                  <p className="mt-1.5 text-sm sm:text-[15px] font-semibold text-white leading-snug break-words [word-break:break-word] [overflow-wrap:break-word]">
-                    {user.email}
-                  </p>
-                </article>
-
-                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[96px] flex flex-col justify-between">
+                {/* Member Since (Right Column) */}
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15 min-h-[88px] flex flex-col justify-between">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
                     Member Since
                   </p>
