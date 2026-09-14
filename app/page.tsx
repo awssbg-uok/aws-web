@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ArrowRight, Sparkles } from "lucide-react";
 import HeroSection from "@/components/hero-section";
-import TeamSection from "@/components/team-section";
 import { IconBadge, SbgIconName } from "@/components/icon-badge";
 
 export default function Home() {
@@ -17,7 +16,7 @@ export default function Home() {
       <HeroSection />
 
       {/* Features Section (Why Join) */}
-      <section className="relative py-24 sm:py-32 bg-[var(--squid-ink-deep)] overflow-hidden border-t border-white/[0.06]">
+      <section className="relative py-24 sm:py-32 bg-[var(--squid-ink-deep)] overflow-hidden">
         {/* Soft Ambient Spotlight */}
         <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-[#AD5CFF]/[0.06] rounded-full blur-[160px]" />
 
@@ -179,13 +178,13 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.55 }}
-              className="relative h-[440px] sm:h-[480px] rounded-3xl overflow-hidden border border-white/[0.12] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] group"
+              className="relative h-[400px] sm:h-[430px] rounded-3xl overflow-hidden border border-white/[0.12] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] group"
             >
               <Image
                 src="/team-photo.jpg"
                 alt="AWS Student Builder Group Team"
                 fill
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", objectPosition: "0% 60%" }}
                 className="transform group-hover:scale-105 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--squid-ink-deep)] via-transparent to-transparent opacity-80 pointer-events-none" />
@@ -194,9 +193,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Team Carousel Section */}
-      <TeamSection />
 
       {/* CTA Section */}
       <section
