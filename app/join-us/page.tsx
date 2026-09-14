@@ -2,23 +2,7 @@
 
 import { motion } from "framer-motion";
 import JoinUsForm from "@/components/join-us-form";
-import { Briefcase, GraduationCap, Users, Award, Sparkles, ArrowRight } from "lucide-react";
-
-function WhatsAppIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12.04 2c-5.52 0-10 4.48-10 10 0 1.77.46 3.49 1.33 5.01L2 22l5.13-1.35A9.96 9.96 0 0 0 12.04 22c5.52 0 10-4.48 10-10s-4.48-10-10-10zm0 18.27a8.23 8.23 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.26 8.26 0 1 1 6.99 3.86zm4.51-6.17c-.25-.12-1.47-.72-1.7-.8-.23-.09-.4-.13-.56.12-.17.25-.65.8-.8 1-.15.17-.3.19-.55.06-1.5-.75-2.48-1.33-3.47-3.03-.26-.45.26-.42.75-1.4.08-.17.04-.31-.02-.43-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.16 0-.44.06-.67.31-.23.25-.87.85-.87 2.08 0 1.23.89 2.41 1.02 2.58.12.17 1.75 2.68 4.25 3.76 1.62.7 2.26.7 3.06.58.49-.07 1.48-.6 1.69-1.19.21-.58.21-1.08.15-1.19-.07-.1-.23-.17-.48-.29z" />
-    </svg>
-  );
-}
-
-function MeetupIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12.001 2C6.478 2 2 6.478 2 12.001c0 5.522 4.478 10 10.001 10 5.522 0 10-4.478 10-10C22.001 6.478 17.523 2 12.001 2zm5.064 13.882h-1.92v-4.32c0-.797-.643-1.44-1.44-1.44s-1.44.643-1.44 1.44v4.32h-1.92v-4.32c0-.797-.643-1.44-1.44-1.44s-1.44.643-1.44 1.44v4.32h-1.92V8.118h1.92v1.056c.48-.672 1.248-1.056 2.112-1.056 1.152 0 2.112.576 2.688 1.536.576-.96 1.536-1.536 2.688-1.536 1.728 0 3.072 1.344 3.072 3.072v4.692z" />
-    </svg>
-  );
-}
+import { Briefcase, GraduationCap, Users, Award, Sparkles } from "lucide-react";
 
 export default function JoinUs() {
   return (
@@ -190,7 +174,7 @@ export default function JoinUs() {
               />
 
               <div className="p-6 sm:p-9 relative z-10">
-                {/* Card Header & Fast Steps */}
+                {/* Card Header */}
                 <div className="mb-8 border-b border-white/[0.08] pb-6">
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
                     <h3 className="text-white text-2xl font-bold tracking-tight">
@@ -204,51 +188,6 @@ export default function JoinUs() {
                   <p className="text-sm text-gray-400">
                     Complete your registration in minutes to unlock community benefits and event RSVPs.
                   </p>
-
-                  {/* Flat Dark Secondary Step Action Badges */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
-                    <motion.a
-                      href="https://chat.whatsapp.com/LwH3BiTgyxQCcqQXYPvMhj"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.15 }}
-                      className="group flex items-center justify-between p-3 rounded-xl border border-white/[0.12] bg-[#0c1220] hover:bg-[#111827] hover:border-[#AD5CFF]/60 shadow-none transition-colors duration-200 cursor-pointer"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.12] flex items-center justify-center text-[#AD5CFF] shrink-0 group-hover:border-[#AD5CFF]/60 transition-colors">
-                          <WhatsAppIcon className="w-4 h-4 text-[#AD5CFF]" />
-                        </div>
-                        <div className="text-left">
-                          <div className="text-[10px] font-bold text-[#AD5CFF] uppercase tracking-wider">Step 1</div>
-                          <div className="text-xs font-semibold text-white transition-colors">Join WhatsApp Group</div>
-                        </div>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-[#AD5CFF] group-hover:translate-x-0.5 transition-transform shrink-0 ml-2" />
-                    </motion.a>
-
-                    <motion.a
-                      href="https://www.meetup.com/aws-cloud-club-at-university-of-kelaniya/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.15 }}
-                      className="group flex items-center justify-between p-3 rounded-xl border border-white/[0.12] bg-[#0c1220] hover:bg-[#111827] hover:border-[#AD5CFF]/60 shadow-none transition-colors duration-200 cursor-pointer"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.12] flex items-center justify-center text-[#AD5CFF] shrink-0 group-hover:border-[#AD5CFF]/60 transition-colors">
-                          <MeetupIcon className="w-4 h-4 text-[#AD5CFF]" />
-                        </div>
-                        <div className="text-left">
-                          <div className="text-[10px] font-bold text-[#AD5CFF] uppercase tracking-wider">Step 2</div>
-                          <div className="text-xs font-semibold text-white transition-colors">Join Official Meetup</div>
-                        </div>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-[#AD5CFF] group-hover:translate-x-0.5 transition-transform shrink-0 ml-2" />
-                    </motion.a>
-                  </div>
                 </div>
 
                 {/* The Registration Form */}
