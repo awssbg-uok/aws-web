@@ -31,11 +31,11 @@ export default function ContactUs() {
             alt="Contact Us"
             fill
             sizes="100vw"
-            className="object-cover opacity-25 object-center"
+            className="object-cover opacity-30 object-center"
             quality={90}
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[var(--squid-ink-deep)]/90 via-[var(--squid-ink-deep)]/75 to-[var(--squid-ink-deep)]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[var(--squid-ink-deep)]/85 via-[var(--squid-ink-deep)]/70 to-[var(--squid-ink-deep)]" />
         </div>
 
         <motion.div
