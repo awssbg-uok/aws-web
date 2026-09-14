@@ -13,7 +13,7 @@ export async function sendEmail(formData: {
   try {
     const { name, email, subject, message } = formData
     await resend.emails.send({
-      from: 'AWS Cloud Club <noreply@awscloudclub.com>',
+      from: 'AWS Student Builder Group <noreply@rst.aws-uok.com>',
       to: 'awscloudclub@kln.ac.lk',
       subject: `New Contact Form Submission: ${subject}`,
       text: `
