@@ -20,7 +20,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-type CategoryFilter = "All" | "Executive Board" | "Leads & Coordinators" | "Committee";
+type CategoryFilter = "All" | "Core Team" | "Leads & Coordinators" | "Committee";
 
 export default function TeamPage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("All");
@@ -34,8 +34,8 @@ export default function TeamPage() {
   const categories: { label: CategoryFilter; count: number }[] = [
     { label: "All", count: teamMembers.length },
     {
-      label: "Executive Board",
-      count: teamMembers.filter((m) => m.category === "Executive Board").length,
+      label: "Core Team",
+      count: teamMembers.filter((m) => m.category === "Core Team").length,
     },
     {
       label: "Leads & Coordinators",
@@ -85,7 +85,7 @@ export default function TeamPage() {
           >
             AWS Student Builder Group <br />
             <span className="font-serif italic font-normal text-[#AD5CFF]">
-              Executive Board &amp; Team
+              Core Team &amp; Team
             </span>
           </motion.h1>
 

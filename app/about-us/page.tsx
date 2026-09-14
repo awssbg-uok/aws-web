@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Sparkles, ExternalLink } from "lucide-react";
-import TeamSection from "@/components/team-section";
 import Link from "next/link";
 import { IconBadge, SbgIconName } from "@/components/icon-badge";
 
@@ -242,8 +241,6 @@ export default function AboutUs() {
           </div>
         </div>
       </motion.section>
-
-      <TeamSection />
     </div>
   );
 }

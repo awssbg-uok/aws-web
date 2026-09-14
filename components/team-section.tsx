@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Linkedin, Github, Zap, ArrowRight } from "lucide-react";
 import { teamMembers, TeamMember } from "@/data/team";
 
-type CategoryFilter = "All" | "Executive Board" | "Leads & Coordinators" | "Committee";
+type CategoryFilter = "All" | "Core Team" | "Leads & Coordinators" | "Committee";
 
 export default function TeamSection() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>("All");
@@ -57,7 +57,7 @@ export default function TeamSection() {
 
   const categories: { label: CategoryFilter; count: number }[] = [
     { label: "All", count: teamMembers.length },
-    { label: "Executive Board", count: teamMembers.filter(m => m.category === "Executive Board").length },
+    { label: "Core Team", count: teamMembers.filter(m => m.category === "Core Team").length },
     { label: "Leads & Coordinators", count: teamMembers.filter(m => m.category === "Leads & Coordinators").length },
     { label: "Committee", count: teamMembers.filter(m => m.category === "Committee").length },
   ];
@@ -100,7 +100,7 @@ export default function TeamSection() {
               <Zap className="h-2.5 w-2.5 fill-purple-400 text-purple-400" />
             </span>
             <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-purple-200">
-              Executive Board &amp; Committee &bull; 2026/27
+              Core Team &amp; Committee &bull; 2026/27
             </span>
           </motion.div>
 

@@ -2,7 +2,7 @@ export interface TeamMember {
   name: string;
   position: string;
   image: string;
-  category: "Executive Board" | "Leads & Coordinators" | "Committee";
+  category: "Core Team" | "Leads & Coordinators" | "Committee";
   linkedin?: string;
   github?: string;
   bio?: string;
@@ -19,7 +19,7 @@ export const teamMembers: TeamMember[] = [
     name: "Rusiru Randika",
     position: "President",
     image: "/rusiru.png",
-    category: "Executive Board",
+    category: "Core Team",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     bio: "Passionate about cloud architecture and student leadership, driving cloud computing innovation across University of Kelaniya.",
@@ -39,7 +39,7 @@ export const teamMembers: TeamMember[] = [
     name: "Mevindu Basnayake",
     position: "Vice President",
     image: "/mevindu.png",
-    category: "Executive Board",
+    category: "Core Team",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     bio: "Dedicated to collaborative execution and operational excellence, ensuring community milestones and deadlines are achieved.",
@@ -58,7 +58,7 @@ export const teamMembers: TeamMember[] = [
     name: "Thiviru Perera",
     position: "Secretary",
     image: "/thiviru.png",
-    category: "Executive Board",
+    category: "Core Team",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     responsibilities: [
@@ -74,7 +74,7 @@ export const teamMembers: TeamMember[] = [
     name: "Sushan Fernando",
     position: "Junior Treasurer",
     image: "/sushan.png",
-    category: "Executive Board",
+    category: "Core Team",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     responsibilities: [
@@ -92,7 +92,7 @@ export const teamMembers: TeamMember[] = [
     name: "Hansaja Wimalasuriya",
     position: "PR Coordinator",
     image: "/hansaja.png",
-    category: "Executive Board",
+    category: "Core Team",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     responsibilities: [
@@ -111,7 +111,7 @@ export const teamMembers: TeamMember[] = [
     name: "Adhithya Fernando",
     position: "Designing Head",
     image: "/ayodhya.png",
-    category: "Executive Board",
+    category: "Core Team",
     linkedin: "https://linkedin.com",
     github: "https://github.com",
     responsibilities: [
