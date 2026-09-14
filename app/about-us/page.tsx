@@ -153,16 +153,16 @@ export default function AboutUs() {
 
             {/* Mission Image with Glass Frame */}
             <motion.div
-              className="lg:col-span-5 relative h-80 sm:h-96 rounded-2xl overflow-hidden border border-white/[0.12] shadow-[0_20px_50px_rgba(0,0,0,0.6)] group"
+              className="lg:col-span-5 relative h-80 sm:h-96 rounded-2xl overflow-hidden border border-[#AD5CFF]/20 shadow-[0_0_35px_rgba(173,92,255,0.12),0_20px_50px_rgba(0,0,0,0.6)] group"
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.4 }}
             >
               <Image
-                src="/mission.jpg"
+                src="/mission-hands.jpg"
                 alt="Our Mission"
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--squid-ink-card)]/80 via-transparent to-transparent pointer-events-none" />
