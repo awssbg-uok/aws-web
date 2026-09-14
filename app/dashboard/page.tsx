@@ -3,12 +3,16 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   BadgeCheck,
-  CalendarDays,
+  Calendar,
   ExternalLink,
-  MessageCircle,
+  ArrowRight,
+  Sparkles,
 } from "lucide-react";
+import { IconBadge } from "@/components/icon-badge";
+import { events } from "@/data/events";
 
 interface User {
   fullName: string;
@@ -25,23 +29,42 @@ const MEETUP_GROUP_URL =
 const communityLinks = [
   {
     title: "WhatsApp Group",
-    description: "Get quick club updates, reminders, and announcements.",
+    description: "Quick club updates, reminders, and community chat.",
     href: WHATSAPP_GROUP_URL,
-    icon: MessageCircle,
+    iconName: "speaker" as const,
   },
   {
     title: "Meetup Group",
-    description: "RSVP events, sessions, and workshops officially.",
+    description: "Official event RSVPs, technical sessions, and meetups.",
     href: MEETUP_GROUP_URL,
-    icon: CalendarDays,
+    iconName: "clock" as const,
   },
 ];
+
+function getTimeGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return "Good morning";
+  if (hour >= 12 && hour < 17) return "Good afternoon";
+  if (hour >= 17 && hour < 22) return "Good evening";
+  return "Welcome back";
+}
+
+function calculateMembershipDays(dateString: string): number {
+  if (!dateString) return 0;
+  const joinDate = new Date(dateString);
+  if (isNaN(joinDate.getTime())) return 0;
+  const now = new Date();
+  const diffTime = Math.max(0, now.getTime() - joinDate.getTime());
+  return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+}
 
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [greeting, setGreeting] = useState("Welcome back");
 
   useEffect(() => {
+    setGreeting(getTimeGreeting());
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       try {
@@ -52,17 +75,17 @@ export default function Dashboard() {
         router.push("/login");
       }
     } else {
-      // If no user found, redirect to login
       router.push("/login");
     }
   }, [router]);
 
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-200">
-        <p className="animate-pulse text-sm tracking-wide">
-          Loading dashboard...
-        </p>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--squid-ink-deep)] text-slate-300">
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#AD5CFF] border-t-transparent" />
+          <p className="text-sm font-medium tracking-wide">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -70,128 +93,216 @@ export default function Dashboard() {
   const membershipStatus = user.membershipStatus?.toLowerCase() || "pending";
   const statusClassName =
     membershipStatus === "active"
-      ? "border-emerald-400/30 bg-emerald-500/20 text-emerald-200"
-      : "border-amber-400/30 bg-amber-500/20 text-amber-100";
+      ? "border-emerald-400/30 bg-emerald-500/15 text-emerald-300"
+      : "border-purple-400/30 bg-[#AD5CFF]/15 text-purple-200";
+
+  const memberDays = calculateMembershipDays(user.memberSince);
+  const formattedMemberSince = user.memberSince
+    ? new Date(user.memberSince).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "Recently";
+
+  // Find next upcoming event or fallback to the first event
+  const nextEvent =
+    events.find((e) => e.status !== "ended" && e.status !== "past") || events[0];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(249,115,22,0.2),transparent_40%),radial-gradient(circle_at_85%_0%,rgba(56,189,248,0.18),transparent_32%),linear-gradient(180deg,#020617_0%,#0f172a_100%)]" />
-      <div className="relative mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="mb-7 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md sm:p-8 mt-11">
-          <p className="text-xs uppercase tracking-[0.2em] text-orange-300">
-            Member Dashboard
-          </p>
-          <h1 className="mt-3 text-3xl font-semibold leading-tight text-white sm:text-4xl font-ember">
-            Welcome back, {user.fullName}
+    <div className="relative isolate min-h-screen overflow-hidden bg-[var(--squid-ink-deep)] pt-28 pb-20 text-slate-100">
+      {/* Background Ambient Spotlights & Purple Grid Mesh */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 w-[720px] h-[460px] bg-[#AD5CFF]/[0.08] rounded-full blur-[160px]" />
+        <div className="absolute top-[40%] -right-28 w-[520px] h-[520px] bg-[#7928CA]/[0.10] rounded-full blur-[150px]" />
+        <div className="absolute bottom-10 -left-28 w-[450px] h-[450px] bg-[#AD5CFF]/[0.06] rounded-full blur-[140px]" />
+        <div className="absolute inset-0 opacity-[0.55] purple-grid-mesh [mask-image:radial-gradient(ellipse_80%_65%_at_50%_35%,black_70%,transparent_100%)]" />
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[var(--squid-ink-deep)] to-transparent" />
+      </div>
+
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        {/* Welcome Header Banner */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="premium-card mb-8 p-6 sm:p-8"
+        >
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#AD5CFF]/30 bg-[#0c1220]/80 px-3.5 py-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-xl">
+            <span className="flex h-4 w-4 items-center justify-center rounded-md bg-[#AD5CFF]/20 text-[#AD5CFF]">
+              <Sparkles className="h-2.5 w-2.5" />
+            </span>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-purple-200">
+              Member Dashboard
+            </span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight font-ember">
+            {greeting}, {user.fullName}
           </h1>
-          <p className="mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
-            Your member profile and community channels are ready. Use the quick
-            links below to stay connected with AWS Cloud Club UOK.
+
+          <p className="mt-3 max-w-2xl text-sm sm:text-base text-slate-300 leading-relaxed">
+            Your member profile and community channels are active. Use the quick
+            links below to stay connected with AWS Student Builder Group UOK.
           </p>
-        </section>
 
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-          <section className="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-black/20 backdrop-blur-md sm:p-7">
-            <div className="mb-6 flex items-start justify-between gap-3">
-              <h2 className="text-xl font-semibold text-white sm:text-2xl font-ember">
-                Profile Snapshot
-              </h2>
-              <span
-                className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusClassName}`}
+          {/* Prominent Next Event Highlight */}
+          {nextEvent && (
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.08] bg-[#0c1220]/80 p-4 backdrop-blur-md">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#AD5CFF]/20 text-[#AD5CFF] border border-[#AD5CFF]/30">
+                  <Calendar className="h-4 w-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-purple-300 uppercase tracking-wider font-ember-mono">
+                      Your Next Event
+                    </span>
+                  </div>
+                  <p className="text-sm font-bold text-white tracking-tight sm:text-base">
+                    {nextEvent.title}{" "}
+                    <span className="text-xs font-normal text-slate-400 sm:text-sm">
+                      &bull; {nextEvent.date}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                href="/events"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-[#AD5CFF]/40 bg-[#AD5CFF]/15 px-4 py-2 text-xs font-semibold text-[#E0AAFF] hover:bg-[#AD5CFF] hover:text-white transition-all shadow-none"
               >
-                <BadgeCheck className="h-3.5 w-3.5" />
-                {membershipStatus}
-              </span>
+                <span>View details</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
+          )}
+        </motion.section>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <article className="rounded-2xl border border-white/10 bg-slate-800/60 p-4">
-                <p className="text-xs uppercase tracking-wider text-slate-400">
-                  Full Name
-                </p>
-                <p className="mt-2 text-base font-medium text-slate-100">
-                  {user.fullName}
-                </p>
-              </article>
-              <article className="rounded-2xl border border-white/10 bg-slate-800/60 p-4">
-                <p className="text-xs uppercase tracking-wider text-slate-400">
-                  Student Number
-                </p>
-                <p className="mt-2 text-base font-medium text-slate-100">
-                  {user.studentID}
-                </p>
-              </article>
-              <article className="rounded-2xl border border-white/10 bg-slate-800/60 p-4 sm:col-span-2">
-                <p className="text-xs uppercase tracking-wider text-slate-400">
-                  Email
-                </p>
-                <p className="mt-2 break-all text-base font-medium text-slate-100">
-                  {user.email}
-                </p>
-              </article>
-              <article className="rounded-2xl border border-white/10 bg-slate-800/60 p-4 sm:col-span-2">
-                <p className="text-xs uppercase tracking-wider text-slate-400">
-                  Member Since
-                </p>
-                <p className="mt-2 text-base font-medium text-slate-100">
-                  {new Date(user.memberSince).toLocaleDateString()}
-                </p>
-              </article>
+        {/* 2-Column Dashboard Grid */}
+        <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+          {/* Left Column: Profile Snapshot */}
+          <motion.section
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="premium-card p-6 sm:p-7 flex flex-col justify-between"
+          >
+            <div>
+              <div className="mb-6 flex items-start justify-between gap-3 border-b border-white/[0.06] pb-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight font-ember">
+                  Profile Snapshot
+                </h2>
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider ${statusClassName}`}
+                >
+                  <BadgeCheck className="h-3.5 w-3.5" />
+                  {membershipStatus}
+                </span>
+              </div>
+
+              {/* Clean, Uniform 2-Column Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
+                    Full Name
+                  </p>
+                  <p className="mt-1.5 text-base font-semibold text-white truncate">
+                    {user.fullName}
+                  </p>
+                </article>
+
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
+                    Student Number
+                  </p>
+                  <p className="mt-1.5 text-base font-semibold text-white truncate">
+                    {user.studentID}
+                  </p>
+                </article>
+
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
+                    Email Address
+                  </p>
+                  <p className="mt-1.5 text-base font-semibold text-white break-all">
+                    {user.email}
+                  </p>
+                </article>
+
+                <article className="rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 p-4 transition-colors hover:border-white/15">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 font-ember-mono">
+                    Member Since
+                  </p>
+                  <p className="mt-1.5 text-base font-semibold text-white">
+                    Member for {memberDays} {memberDays === 1 ? "day" : "days"}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Joined {formattedMemberSince}
+                  </p>
+                </article>
+              </div>
             </div>
-          </section>
+          </motion.section>
 
-          <section className="space-y-6">
-            <article className="rounded-3xl border border-orange-300/20 bg-orange-500/10 p-6 backdrop-blur-md">
-              <h2 className="text-xl font-semibold text-orange-100 font-ember">
+          {/* Right Column: Community Access & Event Readiness */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="space-y-6"
+          >
+            {/* Community Access Card */}
+            <article className="premium-card p-6 sm:p-7">
+              <h2 className="text-xl font-bold text-white tracking-tight font-ember">
                 Community Access
               </h2>
-              <p className="mt-2 text-sm text-orange-50/90">
-                Join both channels so you do not miss announcements and event
-                registrations.
+              <p className="mt-2 text-sm text-slate-300 leading-relaxed">
+                Join both official channels to receive announcements, workshop
+                materials, and RSVP notifications.
               </p>
 
               <div className="mt-5 space-y-3">
-                {communityLinks.map((link) => {
-                  const Icon = link.icon;
-
-                  return (
-                    <Link
-                      key={link.title}
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/70 px-4 py-3 transition hover:border-orange-300/50 hover:bg-slate-900"
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/20 text-orange-200">
-                          <Icon className="h-4 w-4" />
+                {communityLinks.map((link) => (
+                  <Link
+                    key={link.title}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center justify-between rounded-2xl border border-white/[0.08] bg-[#0c1220]/70 px-4 py-3.5 transition-all hover:border-[#AD5CFF]/40 hover:bg-white/[0.04]"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <IconBadge name={link.iconName} variant="primary" size="md" />
+                      <div>
+                        <span className="block text-sm font-semibold text-white group-hover:text-purple-200 transition-colors">
+                          {link.title}
                         </span>
-                        <span>
-                          <span className="block text-sm font-semibold text-slate-100">
-                            {link.title}
-                          </span>
-                          <span className="block text-xs text-slate-400">
-                            {link.description}
-                          </span>
+                        <span className="block text-xs text-slate-400">
+                          {link.description}
                         </span>
                       </div>
-                      <ExternalLink className="h-4 w-4 text-slate-400 transition group-hover:text-orange-200" />
-                    </Link>
-                  );
-                })}
+                    </div>
+                    <ExternalLink className="h-4 w-4 text-slate-400 transition-colors group-hover:text-[#AD5CFF]" />
+                  </Link>
+                ))}
               </div>
             </article>
 
-            <article className="rounded-3xl border border-cyan-200/20 bg-cyan-300/10 p-6 backdrop-blur-md">
-              <h3 className="text-lg font-semibold text-cyan-100">
-                Stay Event-Ready
-              </h3>
-              <p className="mt-2 text-sm text-cyan-50/90">
+            {/* Stay Event-Ready Card (re-themed to match --squid-ink-card) */}
+            <article className="premium-card p-6 sm:p-7">
+              <div className="flex items-center gap-2.5 mb-2">
+                <IconBadge name="bolt" variant="secondary" size="xs" />
+                <h3 className="text-lg font-bold text-white tracking-tight font-ember">
+                  Stay Event-Ready
+                </h3>
+              </div>
+              <p className="text-sm text-slate-300 leading-relaxed">
                 Meetup is where official event RSVPs happen, while WhatsApp is
-                best for quick reminders and urgent announcements.
+                best for quick reminders, announcements, and direct community
+                engagement.
               </p>
             </article>
-          </section>
+          </motion.div>
         </div>
       </div>
     </div>
