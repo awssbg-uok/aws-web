@@ -175,7 +175,8 @@ export default function Header() {
 
   const NAV_ITEMS: { href: string; label: string; iconName: SbgIconName }[] = [
     { href: "/", label: "Home", iconName: "single-bracket-smile" },
-    { href: "/about-us", label: "About Us", iconName: "teams" },
+    { href: "/about-us", label: "About Us", iconName: "double-bracket-smile" },
+    { href: "/team", label: "Team", iconName: "teams" },
     { href: "/events", label: "Events", iconName: "clock" },
     { href: "/resources", label: "Resources", iconName: "wrench" },
     { href: "/contact-us", label: "Contact", iconName: "speaker" },
