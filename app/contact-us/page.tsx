@@ -30,6 +30,7 @@ export default function ContactUs() {
             src="/contact-hero.jpg"
             alt="Contact Us"
             fill
+            sizes="100vw"
             className="object-cover opacity-20"
             quality={90}
             priority
