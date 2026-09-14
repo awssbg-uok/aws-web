@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Calendar } from "lucide-react";
 import { IconBadge, SbgIcon } from "@/components/icon-badge";
-import TypewriterHeading from "@/components/typewriter-heading";
 import { QRCodeSVG } from "qrcode.react";
 
 export const ACCENT_PURPLE = "#AD5CFF";
@@ -94,7 +93,6 @@ export default function HeroSection() {
             {/* Main Content: 2-Column Split (Copy + Scannable Meetup QR Code) */}
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center my-auto py-6 sm:py-8">
               <div className="sm:col-span-7 space-y-4 text-left">
-                <TypewriterHeading />
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug font-ember">
                   Join our Meetup community
                 </h2>
