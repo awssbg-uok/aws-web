@@ -77,18 +77,27 @@ export default function ContactUs() {
                 whileHover={{ y: -5 }}
                 className="h-full"
               >
-                <div className="premium-card p-7 sm:p-8 text-center h-full flex flex-col items-center justify-between">
-                  <div className="flex flex-col items-center">
-                    <div className="w-16 h-16 rounded-2xl bg-[#AD5CFF]/15 border border-[#AD5CFF]/30 p-4 flex items-center justify-center mb-5 text-[#AD5CFF] shadow-[0_0_20px_rgba(173,92,255,0.25)]">
-                      <item.icon className="w-8 h-8" />
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-2.5 tracking-tight">
-                      {item?.title}
-                    </h3>
+                <div className="premium-card p-7 sm:p-8 text-center h-full flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-2xl bg-[#AD5CFF]/15 border border-[#AD5CFF]/30 p-4 flex items-center justify-center mb-5 text-[#AD5CFF] shadow-[0_0_20px_rgba(173,92,255,0.25)]">
+                    <item.icon className="w-8 h-8" />
                   </div>
-                  <p className="text-slate-300 whitespace-pre-line leading-relaxed text-sm sm:text-base font-normal">
-                    {item?.content}
-                  </p>
+                  <h3 className="text-xl font-bold text-white mb-2.5 tracking-tight">
+                    {item?.title}
+                  </h3>
+                  <div className="flex-1 flex items-center justify-center w-full my-auto">
+                    <p className="text-slate-300 whitespace-pre-line leading-relaxed text-sm sm:text-base font-normal text-center">
+                      {item.title === "Email Us" ? (
+                        <a
+                          href={`mailto:${item.content}`}
+                          className="hover:text-[#AD5CFF] transition-colors inline-block"
+                        >
+                          {item.content}
+                        </a>
+                      ) : (
+                        item?.content
+                      )}
+                    </p>
+                  </div>
                 </div>
               </motion.div>
             ))}

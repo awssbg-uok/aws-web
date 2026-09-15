@@ -9,6 +9,6 @@ export const contacts = [
     {
         icon: Mail,
         title: "Email Us",
-        content: "info@aws-uok.com",
+        content: "contact@aws-uok.com",
     },
 ];

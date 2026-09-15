@@ -164,7 +164,7 @@ export default function JoinUsForm() {
         position: "top-center",
       });
       setSubmitted(true);
-      setResponseMessage("Your registration has been completed successfully.");
+      setResponseMessage("Your registration has been successfully Submitted.");
       form.reset();
     } catch (error) {
       toast.error(

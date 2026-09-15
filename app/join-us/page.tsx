@@ -99,7 +99,7 @@ export default function JoinUs() {
                   Cloud builders by night.
                 </h2>
                 <p className="text-sm sm:text-base text-gray-300/90 leading-relaxed font-normal mb-8">
-                  Fostering an active ecosystem of student cloud builders at the University of Kelaniya — turning fundamental concepts into hands on cloud deployments and production grade architectures.
+                  Fostering an active ecosystem of student cloud builders at the University of Kelaniya turning fundamental concepts into hands on cloud deployments and production grade architectures.
                 </p>
 
                 {/* Stat Counters with 3D Dividers */}
@@ -251,7 +251,7 @@ export default function JoinUs() {
                         rel="noopener noreferrer"
                         className="px-5 py-2.5 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20bd5a] text-white transition-colors"
                       >
-                        WhatsApp Community
+                        WhatsApp Channel
                       </a>
                       <a
                         href="https://www.meetup.com/aws-sbg-at-university-of-kelaniya/"
