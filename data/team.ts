@@ -20,8 +20,8 @@ export const teamMembers: TeamMember[] = [
     position: "President",
     image: "/rusiru.png",
     category: "Core Team",
-    linkedin: "https://linkedin.com",
-    github: "https://github.com",
+    linkedin: "https://www.linkedin.com/in/rusiru-randika/",
+    github: "https://github.com/Rusiru-Randika",
     bio: "Passionate about cloud architecture and student leadership, driving cloud computing innovation across University of Kelaniya.",
     responsibilities: [
       "Provides overall vision and strategic direction",
@@ -30,8 +30,8 @@ export const teamMembers: TeamMember[] = [
       "Leads execution of all ongoing activities",
     ],
     links: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com",
+      linkedin: "https://www.linkedin.com/in/rusiru-randika/",
+      github: "https://github.com/Rusiru-Randika",
       builderProfile: "https://builder.aws.com",
     },
   },
