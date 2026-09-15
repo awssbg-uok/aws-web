@@ -8,9 +8,37 @@ import { fontEmber, fontEmberMono } from "./fonts";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AWS Student Builder Group - University of Kelaniya",
+  metadataBase: new URL("https://aws-uok.com"),
+  title: {
+    default: "AWS Student Builder Group - University of Kelaniya",
+    template: "%s | AWS Student Builder Group UOK",
+  },
   description:
-    "Official website of the AWS Student Builder Group at the University of Kelaniya",
+    "Official website of the AWS Student Builder Group at the University of Kelaniya — empowering university students with hands-on cloud skills, AWS certifications, and innovative builder projects.",
+  openGraph: {
+    title: "AWS Student Builder Group - University of Kelaniya",
+    description:
+      "Official community website of the AWS Student Builder Group at the University of Kelaniya. Join student cloud builders, workshops, and hackathons.",
+    url: "https://aws-uok.com",
+    siteName: "AWS Student Builder Group UOK",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "AWS Student Builder Group UOK",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AWS Student Builder Group - University of Kelaniya",
+    description:
+      "Official community website of the AWS Student Builder Group at the University of Kelaniya.",
+    images: ["/og-image.png"],
+  },
   icons: {
     icon: [
       { url: "/favicon.ico" },
