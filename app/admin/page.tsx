@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import {
   Check,
   X,
+  Search,
   RefreshCw,
   Clock,
   Mail,
@@ -79,8 +80,9 @@ export default function AdminPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
 
-  // Members tab filter
+  // Members tab filter & search
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "active" | "rejected" | "inactive">("all");
+  const [memberSearchQuery, setMemberSearchQuery] = useState("");
 
   // Owner-only registration toggle
   const [registrationOpen, setRegistrationOpen] = useState<boolean>(true);
@@ -375,6 +377,23 @@ export default function AdminPage() {
       setTogglingRegistration(false);
     }
   };
+
+  // Client-side search and filtering for members
+  const searchedMembers = useMemo(() => {
+    const q = memberSearchQuery.trim().toLowerCase();
+    if (!q) return allMembers;
+    return allMembers.filter((m) => {
+      const nameMatch = m.fullName?.toLowerCase().includes(q);
+      const emailMatch = m.email?.toLowerCase().includes(q);
+      const studentIdMatch = m.studentId?.toLowerCase().includes(q);
+      return Boolean(nameMatch || emailMatch || studentIdMatch);
+    });
+  }, [allMembers, memberSearchQuery]);
+
+  const filteredMembers = useMemo(() => {
+    if (statusFilter === "all") return searchedMembers;
+    return searchedMembers.filter((m) => m.membershipStatus === statusFilter);
+  }, [searchedMembers, statusFilter]);
 
   if (!isAuthorized) {
     return (
@@ -674,13 +693,39 @@ export default function AdminPage() {
         {/* Tab 2: Members */}
         {activeTab === "members" && (
           <section className="space-y-4">
+            {/* Search Box */}
+            <div className="relative w-full sm:max-w-md">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                <Search className="h-4 w-4" />
+              </div>
+              <input
+                type="text"
+                value={memberSearchQuery}
+                onChange={(e) => setMemberSearchQuery(e.target.value)}
+                placeholder="Search by name, email, or student ID..."
+                className="h-10 w-full rounded-xl border border-white/10 bg-[#0c1220]/70 pl-10 pr-10 text-sm text-white placeholder:text-slate-500 shadow-sm backdrop-blur-md transition-colors focus:border-[#AD5CFF] focus:outline-none focus:ring-1 focus:ring-[#AD5CFF]"
+              />
+              {memberSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setMemberSearchQuery("")}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-white transition-colors"
+                  aria-label="Clear search"
+                >
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white">
+                    <X className="h-3 w-3" />
+                  </span>
+                </button>
+              )}
+            </div>
+
             {/* Filter Pills */}
             <div className="flex flex-wrap items-center gap-2">
               {(["all", "pending", "active", "rejected", "inactive"] as const).map((filter) => {
                 const count =
                   filter === "all"
-                    ? allMembers.length
-                    : allMembers.filter((m) => m.membershipStatus === filter).length;
+                    ? searchedMembers.length
+                    : searchedMembers.filter((m) => m.membershipStatus === filter).length;
                 return (
                   <button
                     key={filter}
@@ -702,16 +747,42 @@ export default function AdminPage() {
                 <RefreshCw className="h-8 w-8 animate-spin mx-auto text-[#AD5CFF]" />
                 <p className="mt-4 text-sm text-slate-300">Loading members list...</p>
               </div>
-            ) : allMembers.filter((m) => statusFilter === "all" || m.membershipStatus === statusFilter).length === 0 ? (
-              <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 p-12 text-center">
-                <IconBadge name="teams" variant="secondary" size="xl" className="mx-auto" />
-                <h3 className="mt-4 text-lg font-semibold text-white font-ember">
-                  No Members Found
-                </h3>
-                <p className="mt-1 text-sm text-slate-400">
-                  No members matched the "{statusFilter}" filter.
-                </p>
-              </div>
+            ) : filteredMembers.length === 0 ? (
+              memberSearchQuery.trim() ? (
+                <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 p-12 text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-[#AD5CFF]">
+                    <Search className="h-6 w-6" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-white font-ember">
+                    No members match your search
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-400">
+                    No members found matching &ldquo;{memberSearchQuery}&rdquo;
+                    {statusFilter !== "all" ? ` with status "${statusFilter}"` : ""}.
+                  </p>
+                  <div className="mt-5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setMemberSearchQuery("")}
+                      className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 text-xs rounded-xl gap-2"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                      <span>Clear Search</span>
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 p-12 text-center">
+                  <IconBadge name="teams" variant="secondary" size="xl" className="mx-auto" />
+                  <h3 className="mt-4 text-lg font-semibold text-white font-ember">
+                    No Members Found
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-400">
+                    No members matched the &ldquo;{statusFilter}&rdquo; filter.
+                  </p>
+                </div>
+              )
             ) : (
               <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 shadow-2xl backdrop-blur-md overflow-hidden">
                 <div className="overflow-x-auto">
@@ -729,9 +800,7 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {allMembers
-                        .filter((m) => statusFilter === "all" || m.membershipStatus === statusFilter)
-                        .map((member) => {
+                      {filteredMembers.map((member) => {
                           const statusColors: Record<string, string> = {
                             active: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
                             pending: "border-amber-500/30 bg-amber-500/10 text-amber-300",
