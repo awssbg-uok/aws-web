@@ -246,7 +246,7 @@ export default function JoinUs() {
 
                     <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
                       <a
-                        href="https://chat.whatsapp.com/LwH3BiTgyxQCcqQXYPvMhj"
+                        href="https://whatsapp.com/channel/0029VbDXesk89innPncEBE30"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-5 py-2.5 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20bd5a] text-white transition-colors"

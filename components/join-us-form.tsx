@@ -190,9 +190,14 @@ export default function JoinUsForm() {
           transition={{ duration: 0.45, ease: "easeOut" }}
           className="flex flex-col gap-6 items-center justify-center py-8"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-semibold shadow-[0_4px_12px_rgba(16,185,129,0.2)]">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            {responseMessage}
+          <div className="text-center space-y-3 max-w-lg mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-semibold shadow-[0_4px_12px_rgba(16,185,129,0.2)]">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              {responseMessage}
+            </div>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              Your application is now pending review by our team. You&apos;ll receive a welcome email once approved, and can log in to your dashboard after that.
+            </p>
           </div>
           
           <motion.div 
