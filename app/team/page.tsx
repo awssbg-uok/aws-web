@@ -246,14 +246,14 @@ export default function TeamPage() {
       {/* Member Details Modal */}
       <Dialog open={!!activeMember} onOpenChange={(open) => !open && setActiveMember(null)}>
         {activeMember && (
-          <DialogContent className="max-w-2xl bg-[#0c1220] border border-white/[0.14] text-white backdrop-blur-2xl rounded-3xl p-6 sm:p-8 z-[60] overflow-hidden">
+          <DialogContent className="w-[calc(100%-2rem)] sm:w-full max-w-2xl max-h-[90vh] flex flex-col p-0 bg-[#0c1220] border border-white/[0.14] text-white backdrop-blur-2xl rounded-3xl z-[60] overflow-hidden">
             {/* Accessible Dialog Title & Description */}
             <DialogHeader className="sr-only">
               <DialogTitle>{activeMember.name} Profile Details</DialogTitle>
               <DialogDescription>{activeMember.position} - {activeMember.category}</DialogDescription>
             </DialogHeader>
 
-            <div className="relative z-10 space-y-6">
+            <div className="relative z-10 space-y-6 overflow-y-auto p-6 sm:p-8 overscroll-contain">
               {/* Member Header: Large Portrait + Identity + Links */}
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 pt-2">
                 {/* Large Cutout Portrait with Blueprint Backdrop */}
