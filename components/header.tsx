@@ -29,7 +29,7 @@ export default function Header() {
       if (token && storedUser) {
         try {
           const parsed = JSON.parse(storedUser);
-          setIsAdmin(parsed?.role === "admin");
+          setIsAdmin(parsed?.role === "admin" || parsed?.role === "owner");
         } catch {
           setIsAdmin(false);
         }

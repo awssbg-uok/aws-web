@@ -1,10 +1,32 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import JoinUsForm from "@/components/join-us-form";
-import { Briefcase, GraduationCap, Users, Award, Sparkles } from "lucide-react";
+import { Briefcase, GraduationCap, Users, Award, Sparkles, AlertCircle, RefreshCw } from "lucide-react";
 
 export default function JoinUs() {
+  const [registrationOpen, setRegistrationOpen] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkRegistrationStatus = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/registration-status`);
+        if (res.ok) {
+          const data = await res.json();
+          setRegistrationOpen(Boolean(data.registrationOpen));
+        } else {
+          setRegistrationOpen(true);
+        }
+      } catch {
+        setRegistrationOpen(true);
+      }
+    };
+
+    checkRegistrationStatus();
+  }, []);
+
   return (
     <div className="relative min-h-screen bg-[var(--squid-ink-deep)] pt-24 pb-20 overflow-hidden">
       {/* Background Mesh Grid & Atmospheric Glows */}
@@ -177,21 +199,79 @@ export default function JoinUs() {
                 {/* Card Header */}
                 <div className="mb-8 border-b border-white/[0.08] pb-6">
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
-                    <h3 className="text-white text-2xl font-bold tracking-tight">
-                      Membership Registration 2026
+                    <h3 className="text-white text-2xl font-bold tracking-tight font-ember">
+                      Membership Registration
                     </h3>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-[0_2px_8px_rgba(16,185,129,0.2)]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      Open Now
-                    </div>
+                    {registrationOpen === null ? (
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/10 text-slate-300 text-xs font-semibold">
+                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        <span>Checking Status...</span>
+                      </div>
+                    ) : registrationOpen ? (
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold shadow-[0_2px_8px_rgba(16,185,129,0.2)]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        Open Now
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-semibold shadow-[0_2px_8px_rgba(244,63,94,0.2)]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                        Registration Closed
+                      </div>
+                    )}
                   </div>
                   <p className="text-sm text-gray-400">
-                    Complete your registration in minutes to unlock community benefits and event RSVPs.
+                    {registrationOpen === false
+                      ? "Membership registrations are currently paused for the current intake."
+                      : "Complete your registration in minutes to unlock community benefits and event RSVPs."}
                   </p>
                 </div>
 
-                {/* The Registration Form */}
-                <JoinUsForm />
+                {/* The Registration Form OR Closed Message */}
+                {registrationOpen === false ? (
+                  <div className="py-10 px-4 sm:px-6 text-center space-y-5 rounded-2xl border border-white/10 bg-white/[0.02]">
+                    <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+                      <AlertCircle className="w-8 h-8" />
+                    </div>
+                    <div className="max-w-md mx-auto space-y-2">
+                      <h4 className="text-xl font-bold text-white font-ember">
+                        Applications Are Currently Closed
+                      </h4>
+                      <p className="text-sm text-gray-300 leading-relaxed">
+                        Thank you for your interest in the AWS Student Builder Group at the University of Kelaniya. Member registration is currently paused.
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Stay connected via our community channels and RSVP to upcoming workshops on Meetup.
+                      </p>
+                    </div>
+
+                    <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
+                      <a
+                        href="https://chat.whatsapp.com/LwH3BiTgyxQCcqQXYPvMhj"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-5 py-2.5 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20bd5a] text-white transition-colors"
+                      >
+                        WhatsApp Community
+                      </a>
+                      <a
+                        href="https://www.meetup.com/aws-sbg-at-university-of-kelaniya/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-5 py-2.5 rounded-xl text-xs font-bold bg-[#E0393E] hover:bg-[#c93338] text-white transition-colors"
+                      >
+                        Meetup Group
+                      </a>
+                      <Link
+                        href="/contact-us"
+                        className="px-5 py-2.5 rounded-xl text-xs font-bold border border-white/15 bg-white/5 hover:bg-white/10 text-white transition-colors"
+                      >
+                        Contact Us
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <JoinUsForm />
+                )}
               </div>
             </div>
           </motion.div>
