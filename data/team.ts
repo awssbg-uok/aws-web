@@ -146,7 +146,7 @@ export const teamMembers: TeamMember[] = [
   },
   {
     name: "Isharaka Shohan",
-    position: "Technical Head",
+    position: "Tech Lead",
     image: "/isharaka.png",
     category: "Leads & Coordinators",
     linkedin: "https://www.linkedin.com/in/isharakashohan/",
