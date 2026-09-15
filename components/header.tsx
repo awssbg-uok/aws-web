@@ -16,16 +16,32 @@ import { IconBadge, SbgIconName } from "@/components/icon-badge";
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isDark, setIsDark] = useState(true);
   const pathname = usePathname();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setUserLoggedIn(!!token);
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
+      setUserLoggedIn(!!token);
+
+      if (token && storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          setIsAdmin(parsed?.role === "admin");
+        } catch {
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+
+    checkAuth();
 
     const handleStorageChange = () => {
-      const token = localStorage.getItem("token");
-      setUserLoggedIn(!!token);
+      checkAuth();
     };
 
     window.addEventListener("storage", handleStorageChange);
@@ -310,6 +326,44 @@ export default function Header() {
                 <span>Dashboard</span>
               </Link>
             )}
+
+            {isAdmin && (
+              <Link
+                href="/admin"
+                onMouseEnter={() => setHoveredNav("/admin")}
+                className={`relative px-3 py-1.5 text-[13.5px] xl:text-[14px] font-semibold transition-colors duration-200 z-10 select-none rounded-xl whitespace-nowrap ${
+                  pathname === "/admin"
+                    ? "text-white"
+                    : hoveredNav === "/admin"
+                    ? isDark
+                      ? "text-white"
+                      : "text-slate-950"
+                    : isDark
+                    ? "text-slate-300 hover:text-white"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {pathname === "/admin" && (
+                  <motion.div
+                    layoutId="navActivePill"
+                    className="absolute inset-0 rounded-xl bg-[#AD5CFF] -z-10"
+                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                  />
+                )}
+                {pathname !== "/admin" && hoveredNav === "/admin" && (
+                  <motion.div
+                    layoutId="navHoverPill"
+                    className={`absolute inset-0 rounded-xl -z-10 ${
+                      isDark
+                        ? "bg-white/[0.08] border border-white/[0.12]"
+                        : "bg-slate-100 border border-slate-200"
+                    }`}
+                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                  />
+                )}
+                <span>Admin</span>
+              </Link>
+            )}
           </nav>
 
           {/* Desktop Actions - Flat simplicity, no neon glow */}
@@ -386,6 +440,17 @@ export default function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Dashboard
+                  </MobileNavLink>
+                )}
+                {isAdmin && (
+                  <MobileNavLink
+                    href="/admin"
+                    isDark={isDark}
+                    isActive={pathname === "/admin"}
+                    iconName="key"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Admin
                   </MobileNavLink>
                 )}
                 {NAV_ITEMS.map((item) => (
