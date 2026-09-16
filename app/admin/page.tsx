@@ -450,10 +450,10 @@ export default function AdminPage() {
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
               {/* Owner-Only Registration Status Switch */}
               {currentUserRole === "owner" && (
-                <div className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl border border-white/10 bg-white/5">
+                <div className="flex items-center gap-2 sm:gap-2.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border border-white/10 bg-white/5">
                   <div className="flex flex-col text-right">
                     <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
                       Registration
@@ -492,7 +492,7 @@ export default function AdminPage() {
                   }
                 }}
                 disabled={loadingApps || loadingMembers || loadingMessages}
-                className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 text-xs gap-2 rounded-xl transition-all duration-200"
+                className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 text-xs gap-2 rounded-xl transition-all duration-200 h-8 sm:h-9"
               >
                 <RefreshCw
                   className={`h-3.5 w-3.5 ${
@@ -507,16 +507,19 @@ export default function AdminPage() {
           </div>
 
           {/* Tab Navigation Controls */}
-          <div className="mt-8 flex gap-2 border-b border-white/10 pb-px">
+          <div
+            className="mt-8 flex gap-2 border-b border-white/10 pb-px overflow-x-auto scrollbar-none flex-nowrap"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
             <button
               onClick={() => setActiveTab("applications")}
-              className={`flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold rounded-t-xl transition-all duration-200 select-none ${
+              className={`flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none shrink-0 whitespace-nowrap ${
                 activeTab === "applications"
                   ? "bg-[#AD5CFF] text-white"
                   : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
               }`}
             >
-              <FileText className="h-4 w-4" />
+              <FileText className="h-4 w-4 shrink-0" />
               <span>Pending Applications</span>
               <span
                 className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
@@ -531,13 +534,13 @@ export default function AdminPage() {
 
             <button
               onClick={() => setActiveTab("members")}
-              className={`flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold rounded-t-xl transition-all duration-200 select-none ${
+              className={`flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none shrink-0 whitespace-nowrap ${
                 activeTab === "members"
                   ? "bg-[#AD5CFF] text-white"
                   : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
               }`}
             >
-              <Users className="h-4 w-4" />
+              <Users className="h-4 w-4 shrink-0" />
               <span>Members</span>
               <span
                 className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
@@ -552,13 +555,13 @@ export default function AdminPage() {
 
             <button
               onClick={() => setActiveTab("messages")}
-              className={`flex items-center gap-2.5 px-4 py-2.5 text-sm font-semibold rounded-t-xl transition-all duration-200 select-none ${
+              className={`flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none shrink-0 whitespace-nowrap ${
                 activeTab === "messages"
                   ? "bg-[#AD5CFF] text-white"
                   : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
               }`}
             >
-              <MessageSquare className="h-4 w-4" />
+              <MessageSquare className="h-4 w-4 shrink-0" />
               <span>Messages</span>
               <span
                 className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
@@ -594,22 +597,122 @@ export default function AdminPage() {
             ) : (
               <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 shadow-2xl backdrop-blur-md overflow-hidden">
                 {/* Bulk Approve Action Bar */}
-                <div className="p-3 px-6 bg-white/[0.02] border-b border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs text-slate-300">
-                    <span>{selectedIds.length} of {applications.length} selected</span>
+                <div className="p-3.5 px-4 sm:px-6 bg-white/[0.02] border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 text-xs text-slate-300">
+                    <input
+                      type="checkbox"
+                      id="select-all-pending"
+                      checked={applications.length > 0 && selectedIds.length === applications.length}
+                      onChange={(e) => {
+                        if (e.target.checked) setSelectedIds(applications.map((a) => a._id));
+                        else setSelectedIds([]);
+                      }}
+                      className="rounded border-slate-700 bg-slate-900 text-[#AD5CFF] focus:ring-0 cursor-pointer"
+                    />
+                    <label htmlFor="select-all-pending" className="cursor-pointer select-none">
+                      <span>{selectedIds.length} of {applications.length} selected</span>
+                    </label>
                   </div>
                   <Button
                     size="sm"
                     disabled={selectedIds.length === 0}
                     onClick={() => setBulkConfirmOpen(true)}
-                    className="bg-[#AD5CFF] hover:bg-[#9d4eed] disabled:opacity-40 text-white font-semibold text-xs px-3.5 py-1.5 h-8 rounded-lg gap-1.5"
+                    className="bg-[#AD5CFF] hover:bg-[#9d4eed] disabled:opacity-40 text-white font-semibold text-xs px-3.5 py-1.5 h-8 rounded-lg gap-1.5 w-full sm:w-auto"
                   >
                     <Check className="h-3.5 w-3.5" />
                     <span>Bulk Approve Selected ({selectedIds.length})</span>
                   </Button>
                 </div>
 
-                <div className="overflow-x-auto">
+                {/* Mobile Cards View (< 768px) */}
+                <div className="block md:hidden divide-y divide-white/5">
+                  {applications.map((app) => (
+                    <div
+                      key={app._id}
+                      className="p-4 space-y-3.5 hover:bg-white/[0.02] transition-colors"
+                    >
+                      {/* Top Row: Checkbox + Avatar + Name & Email */}
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(app._id)}
+                          onChange={(e) => {
+                            if (e.target.checked) setSelectedIds([...selectedIds, app._id]);
+                            else setSelectedIds(selectedIds.filter((id) => id !== app._id));
+                          }}
+                          className="mt-1 rounded border-slate-700 bg-slate-900 text-[#AD5CFF] focus:ring-0 cursor-pointer shrink-0"
+                        />
+                        <div className="h-10 w-10 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-xs font-bold text-[#AD5CFF] shrink-0">
+                          {app.fullName.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold text-white truncate text-sm">{app.fullName}</p>
+                          <p className="text-xs text-slate-400 truncate mt-0.5">{app.email}</p>
+                        </div>
+                      </div>
+
+                      {/* Middle Row: Badges for Student ID, Faculty/Year, Date */}
+                      <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-300">
+                        <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
+                          {app.studentId}
+                        </span>
+                        <span className="text-[11px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
+                          {app.faculty} • Year {app.year}
+                        </span>
+                        <span className="text-[11px] text-slate-400 ml-auto">
+                          {new Date(app.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+
+                      {/* Bottom Action Bar: 3 buttons */}
+                      <div className="grid grid-cols-3 gap-2 pt-1 border-t border-white/5">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setViewingApp(app)}
+                          className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs px-2 py-1.5 h-8 rounded-lg gap-1 transition-all"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                          <span>View</span>
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          onClick={() =>
+                            setConfirmModal({
+                              open: true,
+                              type: "approve",
+                              application: app,
+                            })
+                          }
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-2 py-1.5 h-8 rounded-lg gap-1 transition-all"
+                        >
+                          <Check className="h-3.5 w-3.5" />
+                          <span>Approve</span>
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            setConfirmModal({
+                              open: true,
+                              type: "reject",
+                              application: app,
+                            })
+                          }
+                          className="border-rose-500/30 text-rose-300 hover:bg-rose-500/10 hover:border-rose-500/60 text-xs px-2 py-1.5 h-8 rounded-lg gap-1 transition-all"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                          <span>Reject</span>
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View (>= 768px) */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left text-sm text-slate-200">
                     <thead className="border-b border-white/10 bg-white/[0.03] text-xs uppercase tracking-wider text-slate-400 font-semibold">
                       <tr>
@@ -819,7 +922,107 @@ export default function AdminPage() {
               )
             ) : (
               <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 shadow-2xl backdrop-blur-md overflow-hidden">
-                <div className="overflow-x-auto">
+                {/* Mobile Members Cards View (< 768px) */}
+                <div className="block md:hidden divide-y divide-white/5">
+                  {filteredMembers.map((member) => {
+                    const statusColors: Record<string, string> = {
+                      active: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
+                      pending: "border-amber-500/30 bg-amber-500/10 text-amber-300",
+                      rejected: "border-rose-500/30 bg-rose-500/10 text-rose-300",
+                      inactive: "border-slate-500/30 bg-slate-500/10 text-slate-400",
+                    };
+
+                    const roleColors: Record<string, string> = {
+                      owner: "border-amber-400/40 bg-amber-400/15 text-amber-300",
+                      admin: "border-purple-400/40 bg-purple-500/15 text-purple-300",
+                      member: "border-white/10 bg-white/5 text-slate-400",
+                    };
+
+                    return (
+                      <div
+                        key={member._id}
+                        className="p-4 space-y-3 hover:bg-white/[0.02] transition-colors"
+                      >
+                        {/* Top: Avatar + Name + Email */}
+                        <div className="flex items-start gap-3">
+                          <div className="h-10 w-10 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-xs font-bold text-[#AD5CFF] shrink-0">
+                            {member.fullName.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-white truncate text-sm">{member.fullName}</p>
+                            <p className="text-xs text-slate-400 truncate mt-0.5">{member.email}</p>
+                          </div>
+                        </div>
+
+                        {/* Middle: Badges */}
+                        <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                          <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
+                            {member.studentId}
+                          </span>
+                          <span className="text-[11px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
+                            {member.faculty} • Year {member.year}
+                          </span>
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium border capitalize ${
+                              statusColors[member.membershipStatus] || statusColors.inactive
+                            }`}
+                          >
+                            {member.membershipStatus}
+                          </span>
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border uppercase tracking-wider ${
+                              roleColors[member.role] || roleColors.member
+                            }`}
+                          >
+                            {member.role}
+                          </span>
+                        </div>
+
+                        {/* Owner action if applicable */}
+                        {currentUserRole === "owner" && (
+                          <div className="pt-2 border-t border-white/5">
+                            {member.role === "owner" ? (
+                              <span className="text-xs text-slate-500 italic">Cannot modify</span>
+                            ) : member.role === "admin" ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() =>
+                                  setRoleConfirm({
+                                    open: true,
+                                    action: "demote",
+                                    user: member,
+                                  })
+                                }
+                                className="w-full border-amber-500/30 text-amber-300 hover:bg-amber-500/10 hover:border-amber-500/60 text-xs px-3 py-1.5 h-8 rounded-lg transition-all"
+                              >
+                                Demote to Member
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() =>
+                                  setRoleConfirm({
+                                    open: true,
+                                    action: "promote",
+                                    user: member,
+                                  })
+                                }
+                                className="w-full border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:border-purple-500/60 text-xs px-3 py-1.5 h-8 rounded-lg transition-all"
+                              >
+                                Promote to Admin
+                              </Button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Desktop Table View (>= 768px) */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left text-sm text-slate-200">
                     <thead className="border-b border-white/10 bg-white/[0.03] text-xs uppercase tracking-wider text-slate-400 font-semibold">
                       <tr>
@@ -965,16 +1168,16 @@ export default function AdminPage() {
                     className="rounded-2xl border border-white/10 bg-[#0c1220]/70 p-5 sm:p-6 backdrop-blur-md transition-all duration-200 hover:border-white/20"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 border-b border-white/5 pb-4">
-                      <div>
-                        <div className="flex items-center gap-2.5">
-                          <span className="font-semibold text-white">{msg.name}</span>
-                          <span className="text-xs text-slate-400">({msg.email})</span>
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                          <span className="font-semibold text-white text-sm sm:text-base">{msg.name}</span>
+                          <span className="text-xs text-slate-400 break-all sm:break-normal">({msg.email})</span>
                         </div>
                         <h4 className="mt-1.5 text-sm font-medium text-[#AD5CFF]">
                           {msg.subject}
                         </h4>
                       </div>
-                      <div className="flex items-center gap-1.5 text-xs text-slate-400 whitespace-nowrap">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400 whitespace-nowrap self-start sm:self-auto shrink-0">
                         <Clock className="h-3.5 w-3.5" />
                         <span>{new Date(msg.createdAt).toLocaleString()}</span>
                       </div>
