@@ -433,7 +433,7 @@ export default function AdminPage() {
 
       <div className="relative mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8 pt-24 sm:pt-28">
         {/* Header Console Banner */}
-        <section className="mb-7 rounded-3xl border border-white/10 bg-[#0c1220]/80 p-6 backdrop-blur-md sm:p-8">
+        <section className="mb-7 rounded-3xl border border-white/10 bg-[#0c1220]/80 p-4 sm:p-8 backdrop-blur-md">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
@@ -507,22 +507,22 @@ export default function AdminPage() {
           </div>
 
           {/* Tab Navigation Controls */}
-          <div
-            className="mt-8 flex gap-2 border-b border-white/10 pb-px overflow-x-auto scrollbar-none flex-nowrap"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
+          <div className="mt-6 sm:mt-8 grid grid-cols-3 sm:flex sm:gap-2 border-b border-white/10 pb-px gap-1 sm:gap-2">
             <button
               onClick={() => setActiveTab("applications")}
-              className={`flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none shrink-0 whitespace-nowrap ${
+              className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2.5 px-1.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none sm:shrink-0 ${
                 activeTab === "applications"
                   ? "bg-[#AD5CFF] text-white"
                   : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
               }`}
             >
-              <FileText className="h-4 w-4 shrink-0" />
-              <span>Pending Applications</span>
+              <FileText className="hidden sm:inline-block sm:h-4 sm:w-4 shrink-0" />
+              <span className="truncate">
+                <span className="inline sm:hidden">Pending</span>
+                <span className="hidden sm:inline">Pending Applications</span>
+              </span>
               <span
-                className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
+                className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-bold shrink-0 ${
                   activeTab === "applications"
                     ? "bg-white/20 text-white"
                     : "bg-white/10 text-slate-300"
@@ -534,16 +534,16 @@ export default function AdminPage() {
 
             <button
               onClick={() => setActiveTab("members")}
-              className={`flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none shrink-0 whitespace-nowrap ${
+              className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2.5 px-1.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none sm:shrink-0 ${
                 activeTab === "members"
                   ? "bg-[#AD5CFF] text-white"
                   : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
               }`}
             >
-              <Users className="h-4 w-4 shrink-0" />
-              <span>Members</span>
+              <Users className="hidden sm:inline-block sm:h-4 sm:w-4 shrink-0" />
+              <span className="truncate">Members</span>
               <span
-                className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
+                className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-bold shrink-0 ${
                   activeTab === "members"
                     ? "bg-white/20 text-white"
                     : "bg-white/10 text-slate-300"
@@ -555,16 +555,16 @@ export default function AdminPage() {
 
             <button
               onClick={() => setActiveTab("messages")}
-              className={`flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none shrink-0 whitespace-nowrap ${
+              className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2.5 px-1.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none sm:shrink-0 ${
                 activeTab === "messages"
                   ? "bg-[#AD5CFF] text-white"
                   : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
               }`}
             >
-              <MessageSquare className="h-4 w-4 shrink-0" />
-              <span>Messages</span>
+              <MessageSquare className="hidden sm:inline-block sm:h-4 sm:w-4 shrink-0" />
+              <span className="truncate">Messages</span>
               <span
-                className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
+                className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-bold shrink-0 ${
                   activeTab === "messages"
                     ? "bg-white/20 text-white"
                     : "bg-white/10 text-slate-300"
