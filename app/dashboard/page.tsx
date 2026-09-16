@@ -24,7 +24,7 @@ interface User {
 
 const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/LwH3BiTgyxQCcqQXYPvMhj";
 const MEETUP_GROUP_URL =
-  "https://www.meetup.com/aws-cloud-club-at-university-of-kelaniya/";
+  "https://www.meetup.com/aws-sbg-at-university-of-kelaniya/";
 
 const communityLinks = [
   {

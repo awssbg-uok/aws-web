@@ -247,7 +247,7 @@ export default function JoinUsForm() {
                 className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-400 hover:to-pink-500 text-white font-semibold h-11 rounded-xl shadow-[0_8px_20px_-4px_rgba(244,63,94,0.4),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-rose-300/30 transition-all duration-200"
               >
                 <a
-                  href="https://www.meetup.com/aws-cloud-club-at-university-of-kelaniya/"
+                  href="https://www.meetup.com/aws-sbg-at-university-of-kelaniya/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
