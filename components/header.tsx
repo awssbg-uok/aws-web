@@ -51,6 +51,22 @@ export default function Header() {
     };
   }, []);
 
+  // Automatically close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Automatically close mobile menu if window resized to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Scroll & Background Luminance Detector
   useEffect(() => {
     let rafId: number | null = null;
@@ -418,13 +434,15 @@ export default function Header() {
         </div>
 
         {/* Mobile Menu Dropdown */}
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {isMobileMenuOpen && (
             <motion.div
+              key="mobile-nav-dropdown"
               initial={{ opacity: 0, y: -8, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
-              className={`mt-2.5 rounded-2xl border p-5 shadow-2xl backdrop-blur-2xl transition-all duration-300 ${
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className={`lg:hidden mt-2.5 rounded-2xl border p-5 shadow-2xl backdrop-blur-2xl transition-colors duration-300 ${
                 isDark
                   ? "bg-[#0c1220]/95 border-white/[0.1] text-white"
                   : "bg-white/95 border-slate-200/90 text-slate-900"
