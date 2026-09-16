@@ -20,9 +20,21 @@ import {
   ShieldAlert,
   ShieldCheck,
   Users,
+  Eye,
+  Phone,
+  MapPin,
+  Linkedin,
+  Github,
 } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 interface ApplicationItem {
   _id: string;
@@ -101,6 +113,7 @@ export default function AdminPage() {
     type: "approve",
     application: null,
   });
+  const [viewingApp, setViewingApp] = useState<ApplicationItem | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
   // 1. Auth Guard
@@ -660,6 +673,17 @@ export default function AdminPage() {
                             <div className="inline-flex items-center justify-end gap-2">
                               <Button
                                 size="sm"
+                                variant="outline"
+                                onClick={() => setViewingApp(app)}
+                                className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs px-2.5 py-1.5 h-8 rounded-lg gap-1.5 transition-all duration-150"
+                                title="View application details"
+                              >
+                                <Eye className="h-3.5 w-3.5" />
+                                <span>View</span>
+                              </Button>
+
+                              <Button
+                                size="sm"
                                 onClick={() =>
                                   setConfirmModal({
                                     open: true,
@@ -968,6 +992,184 @@ export default function AdminPage() {
           </section>
         )}
       </div>
+
+      {/* Detail-Review Modal for Pending Application */}
+      <Dialog open={!!viewingApp} onOpenChange={(open) => !open && setViewingApp(null)}>
+        {viewingApp && (
+          <DialogContent className="w-[calc(100%-2rem)] sm:w-full max-w-2xl max-h-[90vh] flex flex-col p-0 bg-[#0c1220]/95 border border-white/10 text-[#e2e8f0] backdrop-blur-2xl rounded-3xl z-[60] overflow-hidden shadow-2xl">
+            {/* Accessible Dialog Title & Description */}
+            <DialogHeader className="sr-only">
+              <DialogTitle>Application Details - {viewingApp.fullName}</DialogTitle>
+              <DialogDescription>
+                Reviewing membership application for {viewingApp.fullName} ({viewingApp.studentId})
+              </DialogDescription>
+            </DialogHeader>
+
+            {/* Scrollable Modal Content */}
+            <div className="relative z-10 space-y-6 overflow-y-auto p-6 sm:p-8 overscroll-contain">
+              {/* Header: Avatar, Name, Email, Student ID, Date */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+                <div className="flex items-center gap-4">
+                  <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-[#AD5CFF]/20 to-purple-900/30 border border-[#AD5CFF]/30 flex items-center justify-center text-xl font-bold text-[#AD5CFF] shrink-0 shadow-inner">
+                    {viewingApp.fullName.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight font-ember">
+                        {viewingApp.fullName}
+                      </h2>
+                      <span className="font-mono text-xs px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-slate-300 font-semibold">
+                        {viewingApp.studentId}
+                      </span>
+                    </div>
+                    <p className="text-sm text-slate-400 mt-0.5 flex items-center gap-1.5">
+                      <Mail className="h-3.5 w-3.5 text-slate-500" />
+                      <span>{viewingApp.email}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-slate-400 self-start sm:self-auto">
+                  <Calendar className="h-3.5 w-3.5 text-[#AD5CFF]" />
+                  <span>Submitted {new Date(viewingApp.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}</span>
+                </div>
+              </div>
+
+              {/* Academic Info & Contact Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Academic Information */}
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/10 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <GraduationCap className="h-4 w-4 text-[#AD5CFF]" />
+                    <span>Academic Information</span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-white">{viewingApp.faculty}</p>
+                    <p className="text-xs text-slate-400">
+                      Academic Standing: <span className="text-slate-200 font-semibold">Year {viewingApp.year}</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Contact Details */}
+                <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/10 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <Phone className="h-4 w-4 text-[#AD5CFF]" />
+                    <span>Contact Details</span>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-white">{viewingApp.contactNumber || "Not provided"}</p>
+                    {viewingApp.address ? (
+                      <p className="text-xs text-slate-400 flex items-start gap-1 mt-0.5">
+                        <MapPin className="h-3.5 w-3.5 text-slate-500 shrink-0 mt-0.5" />
+                        <span>{viewingApp.address}</span>
+                      </p>
+                    ) : (
+                      <p className="text-xs text-slate-500 italic">No address provided</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Social Links (only if provided) */}
+              {(viewingApp.linkedin || viewingApp.github) && (
+                <div className="space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Social & Developer Profiles
+                  </h4>
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    {viewingApp.linkedin && (
+                      <a
+                        href={viewingApp.linkedin.startsWith("http") ? viewingApp.linkedin : `https://${viewingApp.linkedin}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-[#AD5CFF]/15 border border-white/10 hover:border-[#AD5CFF]/40 text-xs text-slate-200 hover:text-white transition-all duration-150"
+                      >
+                        <Linkedin className="h-3.5 w-3.5 text-[#AD5CFF]" />
+                        <span>LinkedIn Profile</span>
+                      </a>
+                    )}
+                    {viewingApp.github && (
+                      <a
+                        href={viewingApp.github.startsWith("http") ? viewingApp.github : `https://${viewingApp.github}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-xs text-slate-200 hover:text-white transition-all duration-150"
+                      >
+                        <Github className="h-3.5 w-3.5 text-slate-300" />
+                        <span>GitHub Profile</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Statement of Interest */}
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                  Statement of Interest / Why Join
+                </h4>
+                <div className="max-h-48 overflow-y-auto rounded-2xl bg-white/[0.02] border border-white/10 p-4 text-sm text-slate-300 leading-relaxed font-normal whitespace-pre-wrap">
+                  {viewingApp.interests && viewingApp.interests.trim().length > 0 ? (
+                    viewingApp.interests
+                  ) : (
+                    <span className="text-slate-500 italic">No statement of interest was provided.</span>
+                  )}
+                </div>
+              </div>
+
+              {/* In-Modal Action Buttons */}
+              <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-4 border-t border-white/10">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setViewingApp(null)}
+                  className="w-full sm:w-auto border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs px-4 py-2 h-9 rounded-xl"
+                >
+                  Close
+                </Button>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      const app = viewingApp;
+                      setViewingApp(null);
+                      setConfirmModal({
+                        open: true,
+                        type: "reject",
+                        application: app,
+                      });
+                    }}
+                    className="flex-1 sm:flex-initial border-rose-500/30 text-rose-300 hover:bg-rose-500/10 hover:border-rose-500/60 text-xs px-4 py-2 h-9 rounded-xl gap-1.5 transition-all duration-150"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                    <span>Reject</span>
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      const app = viewingApp;
+                      setViewingApp(null);
+                      setConfirmModal({
+                        open: true,
+                        type: "approve",
+                        application: app,
+                      });
+                    }}
+                    className="flex-1 sm:flex-initial bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-4 py-2 h-9 rounded-xl gap-1.5 transition-all duration-150"
+                  >
+                    <Check className="h-3.5 w-3.5" />
+                    <span>Approve</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
 
       {/* Single Application Confirmation Modal */}
       {confirmModal.open && confirmModal.application && (
