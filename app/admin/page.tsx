@@ -312,7 +312,17 @@ export default function AdminPage() {
       const result = await res.json();
       if (!res.ok) throw new Error(result.message || "Failed to bulk approve");
 
-      toast.success(`Bulk approval completed: ${result.succeeded} approved, ${result.failed} skipped/failed.`);
+      if (result.succeeded > 0) {
+        const estSec = Math.max(1, Math.round(result.succeeded * 0.6));
+        const failMsg = result.failed > 0 ? ` (${result.failed} skipped/failed)` : "";
+        toast.success(
+          `${result.succeeded} application${result.succeeded === 1 ? "" : "s"} approved${failMsg}. Welcome emails are being sent in the background over the next ~${estSec} seconds.`,
+          { duration: 6000 }
+        );
+      } else {
+        toast.error(`No applications approved (${result.failed} skipped/failed).`);
+      }
+
       setSelectedIds([]);
       setBulkConfirmOpen(false);
       await fetchApplications(token);
