@@ -32,7 +32,7 @@ export const teamMembers: TeamMember[] = [
     links: {
       linkedin: "https://www.linkedin.com/in/rusiru-randika/",
       github: "https://github.com/Rusiru-Randika",
-      builderProfile: "https://builder.aws.com",
+      builderProfile: "https://builder.aws.com/community/@rusirurandika",
     },
   },
   {
@@ -40,8 +40,8 @@ export const teamMembers: TeamMember[] = [
     position: "Vice President",
     image: "/mevindu.png",
     category: "Core Team",
-    linkedin: "https://linkedin.com",
-    github: "https://github.com",
+    linkedin: "https://linkedin.com/in/mevindu-basnayake-418978316",
+    github: "https://github.com/mevindu-4",
     bio: "Dedicated to collaborative execution and operational excellence, ensuring community milestones and deadlines are achieved.",
     responsibilities: [
       "Leads execution of all ongoing activities in the absence of president",
@@ -50,8 +50,8 @@ export const teamMembers: TeamMember[] = [
       "Steps in for President when required",
     ],
     links: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com",
+      linkedin: "https://linkedin.com/in/mevindu-basnayake-418978316",
+      github: "https://github.com/mevindu-4",
     },
   },
   {
@@ -112,8 +112,7 @@ export const teamMembers: TeamMember[] = [
     position: "Designing Head",
     image: "/ayodhya.png",
     category: "Core Team",
-    linkedin: "https://linkedin.com",
-    github: "https://github.com",
+    linkedin: "https://www.linkedin.com/in/adhithya-fernando-4455113b1",
     responsibilities: [
       "Creates visual content for events and promotions",
       "Designs posters, banners, and social media creatives",
@@ -122,8 +121,7 @@ export const teamMembers: TeamMember[] = [
       "Supports media coverage for events (photos, videos, reels)",
     ],
     links: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com",
+      linkedin: "https://www.linkedin.com/in/adhithya-fernando-4455113b1",
     },
   },
   {
@@ -131,8 +129,7 @@ export const teamMembers: TeamMember[] = [
     position: "Vice Secretary",
     image: "/sarani.png",
     category: "Leads & Coordinators",
-    linkedin: "https://linkedin.com",
-    github: "https://github.com",
+    linkedin: "https://www.linkedin.com/in/sarani-mandalawalli-29992b305",
     responsibilities: [
       "Steps in for secretary when required",
       "Manages meeting schedules, notes, and follow ups",
@@ -140,8 +137,7 @@ export const teamMembers: TeamMember[] = [
       "Tracks tasks and ensures completion across teams",
     ],
     links: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com",
+      linkedin: "https://www.linkedin.com/in/sarani-mandalawalli-29992b305",
     },
   },
   {
@@ -161,7 +157,7 @@ export const teamMembers: TeamMember[] = [
     links: {
       linkedin: "https://www.linkedin.com/in/isharakashohan/",
       github: "https://github.com/shohan-001",
-      builderProfile: "https://builder.aws.com",
+      builderProfile: "https://builder.aws.com/community/@isharakashohan",
     },
   },
   {
@@ -188,16 +184,14 @@ export const teamMembers: TeamMember[] = [
     position: "Membership Coordinator",
     image: "/pavithra.png",
     category: "Leads & Coordinators",
-    linkedin: "https://linkedin.com",
-    github: "https://github.com",
+    linkedin: "https://www.linkedin.com/in/pavithra-madhumali-427ba93b1",
     responsibilities: [
       "Manages member registrations and onboarding",
       "Engages with community members",
       "Tracks participation and growth",
     ],
     links: {
-      linkedin: "https://linkedin.com",
-      github: "https://github.com",
+      linkedin: "https://www.linkedin.com/in/pavithra-madhumali-427ba93b1",
     },
   },
   {
