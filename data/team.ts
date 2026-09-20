@@ -180,7 +180,7 @@ export const teamMembers: TeamMember[] = [
     },
   },
   {
-    name: "Pavithra Sewwandi",
+    name: "Pavithra Sewwandani",
     position: "Membership Coordinator",
     image: "/pavithra.png",
     category: "Leads & Coordinators",
