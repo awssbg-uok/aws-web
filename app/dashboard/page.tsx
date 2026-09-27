@@ -4,23 +4,85 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { toast } from "react-hot-toast";
 import {
   BadgeCheck,
   Calendar,
   ExternalLink,
   ArrowRight,
+  ArrowLeft,
   Sparkles,
+  Check,
+  CheckCircle2,
+  RefreshCw,
+  Send,
+  Users,
 } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { events } from "@/data/events";
 
 interface User {
   fullName: string;
   email: string;
   studentID: string;
+  year?: number;
+  faculty?: string;
   membershipStatus: string;
   memberSince: string;
 }
+
+interface TeamInterestItem {
+  team: string;
+  experience?: string;
+}
+
+interface TeamAppInfo {
+  _id: string;
+  teamsInterested: (string | TeamInterestItem)[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+const AVAILABLE_TEAMS = [
+  {
+    id: "tech",
+    title: "Technical Team",
+    category: "Architecture & Hands-On",
+    description: "Cloud computing demos, hands-on architectural workshops, and hackathons.",
+  },
+  {
+    id: "pr",
+    title: "Public Relations (PR) Team",
+    category: "Outreach & Growth",
+    description: "External sponsor outreach, student relations, and speaker coordination.",
+  },
+  {
+    id: "hr",
+    title: "Human Resources (HR) Team",
+    category: "Operations & People",
+    description: "Internal team culture, meeting facilitation, and volunteer onboarding.",
+  },
+  {
+    id: "content",
+    title: "Content & Editorial Team",
+    category: "Publications & Copy",
+    description: "Technical blogs, article publishing, newsletters, and social announcements.",
+  },
+  {
+    id: "designing",
+    title: "UI/UX & Designing Team",
+    category: "Creative & Brand",
+    description: "Visual identity, event banners, UI design for web projects, and flyers.",
+  },
+];
 
 const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/LwH3BiTgyxQCcqQXYPvMhj";
 const MEETUP_GROUP_URL =
@@ -93,9 +155,22 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [greeting, setGreeting] = useState("Welcome back");
 
+  const [token, setToken] = useState<string | null>(null);
+  const [teamRecruitmentOpen, setTeamRecruitmentOpen] = useState(false);
+  const [verifiedMemberYear, setVerifiedMemberYear] = useState<number | null>(null);
+  const [existingTeamApp, setExistingTeamApp] = useState<TeamAppInfo | null>(null);
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+  const [teamExperiences, setTeamExperiences] = useState<Record<string, string>>({});
+  const [isExperienceModalOpen, setIsExperienceModalOpen] = useState(false);
+  const [submittingTeam, setSubmittingTeam] = useState(false);
+  const [teamSubmissionSuccess, setTeamSubmissionSuccess] = useState(false);
+
   useEffect(() => {
     setGreeting(getTimeGreeting());
     const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
+
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
@@ -103,11 +178,97 @@ export default function Dashboard() {
       } catch {
         localStorage.removeItem("user");
         router.push("/login");
+        return;
       }
     } else {
       router.push("/login");
+      return;
+    }
+
+    if (storedToken) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/team-applications/me`, {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data) {
+            setTeamRecruitmentOpen(Boolean(data.teamRecruitmentOpen));
+            if (typeof data.memberYear === "number") {
+              setVerifiedMemberYear(data.memberYear);
+            }
+            if (data.application) {
+              setExistingTeamApp(data.application);
+              if (Array.isArray(data.application.teamsInterested)) {
+                const teams: string[] = [];
+                const exps: Record<string, string> = {};
+                data.application.teamsInterested.forEach((item: string | TeamInterestItem) => {
+                  if (typeof item === "string") {
+                    teams.push(item);
+                  } else if (item && typeof item === "object" && item.team) {
+                    teams.push(item.team);
+                    if (item.experience) {
+                      exps[item.team] = item.experience;
+                    }
+                  }
+                });
+                setSelectedTeams(teams);
+                setTeamExperiences(exps);
+              }
+            }
+          }
+        })
+        .catch(() => {});
     }
   }, [router]);
+
+  const handleToggleTeam = (teamId: string) => {
+    setSelectedTeams((prev) =>
+      prev.includes(teamId)
+        ? prev.filter((t) => t !== teamId)
+        : [...prev, teamId]
+    );
+  };
+
+  const handleSubmitTeamApplication = async () => {
+    if (!token) return;
+    if (selectedTeams.length === 0) {
+      toast.error("Please select at least one team.");
+      return;
+    }
+
+    setSubmittingTeam(true);
+    try {
+      const payload = {
+        teamsInterested: selectedTeams.map((teamId) => ({
+          team: teamId,
+          experience: (teamExperiences[teamId] || "").trim().slice(0, 500),
+        })),
+      };
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/team-applications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to submit team application");
+
+      toast.success(data.message || "Team application submitted successfully!");
+      if (data.application) {
+        setExistingTeamApp(data.application);
+      }
+      setTeamSubmissionSuccess(true);
+      setIsExperienceModalOpen(false);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error submitting application";
+      toast.error(msg);
+    } finally {
+      setSubmittingTeam(false);
+    }
+  };
 
   if (!user) {
     return (
@@ -222,6 +383,237 @@ export default function Dashboard() {
             </div>
           )}
         </motion.section>
+
+        {/* Join a Team Card (Visible only when teamRecruitmentOpen is true AND member year is 1 or 2) */}
+        {teamRecruitmentOpen && (verifiedMemberYear === 1 || verifiedMemberYear === 2 || (verifiedMemberYear === null && (user.year === 1 || user.year === 2))) && (
+          <motion.section
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.05 }}
+            className="mb-8 rounded-3xl border border-purple-500/30 bg-gradient-to-b from-[#AD5CFF]/15 via-[#0c1220]/90 to-[#0c1220]/95 p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-80 h-80 bg-[#AD5CFF]/10 rounded-full blur-[100px] pointer-events-none -mr-20 -mt-20" />
+
+            <div className="relative z-10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-purple-400/40 bg-purple-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-purple-200 mb-2">
+                    <Sparkles className="h-3 w-3 text-[#AD5CFF]" />
+                    <span>Core Team Recruitment Open</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-ember">
+                    Join a Core Team
+                  </h2>
+                  <p className="mt-1 text-xs sm:text-sm text-slate-300 max-w-2xl">
+                    Open exclusively for 1st & 2nd year undergraduates. Gain hands-on leadership experience, cloud architecture skills, and coordinate campus events. Select the teams you are interested in:
+                  </p>
+                </div>
+
+                {existingTeamApp && (
+                  <div className="self-start sm:self-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-medium">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Application Active</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Team Options Grid - Step 1 */}
+              <div className="mt-6 space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                  {AVAILABLE_TEAMS.map((team) => {
+                    const isSelected = selectedTeams.includes(team.id);
+                    return (
+                      <div
+                        key={team.id}
+                        onClick={() => handleToggleTeam(team.id)}
+                        className={`cursor-pointer rounded-2xl border p-4 transition-all duration-200 flex flex-col justify-between select-none ${
+                          isSelected
+                            ? "bg-purple-500/15 border-[#AD5CFF] shadow-[0_0_20px_rgba(173,92,255,0.2)]"
+                            : "bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.05]"
+                        }`}
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold uppercase tracking-wider text-purple-300">
+                              {team.category}
+                            </span>
+                            <div
+                              className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                                isSelected
+                                  ? "bg-[#AD5CFF] border-[#AD5CFF] text-white"
+                                  : "border-slate-500 bg-white/5"
+                              }`}
+                            >
+                              {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                            </div>
+                          </div>
+                          <h3 className="text-base font-bold text-white font-ember">
+                            {team.title}
+                          </h3>
+                          <p className="text-xs text-slate-400 leading-relaxed">
+                            {team.description}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Step 1 Action Row: Continue Button */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-white/10">
+                  <div className="text-xs text-slate-400">
+                    {selectedTeams.length > 0 ? (
+                      <span>
+                        Selected: <strong className="text-purple-300">{selectedTeams.length}</strong> {selectedTeams.length === 1 ? "team" : "teams"}
+                      </span>
+                    ) : (
+                      <span className="text-amber-300">Please choose at least one team above to proceed.</span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <Button
+                      type="button"
+                      onClick={() => setIsExperienceModalOpen(true)}
+                      disabled={selectedTeams.length === 0}
+                      className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs gap-2 px-6 h-10 shadow-lg shadow-purple-950/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span>Continue</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Step 2: Experience Modal */}
+                <Dialog open={isExperienceModalOpen} onOpenChange={setIsExperienceModalOpen}>
+                  <DialogContent className="max-w-xl bg-[#0c1220] border border-purple-500/30 text-white p-6 sm:p-7 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+                    <DialogHeader className="space-y-1.5 pb-2 border-b border-white/10 text-left">
+                      <div className="inline-flex items-center gap-2 rounded-full border border-purple-400/40 bg-purple-500/20 px-3 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-purple-200 w-fit">
+                        <Sparkles className="h-3 w-3 text-[#AD5CFF]" />
+                        <span>Step 2 of 2 &bull; Experience</span>
+                      </div>
+                      <DialogTitle className="text-xl font-extrabold text-white font-ember">
+                        Tell Us About Your Experience
+                      </DialogTitle>
+                      <DialogDescription className="text-xs text-slate-300">
+                        Share any relevant projects, background, or learning interests for your selected teams (optional, up to 500 characters per team).
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="flex-1 overflow-y-auto space-y-4 my-4 pr-1">
+                      {selectedTeams.map((teamId) => {
+                        const team = AVAILABLE_TEAMS.find((t) => t.id === teamId);
+                        const currentExp = teamExperiences[teamId] || "";
+                        return (
+                          <div
+                            key={teamId}
+                            className="rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-2.5 transition-colors hover:border-purple-500/30"
+                          >
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-purple-400 block">
+                                  {team?.category || "Core Team"}
+                                </span>
+                                <span className="text-sm font-bold text-white font-ember">
+                                  {team?.title || teamId}
+                                </span>
+                              </div>
+                              <span
+                                className={`text-[11px] font-mono ${
+                                  currentExp.length >= 500 ? "text-amber-400 font-bold" : "text-slate-400"
+                                }`}
+                              >
+                                {currentExp.length}/500
+                              </span>
+                            </div>
+                            <label className="block text-xs text-slate-300 font-medium">
+                              Tell us about your experience with {team?.title || teamId}, if any:
+                            </label>
+                            <textarea
+                              rows={3}
+                              maxLength={500}
+                              value={currentExp}
+                              onChange={(e) =>
+                                setTeamExperiences((prev) => ({
+                                  ...prev,
+                                  [teamId]: e.target.value.slice(0, 500),
+                                }))
+                              }
+                              placeholder="e.g. Projects, workshops, hackathons, skills, or why you want to join..."
+                              className="w-full rounded-xl border border-white/10 bg-[#060a12]/80 p-3 text-xs text-white placeholder-slate-500 focus:border-[#AD5CFF] focus:outline-none focus:ring-1 focus:ring-[#AD5CFF] transition resize-none leading-relaxed"
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-4 border-t border-white/10 mt-auto">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsExperienceModalOpen(false)}
+                        className="border-white/15 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-xs gap-1.5 px-4 h-10"
+                      >
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        <span>Back</span>
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={handleSubmitTeamApplication}
+                        disabled={submittingTeam}
+                        className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs gap-2 px-6 h-10 shadow-lg shadow-purple-950/40"
+                      >
+                        {submittingTeam ? (
+                          <>
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                            <span>Submitting...</span>
+                          </>
+                        ) : existingTeamApp ? (
+                          <>
+                            <Send className="w-3.5 h-3.5" />
+                            <span>Update Application</span>
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-3.5 h-3.5" />
+                            <span>Submit Application</span>
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                {/* Post-Submission Channel Link Banner */}
+                {(teamSubmissionSuccess || existingTeamApp) && (
+                  <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2.5 text-emerald-300">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span>
+                        You are registered for{" "}
+                        <strong>
+                          {selectedTeams
+                            .map((t) => AVAILABLE_TEAMS.find((at) => at.id === t)?.title || t)
+                            .join(", ")}
+                        </strong>
+                        ! Join the official team channel for updates:
+                      </span>
+                    </div>
+                    <a
+                      href="https://whatsapp.com/channel/0029VaPlaceholderAWS"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#20ba5a] transition-all shadow-md shrink-0 text-center justify-center"
+                    >
+                      <span>Join WhatsApp Channel</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.section>
+        )}
 
         {/* 2-Column Dashboard Grid */}
         <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">

@@ -98,6 +98,19 @@ interface MessageItem {
   createdAt: string;
 }
 
+interface AdminTeamApplicationItem {
+  _id: string;
+  applicantId: string;
+  applicantSnapshot: {
+    fullName: string;
+    email: string;
+    studentId: string;
+  };
+  teamsInterested: (string | { team: string; experience?: string })[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface ConfirmState {
   open: boolean;
   type: "approve" | "reject";
@@ -110,6 +123,14 @@ interface RoleConfirmState {
   user: ApplicationItem | null;
 }
 
+const TEAM_CONFIG_MAP: Record<string, { label: string; badgeClass: string }> = {
+  tech: { label: "Technical", badgeClass: "bg-sky-500/10 text-sky-400 border-sky-500/30" },
+  pr: { label: "Public Relations", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/30" },
+  hr: { label: "Human Resources", badgeClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" },
+  content: { label: "Content Creation", badgeClass: "bg-pink-500/10 text-pink-400 border-pink-500/30" },
+  designing: { label: "Designing", badgeClass: "bg-purple-500/10 text-purple-400 border-purple-500/30" },
+};
+
 export default function AdminPage() {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -117,13 +138,19 @@ export default function AdminPage() {
   const [currentUserRole, setCurrentUserRole] = useState<"admin" | "owner" | null>(null);
   const [currentUserPermissions, setCurrentUserPermissions] = useState<string[]>([]);
 
-  const [activeTab, setActiveTab] = useState<"applications" | "members" | "messages">("applications");
+  const [activeTab, setActiveTab] = useState<"applications" | "members" | "messages" | "teams">("applications");
   const [applications, setApplications] = useState<ApplicationItem[]>([]);
   const [allMembers, setAllMembers] = useState<ApplicationItem[]>([]);
   const [messages, setMessages] = useState<MessageItem[]>([]);
+  const [teamApplications, setTeamApplications] = useState<AdminTeamApplicationItem[]>([]);
   const [loadingApps, setLoadingApps] = useState(true);
   const [loadingMembers, setLoadingMembers] = useState(true);
   const [loadingMessages, setLoadingMessages] = useState(true);
+  const [loadingTeamApps, setLoadingTeamApps] = useState(false);
+  const [selectedTeamFilter, setSelectedTeamFilter] = useState<string>("all");
+  const [teamRecruitmentOpen, setTeamRecruitmentOpen] = useState<boolean>(false);
+  const [togglingRecruitment, setTogglingRecruitment] = useState(false);
+  const [teamAppSearchQuery, setTeamAppSearchQuery] = useState("");
 
   // Bulk Approve State
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -282,6 +309,53 @@ export default function AdminPage() {
     }
   }, []);
 
+  // 2d. Fetch Team Recruitment Status
+  const fetchTeamRecruitmentStatus = useCallback(async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings/team-recruitment-status`);
+      if (res.ok) {
+        const data = await res.json();
+        setTeamRecruitmentOpen(data.teamRecruitmentOpen);
+      }
+    } catch {
+      // ignore error
+    }
+  }, []);
+
+  // 2e. Fetch Team Applications
+  const fetchTeamApplications = useCallback(async (authToken: string, teamFilter: string = "all") => {
+    setLoadingTeamApps(true);
+    try {
+      const queryParam = teamFilter !== "all" ? `?team=${teamFilter}` : "";
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/team-applications${queryParam}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        toast.error("Session expired or unauthorized. Please log in again.");
+        router.push("/login");
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error("Failed to load team applications");
+      }
+
+      const data = await res.json();
+      setTeamApplications(data);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error fetching team applications";
+      toast.error(msg);
+    } finally {
+      setLoadingTeamApps(false);
+    }
+  }, [router]);
+
   // 3. Fetch Messages
   const fetchMessages = useCallback(async (authToken: string) => {
     setLoadingMessages(true);
@@ -322,8 +396,10 @@ export default function AdminPage() {
       fetchAllMembers(token);
       fetchMessages(token);
       fetchRegistrationStatus();
+      fetchTeamRecruitmentStatus();
+      fetchTeamApplications(token, "all");
     }
-  }, [isAuthorized, token, fetchApplications, fetchAllMembers, fetchMessages, fetchRegistrationStatus]);
+  }, [isAuthorized, token, fetchApplications, fetchAllMembers, fetchMessages, fetchRegistrationStatus, fetchTeamRecruitmentStatus, fetchTeamApplications]);
 
   // 4. Action Handler with Confirmation (Single Approve / Reject)
   const handleConfirmAction = async () => {
@@ -459,6 +535,30 @@ export default function AdminPage() {
       toast.error(err instanceof Error ? err.message : "Error updating registration");
     } finally {
       setTogglingRegistration(false);
+    }
+  };
+
+  // 7b. Toggle Team Recruitment (Owner Only)
+  const handleToggleTeamRecruitment = async () => {
+    if (!token || currentUserRole !== "owner") return;
+    setTogglingRecruitment(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/settings/team-recruitment`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ open: !teamRecruitmentOpen }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to update team recruitment");
+      setTeamRecruitmentOpen(data.teamRecruitmentOpen);
+      toast.success(`Team Recruitment is now ${data.teamRecruitmentOpen ? "OPEN" : "CLOSED"}`);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error updating team recruitment");
+    } finally {
+      setTogglingRecruitment(false);
     }
   };
 
@@ -725,6 +825,21 @@ export default function AdminPage() {
     });
   }, [auditReport, auditSortAsc]);
 
+  // Filtered and searched team applications
+  const filteredTeamApps = useMemo(() => {
+    let list = teamApplications;
+    const q = teamAppSearchQuery.trim().toLowerCase();
+    if (q) {
+      list = list.filter((app) => {
+        const name = app.applicantSnapshot?.fullName?.toLowerCase() || "";
+        const email = app.applicantSnapshot?.email?.toLowerCase() || "";
+        const sid = app.applicantSnapshot?.studentId?.toLowerCase() || "";
+        return name.includes(q) || email.includes(q) || sid.includes(q);
+      });
+    }
+    return list;
+  }, [teamApplications, teamAppSearchQuery]);
+
   if (!isAuthorized) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-200">
@@ -788,6 +903,36 @@ export default function AdminPage() {
                 </div>
               )}
 
+              {/* Owner-Only Team Recruitment Status Switch */}
+              {currentUserRole === "owner" && (
+                <div className="flex items-center gap-2 sm:gap-2.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl border border-white/10 bg-white/5">
+                  <div className="flex flex-col text-right">
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
+                      Team Recruitment
+                    </span>
+                    <span
+                      className={`text-xs font-bold ${
+                        teamRecruitmentOpen ? "text-emerald-400" : "text-rose-400"
+                      }`}
+                    >
+                      {teamRecruitmentOpen ? "OPEN" : "CLOSED"}
+                    </span>
+                  </div>
+                  <Button
+                    size="sm"
+                    disabled={togglingRecruitment}
+                    onClick={handleToggleTeamRecruitment}
+                    className={`text-xs h-7 px-2.5 font-bold rounded-lg ${
+                      teamRecruitmentOpen
+                        ? "bg-rose-600 hover:bg-rose-500 text-white"
+                        : "bg-emerald-600 hover:bg-emerald-500 text-white"
+                    }`}
+                  >
+                    {teamRecruitmentOpen ? "Close" : "Open"}
+                  </Button>
+                </div>
+              )}
+
               <Button
                 variant="outline"
                 size="sm"
@@ -795,15 +940,22 @@ export default function AdminPage() {
                   if (token) {
                     if (activeTab === "applications") fetchApplications(token);
                     else if (activeTab === "members") fetchAllMembers(token);
-                    else fetchMessages(token);
+                    else if (activeTab === "messages") fetchMessages(token);
+                    else fetchTeamApplications(token, selectedTeamFilter);
                   }
                 }}
-                disabled={loadingApps || loadingMembers || loadingMessages}
+                disabled={loadingApps || loadingMembers || loadingMessages || loadingTeamApps}
                 className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 text-xs gap-2 rounded-xl transition-all duration-200 h-8 sm:h-9"
               >
                 <RefreshCw
                   className={`h-3.5 w-3.5 ${
-                    (activeTab === "applications" ? loadingApps : activeTab === "members" ? loadingMembers : loadingMessages)
+                    (activeTab === "applications"
+                      ? loadingApps
+                      : activeTab === "members"
+                      ? loadingMembers
+                      : activeTab === "messages"
+                      ? loadingMessages
+                      : loadingTeamApps)
                       ? "animate-spin"
                       : ""
                   }`}
@@ -814,7 +966,7 @@ export default function AdminPage() {
           </div>
 
           {/* Tab Navigation Controls */}
-          <div className="mt-6 sm:mt-8 grid grid-cols-3 sm:flex sm:gap-2 border-b border-white/10 pb-px gap-1 sm:gap-2">
+          <div className="mt-6 sm:mt-8 grid grid-cols-4 sm:flex sm:gap-2 border-b border-white/10 pb-px gap-1 sm:gap-2">
             <button
               onClick={() => setActiveTab("applications")}
               className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2.5 px-1.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none sm:shrink-0 ${
@@ -878,6 +1030,33 @@ export default function AdminPage() {
                 }`}
               >
                 {messages.length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveTab("teams");
+                if (token) fetchTeamApplications(token, selectedTeamFilter);
+              }}
+              className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2.5 px-1.5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold rounded-t-xl transition-all duration-200 select-none sm:shrink-0 ${
+                activeTab === "teams"
+                  ? "bg-[#AD5CFF] text-white"
+                  : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+              }`}
+            >
+              <Users className="hidden sm:inline-block sm:h-4 sm:w-4 shrink-0" />
+              <span className="truncate">
+                <span className="inline sm:hidden">Teams</span>
+                <span className="hidden sm:inline">Team Applications</span>
+              </span>
+              <span
+                className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full font-bold shrink-0 ${
+                  activeTab === "teams"
+                    ? "bg-white/20 text-white"
+                    : "bg-white/10 text-slate-300"
+                }`}
+              >
+                {teamApplications.length}
               </span>
             </button>
           </div>
@@ -2013,6 +2192,235 @@ export default function AdminPage() {
                     </div>
                   </article>
                 ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Tab 4: Team Applications */}
+        {activeTab === "teams" && (
+          <section className="space-y-5">
+            {/* Filter and Search Bar */}
+            <div className="rounded-2xl border border-white/10 bg-[#0c1220]/70 p-4 sm:p-5 backdrop-blur-md space-y-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {/* Search Bar */}
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="text"
+                    value={teamAppSearchQuery}
+                    onChange={(e) => setTeamAppSearchQuery(e.target.value)}
+                    placeholder="Search by name, email, or student ID..."
+                    className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:border-[#AD5CFF] focus:ring-1 focus:ring-[#AD5CFF] transition-all"
+                  />
+                  {teamAppSearchQuery && (
+                    <button
+                      onClick={() => setTeamAppSearchQuery("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+
+                {/* Counter Badge */}
+                <div className="flex items-center gap-2 self-start md:self-auto text-xs text-slate-300">
+                  <span className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 font-medium">
+                    Showing <strong className="text-white">{filteredTeamApps.length}</strong> applicant{filteredTeamApps.length === 1 ? "" : "s"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Team Filter Pills */}
+              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-white/5">
+                <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5 mr-1">
+                  <Filter className="h-3.5 w-3.5" />
+                  Filter Team:
+                </span>
+                {[
+                  { id: "all", label: "All Teams" },
+                  { id: "tech", label: "Technical" },
+                  { id: "pr", label: "PR" },
+                  { id: "hr", label: "HR" },
+                  { id: "content", label: "Content" },
+                  { id: "designing", label: "Designing" },
+                ].map((pill) => {
+                  const isActive = selectedTeamFilter === pill.id;
+                  return (
+                    <button
+                      key={pill.id}
+                      onClick={() => {
+                        setSelectedTeamFilter(pill.id);
+                        if (token) fetchTeamApplications(token, pill.id);
+                      }}
+                      className={`text-xs px-3 py-1.5 rounded-xl font-medium transition-all duration-200 ${
+                        isActive
+                          ? "bg-[#AD5CFF] text-white shadow-lg shadow-purple-900/30"
+                          : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/5"
+                      }`}
+                    >
+                      {pill.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* List Content */}
+            {loadingTeamApps ? (
+              <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 p-12 text-center">
+                <RefreshCw className="h-8 w-8 animate-spin mx-auto text-[#AD5CFF]" />
+                <p className="mt-4 text-sm text-slate-300">Loading team applications...</p>
+              </div>
+            ) : filteredTeamApps.length === 0 ? (
+              <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 p-12 text-center">
+                <IconBadge name="teams" variant="secondary" size="xl" className="mx-auto" />
+                <h3 className="mt-4 text-lg font-semibold text-white font-ember">
+                  No Team Applications Found
+                </h3>
+                <p className="mt-1 text-sm text-slate-400">
+                  {teamAppSearchQuery || selectedTeamFilter !== "all"
+                    ? "Try adjusting your search query or team filter."
+                    : "No members have applied to join a core team yet."}
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-white/10 bg-[#0c1220]/70 backdrop-blur-md overflow-hidden shadow-xl">
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left text-sm text-slate-300">
+                    <thead className="bg-white/[0.03] text-xs uppercase font-semibold text-slate-400 border-b border-white/10">
+                      <tr>
+                        <th className="px-6 py-4">Applicant</th>
+                        <th className="px-6 py-4">Email</th>
+                        <th className="px-6 py-4">Teams Interested</th>
+                        <th className="px-6 py-4">Applied Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5 font-sans">
+                      {filteredTeamApps.map((item) => (
+                        <tr key={item._id} className="hover:bg-white/[0.02] transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center gap-3">
+                              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#AD5CFF]/20 to-purple-900/30 border border-[#AD5CFF]/30 flex items-center justify-center text-sm font-bold text-[#AD5CFF] shrink-0">
+                                {(item.applicantSnapshot?.fullName || "U").charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <div className="font-semibold text-white">
+                                  {item.applicantSnapshot?.fullName || "Unknown Member"}
+                                </div>
+                                <div className="text-xs text-slate-400 font-mono">
+                                  {item.applicantSnapshot?.studentId || "N/A"}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center gap-1.5 text-xs text-slate-300">
+                              <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                              <span>{item.applicantSnapshot?.email || "N/A"}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex flex-wrap gap-1.5">
+                              {item.teamsInterested?.map((interest, idx) => {
+                                const teamKey = typeof interest === "string" ? interest : interest?.team;
+                                const experience = typeof interest === "object" ? interest?.experience : "";
+                                const conf = TEAM_CONFIG_MAP[teamKey] || {
+                                  label: teamKey,
+                                  badgeClass: "bg-white/10 text-slate-300 border-white/10",
+                                };
+                                return (
+                                  <span
+                                    key={idx}
+                                    title={experience ? `Experience: ${experience}` : undefined}
+                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${conf.badgeClass}`}
+                                  >
+                                    {conf.label}
+                                  </span>
+                                );
+                              })}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-xs text-slate-400">
+                            <div className="flex items-center gap-1.5">
+                              <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                              <span>
+                                {new Date(item.createdAt).toLocaleDateString(undefined, {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="md:hidden divide-y divide-white/10">
+                  {filteredTeamApps.map((item) => (
+                    <div key={item._id} className="p-4 space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#AD5CFF]/20 to-purple-900/30 border border-[#AD5CFF]/30 flex items-center justify-center text-sm font-bold text-[#AD5CFF] shrink-0">
+                            {(item.applicantSnapshot?.fullName || "U").charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="font-semibold text-white text-sm">
+                              {item.applicantSnapshot?.fullName || "Unknown Member"}
+                            </div>
+                            <div className="text-xs text-slate-400 font-mono">
+                              {item.applicantSnapshot?.studentId || "N/A"}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-[10px] text-slate-400 flex items-center gap-1 shrink-0">
+                          <Calendar className="h-3 w-3" />
+                          <span>
+                            {new Date(item.createdAt).toLocaleDateString(undefined, {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-slate-300 flex items-center gap-1.5">
+                        <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                        <span className="truncate">{item.applicantSnapshot?.email || "N/A"}</span>
+                      </div>
+
+                      <div className="pt-1">
+                        <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                          Teams:
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {item.teamsInterested?.map((interest, idx) => {
+                            const teamKey = typeof interest === "string" ? interest : interest?.team;
+                            const experience = typeof interest === "object" ? interest?.experience : "";
+                            const conf = TEAM_CONFIG_MAP[teamKey] || {
+                              label: teamKey,
+                              badgeClass: "bg-white/10 text-slate-300 border-white/10",
+                            };
+                            return (
+                              <span
+                                key={idx}
+                                title={experience ? `Experience: ${experience}` : undefined}
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${conf.badgeClass}`}
+                              >
+                                {conf.label}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </section>
