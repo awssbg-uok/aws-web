@@ -25,6 +25,14 @@ import {
   MapPin,
   Linkedin,
   Github,
+  SlidersHorizontal,
+  Filter,
+  ArrowUpDown,
+  UserMinus,
+  UserCheck,
+  Download,
+  FileSpreadsheet,
+  CheckCircle2,
 } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
 import { Button } from "@/components/ui/button";
@@ -50,7 +58,35 @@ interface ApplicationItem {
   github?: string;
   membershipStatus: "pending" | "active" | "inactive" | "rejected";
   role: "member" | "admin" | "owner";
+  permissions?: string[];
   createdAt: string;
+}
+
+interface YearAuditMismatch {
+  id?: string;
+  name: string;
+  studentId: string;
+  storedYear: number;
+  expectedYear: number;
+}
+
+interface YearAuditUnparseable {
+  id?: string;
+  name: string;
+  studentId: string;
+  storedYear: number;
+  flag: string;
+}
+
+interface YearAuditReport {
+  academicYearReference: number;
+  summary: {
+    totalAudited: number;
+    mismatchCount: number;
+    unparseableCount: number;
+  };
+  mismatches: YearAuditMismatch[];
+  unparseable: YearAuditUnparseable[];
 }
 
 interface MessageItem {
@@ -79,6 +115,7 @@ export default function AdminPage() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<"admin" | "owner" | null>(null);
+  const [currentUserPermissions, setCurrentUserPermissions] = useState<string[]>([]);
 
   const [activeTab, setActiveTab] = useState<"applications" | "members" | "messages">("applications");
   const [applications, setApplications] = useState<ApplicationItem[]>([]);
@@ -92,9 +129,30 @@ export default function AdminPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
 
-  // Members tab filter & search
-  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "active" | "rejected" | "inactive">("all");
+  // Members tab multi-select filters & search
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedFaculties, setSelectedFaculties] = useState<string[]>([]);
+  const [selectedYears, setSelectedYears] = useState<number[]>([]);
   const [memberSearchQuery, setMemberSearchQuery] = useState("");
+
+  // Owner-only permission toggle loading
+  const [togglingPermissionId, setTogglingPermissionId] = useState<string | null>(null);
+
+  // Bulk Deactivate state
+  const [deactivateYearInput, setDeactivateYearInput] = useState<string>("2020");
+  const [deactivatePreviewOpen, setDeactivatePreviewOpen] = useState(false);
+  const [isDeactivating, setIsDeactivating] = useState(false);
+
+  // Bulk Activate state
+  const [activatePreviewOpen, setActivatePreviewOpen] = useState(false);
+  const [isActivating, setIsActivating] = useState(false);
+
+  // Year Audit state
+  const [auditReport, setAuditReport] = useState<YearAuditReport | null>(null);
+  const [loadingAudit, setLoadingAudit] = useState(false);
+  const [auditTab, setAuditTab] = useState<"mismatches" | "unparseable">("mismatches");
+  const [auditSortField, setAuditSortField] = useState<"name" | "studentId" | "storedYear" | "expectedYear">("studentId");
+  const [auditSortAsc, setAuditSortAsc] = useState(true);
 
   // Owner-only registration toggle
   const [registrationOpen, setRegistrationOpen] = useState<boolean>(true);
@@ -116,6 +174,8 @@ export default function AdminPage() {
   const [viewingApp, setViewingApp] = useState<ApplicationItem | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const hasMemberManagement = currentUserRole === "owner" || currentUserPermissions.includes("memberManagement");
+
   // 1. Auth Guard
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -134,6 +194,7 @@ export default function AdminPage() {
       }
       setToken(storedToken);
       setCurrentUserRole(parsedUser.role);
+      setCurrentUserPermissions(Array.isArray(parsedUser.permissions) ? parsedUser.permissions : []);
       setIsAuthorized(true);
     } catch {
       localStorage.removeItem("token");
@@ -401,6 +462,178 @@ export default function AdminPage() {
     }
   };
 
+  // 8. Toggle Member Management Permission (Owner Only)
+  const handleTogglePermission = async (user: ApplicationItem) => {
+    if (!token || currentUserRole !== "owner") return;
+    if (user.role !== "admin") return;
+
+    const hasPerm = user.permissions?.includes("memberManagement");
+    const action = hasPerm ? "revoke-permission" : "grant-permission";
+    setTogglingPermissionId(user._id);
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/users/${user._id}/${action}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ permission: "memberManagement" }),
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message || `Failed to ${hasPerm ? "revoke" : "grant"} permission`);
+
+      toast.success(
+        hasPerm
+          ? `Revoked 'memberManagement' from ${user.fullName}`
+          : `Granted 'memberManagement' to ${user.fullName}`
+      );
+      await fetchAllMembers(token);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error updating permission";
+      toast.error(msg);
+    } finally {
+      setTogglingPermissionId(null);
+    }
+  };
+
+  // 9. Bulk Deactivate by Intake Year Handler
+  const handleConfirmBulkDeactivate = async () => {
+    if (!token) return;
+    const year = deactivateYearInput.trim();
+    if (!/^\d{4}$/.test(year)) {
+      toast.error("Please enter a valid 4-digit intake year");
+      return;
+    }
+
+    setIsDeactivating(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/applications/bulk-deactivate-by-intake-year`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ intakeYear: parseInt(year, 10) }),
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to deactivate cohort");
+
+      toast.success(data.message || `Successfully deactivated intake ${year}`);
+      setDeactivatePreviewOpen(false);
+      await fetchAllMembers(token);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error deactivating cohort");
+    } finally {
+      setIsDeactivating(false);
+    }
+  };
+
+  // 10. Bulk Activate Inactive Handler
+  const handleConfirmBulkActivate = async () => {
+    if (!token) return;
+    setIsActivating(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/applications/bulk-activate-inactive`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to activate inactive members");
+
+      toast.success(data.message || "Successfully activated inactive members");
+      setActivatePreviewOpen(false);
+      await fetchAllMembers(token);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error activating members");
+    } finally {
+      setIsActivating(false);
+    }
+  };
+
+  // 11. Run Academic Year Audit Handler
+  const handleRunAudit = async () => {
+    if (!token) return;
+    setLoadingAudit(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/applications/year-audit`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to run year audit");
+      }
+      const data: YearAuditReport = await res.json();
+      setAuditReport(data);
+      toast.success(
+        `Audit complete: ${data.summary.mismatchCount} mismatches, ${data.summary.unparseableCount} unparseable`
+      );
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error running audit");
+    } finally {
+      setLoadingAudit(false);
+    }
+  };
+
+  // 12. Export Audit as CSV
+  const handleExportAuditCSV = () => {
+    if (!auditReport) return;
+
+    const headers = ["Category", "Name", "Student ID", "Stored Year", "Expected Year", "Note / Flag"];
+    const rows: string[][] = [];
+
+    auditReport.mismatches.forEach((m) => {
+      rows.push([
+        "Mismatch",
+        `"${(m.name || "").replace(/"/g, '""')}"`,
+        `"${m.studentId}"`,
+        String(m.storedYear),
+        String(m.expectedYear),
+        `Diff: ${m.storedYear - m.expectedYear}`,
+      ]);
+    });
+
+    auditReport.unparseable.forEach((u) => {
+      rows.push([
+        "Unparseable",
+        `"${(u.name || "").replace(/"/g, '""')}"`,
+        `"${u.studentId}"`,
+        String(u.storedYear),
+        "N/A",
+        `"${u.flag}"`,
+      ]);
+    });
+
+    const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `academic_year_audit_${auditReport.academicYearReference || 2025}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("Academic year audit exported as CSV");
+  };
+
   // Client-side search and filtering for members
   const searchedMembers = useMemo(() => {
     const q = memberSearchQuery.trim().toLowerCase();
@@ -413,10 +646,84 @@ export default function AdminPage() {
     });
   }, [allMembers, memberSearchQuery]);
 
+  // Derived available faculties and academic years
+  const availableFaculties = useMemo(() => {
+    const set = new Set<string>();
+    allMembers.forEach((m) => {
+      if (m.faculty) set.add(m.faculty.trim());
+    });
+    return Array.from(set).sort();
+  }, [allMembers]);
+
+  const availableYears = useMemo(() => {
+    const set = new Set<number>();
+    allMembers.forEach((m) => {
+      if (typeof m.year === "number") set.add(m.year);
+    });
+    return Array.from(set).sort((a, b) => a - b);
+  }, [allMembers]);
+
+  // Multi-select filters combined with AND between categories and OR within category
   const filteredMembers = useMemo(() => {
-    if (statusFilter === "all") return searchedMembers;
-    return searchedMembers.filter((m) => m.membershipStatus === statusFilter);
-  }, [searchedMembers, statusFilter]);
+    return searchedMembers.filter((m) => {
+      const matchesStatus =
+        selectedStatuses.length === 0 || selectedStatuses.includes(m.membershipStatus);
+      const matchesFaculty =
+        selectedFaculties.length === 0 || selectedFaculties.includes(m.faculty);
+      const matchesYear =
+        selectedYears.length === 0 || selectedYears.includes(m.year);
+
+      return matchesStatus && matchesFaculty && matchesYear;
+    });
+  }, [searchedMembers, selectedStatuses, selectedFaculties, selectedYears]);
+
+  // Previews for bulk actions
+  const deactivatePreviewList = useMemo(() => {
+    const year = deactivateYearInput.trim();
+    if (!/^\d{4}$/.test(year)) return [];
+    const regex = new RegExp(`(?:/${year}/|-${year}-)`);
+    return allMembers.filter(
+      (m) =>
+        regex.test(m.studentId) &&
+        m.role !== "admin" &&
+        m.role !== "owner"
+    );
+  }, [allMembers, deactivateYearInput]);
+
+  const activatePreviewList = useMemo(() => {
+    return allMembers.filter(
+      (m) =>
+        m.membershipStatus === "inactive" &&
+        m.year < 5 &&
+        m.role !== "admin" &&
+        m.role !== "owner"
+    );
+  }, [allMembers]);
+
+  // Sorted year audit lists
+  const sortedMismatches = useMemo(() => {
+    if (!auditReport?.mismatches) return [];
+    return [...auditReport.mismatches].sort((a, b) => {
+      let valA: string | number = a[auditSortField] ?? "";
+      let valB: string | number = b[auditSortField] ?? "";
+      if (typeof valA === "string") valA = valA.toLowerCase();
+      if (typeof valB === "string") valB = valB.toLowerCase();
+      if (valA < valB) return auditSortAsc ? -1 : 1;
+      if (valA > valB) return auditSortAsc ? 1 : -1;
+      return 0;
+    });
+  }, [auditReport, auditSortField, auditSortAsc]);
+
+  const sortedUnparseable = useMemo(() => {
+    if (!auditReport?.unparseable) return [];
+    return [...auditReport.unparseable].sort((a, b) => {
+      const valA = (a.studentId || "").toLowerCase();
+      const valB = (b.studentId || "").toLowerCase();
+      if (valA < valB) return auditSortAsc ? -1 : 1;
+      if (valA > valB) return auditSortAsc ? 1 : -1;
+      return 0;
+    });
+  }, [auditReport, auditSortAsc]);
 
   if (!isAuthorized) {
     return (
@@ -829,54 +1136,501 @@ export default function AdminPage() {
 
         {/* Tab 2: Members */}
         {activeTab === "members" && (
-          <section className="space-y-4">
-            {/* Search Box */}
-            <div className="relative w-full sm:max-w-md">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                <Search className="h-4 w-4" />
-              </div>
-              <input
-                type="text"
-                value={memberSearchQuery}
-                onChange={(e) => setMemberSearchQuery(e.target.value)}
-                placeholder="Search by name, email, or student ID..."
-                className="h-10 w-full rounded-xl border border-white/10 bg-[#0c1220]/70 pl-10 pr-10 text-sm text-white placeholder:text-slate-500 shadow-sm backdrop-blur-md transition-colors focus:border-[#AD5CFF] focus:outline-none focus:ring-1 focus:ring-[#AD5CFF]"
-              />
-              {memberSearchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setMemberSearchQuery("")}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-white transition-colors"
-                  aria-label="Clear search"
-                >
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white">
-                    <X className="h-3 w-3" />
-                  </span>
-                </button>
-              )}
-            </div>
+          <section className="space-y-6">
+            {/* Gated Member Management Section */}
+            {hasMemberManagement && (
+              <div className="rounded-3xl border border-[#AD5CFF]/30 bg-[#0c1220]/90 p-5 sm:p-7 shadow-2xl backdrop-blur-xl relative overflow-hidden space-y-6">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(ellipse_at_top_right,rgba(173,92,255,0.12),transparent_70%)] pointer-events-none" />
 
-            {/* Filter Pills */}
-            <div className="flex flex-wrap items-center gap-2">
-              {(["all", "pending", "active", "rejected", "inactive"] as const).map((filter) => {
-                const count =
-                  filter === "all"
-                    ? searchedMembers.length
-                    : searchedMembers.filter((m) => m.membershipStatus === filter).length;
-                return (
+                {/* Section Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10 relative z-10">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[#AD5CFF]/20 text-[#D8B4FE] border border-[#AD5CFF]/40">
+                        {currentUserRole === "owner" ? "Owner Operations" : "Member Management"}
+                      </span>
+                      <span className="text-xs text-slate-400">Privileged Administration</span>
+                    </div>
+                    <h2 className="mt-1 text-lg sm:text-xl font-bold text-white font-ember flex items-center gap-2">
+                      <SlidersHorizontal className="w-5 h-5 text-[#AD5CFF]" />
+                      Academic Cohort & Member Management
+                    </h2>
+                    <p className="text-xs sm:text-sm text-slate-300 mt-0.5">
+                      Intake graduation lifecycle management, bulk status transitions, and formula-based academic year discrepancy audits.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Button
+                      size="sm"
+                      onClick={handleRunAudit}
+                      disabled={loadingAudit}
+                      className="bg-[#AD5CFF] hover:bg-[#9b45f4] text-white font-semibold text-xs rounded-xl gap-1.5 h-9 px-3.5 shadow-md shadow-[#AD5CFF]/20 transition-all"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${loadingAudit ? "animate-spin" : ""}`} />
+                      <span>{loadingAudit ? "Auditing..." : "Run Year Audit"}</span>
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Operations Tools Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                  {/* Tool 1: Bulk Deactivate by Intake Year */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-rose-300 font-semibold text-sm">
+                          <UserMinus className="w-4 h-4 text-rose-400" />
+                          <span>Bulk Deactivate by Intake Year</span>
+                        </div>
+                        <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20">
+                          Graduation
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                        Matches student IDs containing <code className="text-slate-300 font-mono">/&lt;year&gt;/</code> or <code className="text-slate-300 font-mono">-&lt;year&gt;-</code>. Sets status to <strong className="text-slate-200">inactive</strong> and academic year to <strong className="text-slate-200">5</strong>. Admins and owners are protected.
+                      </p>
+                    </div>
+
+                    <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                      <div className="relative flex-1 sm:max-w-[140px]">
+                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-mono text-slate-400">Intake</span>
+                        <input
+                          type="text"
+                          maxLength={4}
+                          value={deactivateYearInput}
+                          onChange={(e) => setDeactivateYearInput(e.target.value.replace(/\D/g, ""))}
+                          placeholder="2020"
+                          className="w-full h-9 pl-14 pr-3 text-xs font-mono rounded-xl border border-white/15 bg-white/5 text-white focus:border-[#AD5CFF] focus:outline-none"
+                        />
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => setDeactivatePreviewOpen(true)}
+                        className="bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-xs rounded-xl gap-1.5 h-9"
+                      >
+                        <UserMinus className="w-3.5 h-3.5" />
+                        <span>Preview & Deactivate ({deactivatePreviewList.length})</span>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Tool 2: Bulk Activate Inactive */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-3 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-emerald-300 font-semibold text-sm">
+                          <UserCheck className="w-4 h-4 text-emerald-400" />
+                          <span>Bulk Activate Inactive Members</span>
+                        </div>
+                        <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                          Reactivation
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                        Reactivates all currently inactive members where academic year &lt; 5. Excludes graduated cohorts (Year 5+) and admins/owners to keep graduation deactivations intact.
+                      </p>
+                    </div>
+
+                    <div className="pt-2 flex items-center justify-end">
+                      <Button
+                        size="sm"
+                        onClick={() => setActivatePreviewOpen(true)}
+                        className="w-full sm:w-auto bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs rounded-xl gap-1.5 h-9"
+                      >
+                        <UserCheck className="w-3.5 h-3.5" />
+                        <span>Preview & Activate ({activatePreviewList.length})</span>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tool 3: Year Audit Report Panel */}
+                {auditReport && (
+                  <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-4 sm:p-6 space-y-4 relative z-10">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <FileSpreadsheet className="w-4 h-4 text-[#AD5CFF]" />
+                          <h3 className="font-bold text-white text-sm sm:text-base font-ember">
+                            Academic Year Audit Report
+                          </h3>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          Formula: <code className="text-[#D8B4FE] font-mono">Expected Year = {auditReport.academicYearReference} - Intake Year</code> (Reference: {auditReport.academicYearReference})
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={handleExportAuditCSV}
+                          className="border-white/15 bg-white/5 hover:bg-white/10 text-slate-200 text-xs rounded-xl gap-1.5 h-8"
+                        >
+                          <Download className="w-3.5 h-3.5 text-[#AD5CFF]" />
+                          <span>Export CSV</span>
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Audit Stat Cards */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5">
+                        <p className="text-[11px] text-slate-400 font-medium">Reference Year</p>
+                        <p className="text-lg font-bold text-white font-mono">{auditReport.academicYearReference}</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-white/[0.03] border border-white/5">
+                        <p className="text-[11px] text-slate-400 font-medium">Total Audited</p>
+                        <p className="text-lg font-bold text-white font-mono">{auditReport.summary.totalAudited}</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                        <p className="text-[11px] text-amber-300 font-medium">Year Mismatches</p>
+                        <p className="text-lg font-bold text-amber-400 font-mono">{auditReport.summary.mismatchCount}</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20">
+                        <p className="text-[11px] text-rose-300 font-medium">Unparseable Format</p>
+                        <p className="text-lg font-bold text-rose-400 font-mono">{auditReport.summary.unparseableCount}</p>
+                      </div>
+                    </div>
+
+                    {/* Sub-tab Switcher: Mismatches vs Unparseable */}
+                    <div className="flex items-center gap-2 pt-1 border-b border-white/10">
+                      <button
+                        type="button"
+                        onClick={() => setAuditTab("mismatches")}
+                        className={`px-3 py-2 text-xs font-semibold border-b-2 transition-all flex items-center gap-2 ${
+                          auditTab === "mismatches"
+                            ? "border-[#AD5CFF] text-[#D8B4FE]"
+                            : "border-transparent text-slate-400 hover:text-white"
+                        }`}
+                      >
+                        <span>Year Discrepancies</span>
+                        <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                          {auditReport.summary.mismatchCount}
+                        </span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setAuditTab("unparseable")}
+                        className={`px-3 py-2 text-xs font-semibold border-b-2 transition-all flex items-center gap-2 ${
+                          auditTab === "unparseable"
+                            ? "border-[#AD5CFF] text-[#D8B4FE]"
+                            : "border-transparent text-slate-400 hover:text-white"
+                        }`}
+                      >
+                        <span>Unparseable Format</span>
+                        <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                          {auditReport.summary.unparseableCount}
+                        </span>
+                      </button>
+                    </div>
+
+                    {/* Audit Sub-view 1: Mismatches Table */}
+                    {auditTab === "mismatches" && (
+                      <div className="space-y-2">
+                        {sortedMismatches.length === 0 ? (
+                          <p className="text-xs text-slate-400 py-4 text-center">Zero academic year mismatches found! All student records align with the reference formula.</p>
+                        ) : (
+                          <div className="overflow-x-auto rounded-xl border border-white/10">
+                            <table className="w-full text-left text-xs text-slate-200">
+                              <thead className="bg-white/5 uppercase tracking-wider text-slate-400 font-semibold border-b border-white/10">
+                                <tr>
+                                  <th
+                                    className="px-4 py-3 cursor-pointer hover:text-white select-none"
+                                    onClick={() => {
+                                      if (auditSortField === "name") setAuditSortAsc(!auditSortAsc);
+                                      else { setAuditSortField("name"); setAuditSortAsc(true); }
+                                    }}
+                                  >
+                                    <div className="flex items-center gap-1">
+                                      <span>Member Name</span>
+                                      <ArrowUpDown className="w-3 h-3" />
+                                    </div>
+                                  </th>
+                                  <th
+                                    className="px-4 py-3 cursor-pointer hover:text-white select-none"
+                                    onClick={() => {
+                                      if (auditSortField === "studentId") setAuditSortAsc(!auditSortAsc);
+                                      else { setAuditSortField("studentId"); setAuditSortAsc(true); }
+                                    }}
+                                  >
+                                    <div className="flex items-center gap-1">
+                                      <span>Student ID</span>
+                                      <ArrowUpDown className="w-3 h-3" />
+                                    </div>
+                                  </th>
+                                  <th
+                                    className="px-4 py-3 cursor-pointer hover:text-white select-none text-center"
+                                    onClick={() => {
+                                      if (auditSortField === "storedYear") setAuditSortAsc(!auditSortAsc);
+                                      else { setAuditSortField("storedYear"); setAuditSortAsc(true); }
+                                    }}
+                                  >
+                                    <div className="flex items-center justify-center gap-1">
+                                      <span>Stored Year</span>
+                                      <ArrowUpDown className="w-3 h-3" />
+                                    </div>
+                                  </th>
+                                  <th
+                                    className="px-4 py-3 cursor-pointer hover:text-white select-none text-center"
+                                    onClick={() => {
+                                      if (auditSortField === "expectedYear") setAuditSortAsc(!auditSortAsc);
+                                      else { setAuditSortField("expectedYear"); setAuditSortAsc(true); }
+                                    }}
+                                  >
+                                    <div className="flex items-center justify-center gap-1">
+                                      <span>Expected Year</span>
+                                      <ArrowUpDown className="w-3 h-3" />
+                                    </div>
+                                  </th>
+                                  <th className="px-4 py-3 text-right">Discrepancy</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-white/5 bg-slate-900/40">
+                                {sortedMismatches.map((item, idx) => (
+                                  <tr key={item.id || idx} className="hover:bg-white/[0.03]">
+                                    <td className="px-4 py-2.5 font-medium text-white">{item.name}</td>
+                                    <td className="px-4 py-2.5 font-mono text-slate-300">{item.studentId}</td>
+                                    <td className="px-4 py-2.5 text-center font-mono text-amber-300 font-bold">Year {item.storedYear}</td>
+                                    <td className="px-4 py-2.5 text-center font-mono text-emerald-300 font-bold">Year {item.expectedYear}</td>
+                                    <td className="px-4 py-2.5 text-right font-mono text-slate-400">
+                                      {item.storedYear > item.expectedYear
+                                        ? `+${item.storedYear - item.expectedYear} yr ahead`
+                                        : `${item.storedYear - item.expectedYear} yr behind`}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Audit Sub-view 2: Unparseable Table */}
+                    {auditTab === "unparseable" && (
+                      <div className="space-y-2">
+                        {sortedUnparseable.length === 0 ? (
+                          <p className="text-xs text-slate-400 py-4 text-center">No unparseable student IDs! All records match either slash or dash year syntax.</p>
+                        ) : (
+                          <div className="overflow-x-auto rounded-xl border border-white/10">
+                            <table className="w-full text-left text-xs text-slate-200">
+                              <thead className="bg-white/5 uppercase tracking-wider text-slate-400 font-semibold border-b border-white/10">
+                                <tr>
+                                  <th className="px-4 py-3">Member Name</th>
+                                  <th className="px-4 py-3">Student ID</th>
+                                  <th className="px-4 py-3 text-center">Stored Year</th>
+                                  <th className="px-4 py-3 text-right">Flag</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-white/5 bg-slate-900/40">
+                                {sortedUnparseable.map((item, idx) => (
+                                  <tr key={item.id || idx} className="hover:bg-white/[0.03]">
+                                    <td className="px-4 py-2.5 font-medium text-white">{item.name}</td>
+                                    <td className="px-4 py-2.5 font-mono text-rose-300">{item.studentId || "Empty ID"}</td>
+                                    <td className="px-4 py-2.5 text-center font-mono text-slate-300">Year {item.storedYear}</td>
+                                    <td className="px-4 py-2.5 text-right">
+                                      <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-rose-500/10 text-rose-300 border border-rose-500/20">
+                                        {item.flag || "unparseable format"}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Search Box & Multi-Select Filters */}
+            <div className="space-y-3">
+              <div className="relative w-full sm:max-w-md">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                  <Search className="h-4 w-4" />
+                </div>
+                <input
+                  type="text"
+                  value={memberSearchQuery}
+                  onChange={(e) => setMemberSearchQuery(e.target.value)}
+                  placeholder="Search by name, email, or student ID..."
+                  className="h-10 w-full rounded-xl border border-white/10 bg-[#0c1220]/70 pl-10 pr-10 text-sm text-white placeholder:text-slate-500 shadow-sm backdrop-blur-md transition-colors focus:border-[#AD5CFF] focus:outline-none focus:ring-1 focus:ring-[#AD5CFF]"
+                />
+                {memberSearchQuery && (
                   <button
-                    key={filter}
-                    onClick={() => setStatusFilter(filter)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold capitalize transition-all select-none ${
-                      statusFilter === filter
-                        ? "bg-[#AD5CFF] text-white"
-                        : "bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10"
-                    }`}
+                    type="button"
+                    onClick={() => setMemberSearchQuery("")}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-white transition-colors"
+                    aria-label="Clear search"
                   >
-                    {filter} ({count})
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white">
+                      <X className="h-3 w-3" />
+                    </span>
                   </button>
-                );
-              })}
+                )}
+              </div>
+
+              {/* Multi-Select Filters Panel */}
+              <div className="p-4 sm:p-5 rounded-2xl border border-white/10 bg-[#0c1220]/80 shadow-md backdrop-blur-md space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-2.5">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <Filter className="w-3.5 h-3.5 text-[#AD5CFF]" />
+                    <span>Multi-Select Filters (AND across categories, OR within)</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-slate-400">
+                      Showing <strong className="text-white">{filteredMembers.length}</strong> of {allMembers.length} members
+                    </span>
+                    {(selectedStatuses.length > 0 || selectedFaculties.length > 0 || selectedYears.length > 0) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedStatuses([]);
+                          setSelectedFaculties([]);
+                          setSelectedYears([]);
+                        }}
+                        className="text-xs text-[#AD5CFF] hover:text-[#D8B4FE] hover:underline flex items-center gap-1 font-medium"
+                      >
+                        <X className="w-3 h-3" />
+                        <span>Reset Filters</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Category 1: Status */}
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Membership Status
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(["active", "pending", "inactive", "rejected"] as const).map((st) => {
+                        const isSelected = selectedStatuses.includes(st);
+                        const count = allMembers.filter((m) => m.membershipStatus === st).length;
+                        return (
+                          <button
+                            key={st}
+                            type="button"
+                            onClick={() => {
+                              setSelectedStatuses((prev) =>
+                                isSelected ? prev.filter((s) => s !== st) : [...prev, st]
+                              );
+                            }}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium border capitalize transition-all flex items-center gap-1.5 select-none ${
+                              isSelected
+                                ? "bg-[#AD5CFF] text-white border-[#AD5CFF] shadow-sm"
+                                : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                            }`}
+                          >
+                            <div
+                              className={`w-2.5 h-2.5 rounded-sm border flex items-center justify-center ${
+                                isSelected ? "bg-white border-white text-[#AD5CFF]" : "border-slate-500 bg-transparent"
+                              }`}
+                            >
+                              {isSelected && <Check className="w-2 h-2 stroke-[3]" />}
+                            </div>
+                            <span>{st}</span>
+                            <span className={`text-[10px] px-1 rounded-full ${isSelected ? "bg-white/20 text-white" : "text-slate-400"}`}>
+                              {count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Category 2: Faculty */}
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Faculty
+                    </label>
+                    <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto pr-1">
+                      {availableFaculties.map((fac) => {
+                        const isSelected = selectedFaculties.includes(fac);
+                        const count = allMembers.filter((m) => m.faculty === fac).length;
+                        const shortName = fac.replace(/^Faculty of\s+/i, "");
+                        return (
+                          <button
+                            key={fac}
+                            type="button"
+                            onClick={() => {
+                              setSelectedFaculties((prev) =>
+                                isSelected ? prev.filter((f) => f !== fac) : [...prev, fac]
+                              );
+                            }}
+                            title={fac}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 select-none ${
+                              isSelected
+                                ? "bg-[#AD5CFF] text-white border-[#AD5CFF] shadow-sm"
+                                : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                            }`}
+                          >
+                            <div
+                              className={`w-2.5 h-2.5 rounded-sm border flex items-center justify-center ${
+                                isSelected ? "bg-white border-white text-[#AD5CFF]" : "border-slate-500 bg-transparent"
+                              }`}
+                            >
+                              {isSelected && <Check className="w-2 h-2 stroke-[3]" />}
+                            </div>
+                            <span className="truncate max-w-[130px]">{shortName}</span>
+                            <span className={`text-[10px] px-1 rounded-full ${isSelected ? "bg-white/20 text-white" : "text-slate-400"}`}>
+                              {count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Category 3: Academic Year */}
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Academic Year
+                    </label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {availableYears.map((yr) => {
+                        const isSelected = selectedYears.includes(yr);
+                        const count = allMembers.filter((m) => m.year === yr).length;
+                        return (
+                          <button
+                            key={yr}
+                            type="button"
+                            onClick={() => {
+                              setSelectedYears((prev) =>
+                                isSelected ? prev.filter((y) => y !== yr) : [...prev, yr]
+                              );
+                            }}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 select-none ${
+                              isSelected
+                                ? "bg-[#AD5CFF] text-white border-[#AD5CFF] shadow-sm"
+                                : "bg-white/5 border-white/10 text-slate-300 hover:bg-white/10"
+                            }`}
+                          >
+                            <div
+                              className={`w-2.5 h-2.5 rounded-sm border flex items-center justify-center ${
+                                isSelected ? "bg-white border-white text-[#AD5CFF]" : "border-slate-500 bg-transparent"
+                              }`}
+                            >
+                              {isSelected && <Check className="w-2 h-2 stroke-[3]" />}
+                            </div>
+                            <span>Year {yr}</span>
+                            <span className={`text-[10px] px-1 rounded-full ${isSelected ? "bg-white/20 text-white" : "text-slate-400"}`}>
+                              {count}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {loadingMembers ? (
@@ -885,41 +1639,33 @@ export default function AdminPage() {
                 <p className="mt-4 text-sm text-slate-300">Loading members list...</p>
               </div>
             ) : filteredMembers.length === 0 ? (
-              memberSearchQuery.trim() ? (
-                <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 p-12 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-[#AD5CFF]">
-                    <Search className="h-6 w-6" />
-                  </div>
-                  <h3 className="mt-4 text-lg font-semibold text-white font-ember">
-                    No members match your search
-                  </h3>
-                  <p className="mt-1 text-sm text-slate-400">
-                    No members found matching &ldquo;{memberSearchQuery}&rdquo;
-                    {statusFilter !== "all" ? ` with status "${statusFilter}"` : ""}.
-                  </p>
-                  <div className="mt-5">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setMemberSearchQuery("")}
-                      className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 text-xs rounded-xl gap-2"
-                    >
-                      <X className="h-3.5 w-3.5" />
-                      <span>Clear Search</span>
-                    </Button>
-                  </div>
+              <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 p-12 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-[#AD5CFF]">
+                  <Search className="h-6 w-6" />
                 </div>
-              ) : (
-                <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 p-12 text-center">
-                  <IconBadge name="teams" variant="secondary" size="xl" className="mx-auto" />
-                  <h3 className="mt-4 text-lg font-semibold text-white font-ember">
-                    No Members Found
-                  </h3>
-                  <p className="mt-1 text-sm text-slate-400">
-                    No members matched the &ldquo;{statusFilter}&rdquo; filter.
-                  </p>
+                <h3 className="mt-4 text-lg font-semibold text-white font-ember">
+                  No members match your criteria
+                </h3>
+                <p className="mt-1 text-sm text-slate-400">
+                  Try adjusting or clearing your search keywords and multi-select filters.
+                </p>
+                <div className="mt-5">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setMemberSearchQuery("");
+                      setSelectedStatuses([]);
+                      setSelectedFaculties([]);
+                      setSelectedYears([]);
+                    }}
+                    className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 text-xs rounded-xl gap-2"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                    <span>Clear All Filters</span>
+                  </Button>
                 </div>
-              )
+              </div>
             ) : (
               <div className="rounded-3xl border border-white/10 bg-[#0c1220]/70 shadow-2xl backdrop-blur-md overflow-hidden">
                 {/* Mobile Members Cards View (< 768px) */}
@@ -976,28 +1722,63 @@ export default function AdminPage() {
                           >
                             {member.role}
                           </span>
+                          {member.role === "admin" && (
+                            <span
+                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+                                member.permissions?.includes("memberManagement")
+                                  ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
+                                  : "bg-white/5 text-slate-400 border-white/10"
+                              }`}
+                            >
+                              Mgmt: {member.permissions?.includes("memberManagement") ? "Enabled" : "Disabled"}
+                            </span>
+                          )}
                         </div>
 
                         {/* Owner action if applicable */}
                         {currentUserRole === "owner" && (
-                          <div className="pt-2 border-t border-white/5">
+                          <div className="pt-2 border-t border-white/5 space-y-2">
                             {member.role === "owner" ? (
                               <span className="text-xs text-slate-500 italic">Cannot modify</span>
                             ) : member.role === "admin" ? (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() =>
-                                  setRoleConfirm({
-                                    open: true,
-                                    action: "demote",
-                                    user: member,
-                                  })
-                                }
-                                className="w-full border-amber-500/30 text-amber-300 hover:bg-amber-500/10 hover:border-amber-500/60 text-xs px-3 py-1.5 h-8 rounded-lg transition-all"
-                              >
-                                Demote to Member
-                              </Button>
+                              <div className="flex flex-col sm:flex-row gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  disabled={togglingPermissionId === member._id}
+                                  onClick={() => handleTogglePermission(member)}
+                                  className={`w-full text-xs px-3 py-1.5 h-8 rounded-lg transition-all border flex items-center justify-center gap-1.5 ${
+                                    member.permissions?.includes("memberManagement")
+                                      ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20"
+                                      : "border-slate-700 bg-white/5 text-slate-300 hover:bg-white/10"
+                                  }`}
+                                >
+                                  {togglingPermissionId === member._id ? (
+                                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                                  ) : (
+                                    <ShieldCheck className="h-3.5 w-3.5" />
+                                  )}
+                                  <span>
+                                    {member.permissions?.includes("memberManagement")
+                                      ? "Revoke Member Mgmt"
+                                      : "Grant Member Mgmt"}
+                                  </span>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() =>
+                                    setRoleConfirm({
+                                      open: true,
+                                      action: "demote",
+                                      user: member,
+                                    })
+                                  }
+                                  className="w-full border-amber-500/30 text-amber-300 hover:bg-amber-500/10 hover:border-amber-500/60 text-xs px-3 py-1.5 h-8 rounded-lg transition-all"
+                                >
+                                  Demote to Member
+                                </Button>
+                              </div>
                             ) : (
                               <Button
                                 size="sm"
@@ -1030,7 +1811,7 @@ export default function AdminPage() {
                         <th className="px-6 py-4">Student ID</th>
                         <th className="px-6 py-4">Faculty & Year</th>
                         <th className="px-6 py-4">Membership Status</th>
-                        <th className="px-6 py-4">Role</th>
+                        <th className="px-6 py-4">Role & Perms</th>
                         {currentUserRole === "owner" && (
                           <th className="px-6 py-4 text-right">Actions</th>
                         )}
@@ -1084,13 +1865,26 @@ export default function AdminPage() {
                                 </span>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <span
-                                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border uppercase tracking-wider ${
-                                    roleColors[member.role] || roleColors.member
-                                  }`}
-                                >
-                                  {member.role}
-                                </span>
+                                <div className="flex flex-col gap-1 items-start">
+                                  <span
+                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border uppercase tracking-wider ${
+                                      roleColors[member.role] || roleColors.member
+                                    }`}
+                                  >
+                                    {member.role}
+                                  </span>
+                                  {member.role === "admin" && (
+                                    <span
+                                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+                                        member.permissions?.includes("memberManagement")
+                                          ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
+                                          : "bg-white/5 text-slate-400 border-white/10"
+                                      }`}
+                                    >
+                                      Mgmt: {member.permissions?.includes("memberManagement") ? "Enabled" : "Disabled"}
+                                    </span>
+                                  )}
+                                </div>
                               </td>
 
                               {/* Owner-Only Actions Column */}
@@ -1099,20 +1893,49 @@ export default function AdminPage() {
                                   {member.role === "owner" ? (
                                     <span className="text-xs text-slate-500 italic pr-2">Cannot modify</span>
                                   ) : member.role === "admin" ? (
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() =>
-                                        setRoleConfirm({
-                                          open: true,
-                                          action: "demote",
-                                          user: member,
-                                        })
-                                      }
-                                      className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10 hover:border-amber-500/60 text-xs px-3 py-1 h-7 rounded-lg transition-all"
-                                    >
-                                      Demote to Member
-                                    </Button>
+                                    <div className="flex items-center justify-end gap-2">
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        disabled={togglingPermissionId === member._id}
+                                        onClick={() => handleTogglePermission(member)}
+                                        className={`border text-xs px-2.5 py-1 h-7 rounded-lg transition-all flex items-center gap-1.5 ${
+                                          member.permissions?.includes("memberManagement")
+                                            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 hover:border-emerald-500/50"
+                                            : "border-white/10 bg-white/5 text-slate-300 hover:bg-white/10"
+                                        }`}
+                                        title={
+                                          member.permissions?.includes("memberManagement")
+                                            ? "Click to revoke Member Management permission"
+                                            : "Click to grant Member Management permission"
+                                        }
+                                      >
+                                        {togglingPermissionId === member._id ? (
+                                          <RefreshCw className="h-3 w-3 animate-spin" />
+                                        ) : (
+                                          <ShieldCheck className="h-3 w-3" />
+                                        )}
+                                        <span>
+                                          {member.permissions?.includes("memberManagement")
+                                            ? "Revoke Mgmt"
+                                            : "Grant Mgmt"}
+                                        </span>
+                                      </Button>
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() =>
+                                          setRoleConfirm({
+                                            open: true,
+                                            action: "demote",
+                                            user: member,
+                                          })
+                                        }
+                                        className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10 hover:border-amber-500/60 text-xs px-3 py-1 h-7 rounded-lg transition-all"
+                                      >
+                                        Demote
+                                      </Button>
+                                    </div>
                                   ) : (
                                     <Button
                                       size="sm"
@@ -1608,6 +2431,176 @@ export default function AdminPage() {
                   ? "Confirm Promotion"
                   : "Confirm Demotion"}
               </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Deactivate by Intake Year Preview Modal */}
+      {deactivatePreviewOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        >
+          <div className="relative w-full max-w-2xl rounded-2xl border border-white/15 bg-[#0c1220] p-6 shadow-2xl text-slate-100 max-h-[85vh] flex flex-col">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-xl shrink-0 bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-lg font-semibold text-white font-ember">
+                  Confirm Bulk Deactivation (Intake Year {deactivateYearInput})
+                </h3>
+                <p className="mt-1 text-xs text-slate-400">
+                  This action marks non-admin/non-owner members matching intake year {deactivateYearInput} as <strong className="text-rose-300">inactive</strong>.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDeactivatePreviewOpen(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/5"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="mt-4 flex-1 overflow-y-auto rounded-xl border border-white/10 bg-white/[0.02]">
+              {deactivatePreviewList.length === 0 ? (
+                <div className="p-8 text-center text-slate-400 text-sm">
+                  No active or pending members found matching intake year <span className="text-white font-mono">{deactivateYearInput}</span>.
+                </div>
+              ) : (
+                <div className="divide-y divide-white/5">
+                  <div className="px-4 py-2.5 bg-white/5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider grid grid-cols-12 gap-2">
+                    <span className="col-span-5">Member</span>
+                    <span className="col-span-3">Student ID</span>
+                    <span className="col-span-2">Current Status</span>
+                    <span className="col-span-2 text-right">Role</span>
+                  </div>
+                  {deactivatePreviewList.map((m) => (
+                    <div key={m._id} className="px-4 py-2.5 text-xs grid grid-cols-12 gap-2 items-center hover:bg-white/[0.02]">
+                      <div className="col-span-5 min-w-0">
+                        <p className="font-medium text-white truncate">{m.fullName}</p>
+                        <p className="text-[11px] text-slate-400 truncate">{m.email}</p>
+                      </div>
+                      <span className="col-span-3 font-mono text-slate-300 truncate">{m.studentId}</span>
+                      <span className="col-span-2 capitalize text-amber-300 text-[11px]">{m.membershipStatus}</span>
+                      <span className="col-span-2 text-right uppercase text-slate-400 text-[11px] font-medium">{m.role}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+              <span className="text-xs text-slate-400">
+                Total matching records: <strong className="text-white">{deactivatePreviewList.length}</strong>
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={isProcessing}
+                  onClick={() => setDeactivatePreviewOpen(false)}
+                  className="border-white/15 bg-transparent hover:bg-white/10 text-slate-300 rounded-xl"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={isProcessing || deactivatePreviewList.length === 0}
+                  onClick={handleConfirmBulkDeactivate}
+                  className="bg-rose-600 hover:bg-rose-500 font-semibold rounded-xl text-white"
+                >
+                  {isProcessing ? "Processing..." : `Deactivate ${deactivatePreviewList.length} Members`}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Reactivate Inactive Preview Modal */}
+      {activatePreviewOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        >
+          <div className="relative w-full max-w-2xl rounded-2xl border border-white/15 bg-[#0c1220] p-6 shadow-2xl text-slate-100 max-h-[85vh] flex flex-col">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 rounded-xl shrink-0 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <CheckCircle2 className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h3 className="text-lg font-semibold text-white font-ember">
+                  Confirm Bulk Reactivation
+                </h3>
+                <p className="mt-1 text-xs text-slate-400">
+                  This will reactivate currently <strong className="text-slate-300">inactive</strong> members with <strong className="text-emerald-300">Year &lt; 5</strong>. Members in Year 5 or above remain inactive.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActivatePreviewOpen(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/5"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="mt-4 flex-1 overflow-y-auto rounded-xl border border-white/10 bg-white/[0.02]">
+              {activatePreviewList.length === 0 ? (
+                <div className="p-8 text-center text-slate-400 text-sm">
+                  No inactive members with Year &lt; 5 eligible for reactivation.
+                </div>
+              ) : (
+                <div className="divide-y divide-white/5">
+                  <div className="px-4 py-2.5 bg-white/5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider grid grid-cols-12 gap-2">
+                    <span className="col-span-5">Member</span>
+                    <span className="col-span-3">Student ID</span>
+                    <span className="col-span-2">Faculty</span>
+                    <span className="col-span-2 text-right">Year</span>
+                  </div>
+                  {activatePreviewList.map((m) => (
+                    <div key={m._id} className="px-4 py-2.5 text-xs grid grid-cols-12 gap-2 items-center hover:bg-white/[0.02]">
+                      <div className="col-span-5 min-w-0">
+                        <p className="font-medium text-white truncate">{m.fullName}</p>
+                        <p className="text-[11px] text-slate-400 truncate">{m.email}</p>
+                      </div>
+                      <span className="col-span-3 font-mono text-slate-300 truncate">{m.studentId}</span>
+                      <span className="col-span-2 text-slate-300 text-[11px] truncate">{m.faculty}</span>
+                      <span className="col-span-2 text-right text-emerald-300 text-[11px] font-semibold">Year {m.year}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+              <span className="text-xs text-slate-400">
+                Eligible records (Year &lt; 5): <strong className="text-white">{activatePreviewList.length}</strong>
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={isProcessing}
+                  onClick={() => setActivatePreviewOpen(false)}
+                  className="border-white/15 bg-transparent hover:bg-white/10 text-slate-300 rounded-xl"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={isProcessing || activatePreviewList.length === 0}
+                  onClick={handleConfirmBulkActivate}
+                  className="bg-emerald-600 hover:bg-emerald-500 font-semibold rounded-xl text-white"
+                >
+                  {isProcessing ? "Reactivating..." : `Reactivate ${activatePreviewList.length} Members`}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
