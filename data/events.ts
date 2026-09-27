@@ -17,6 +17,21 @@ export interface Event {
 export const events: Event[] = [
   {
     id: 1,
+    title: "CloudSpark – An Introduction to Cloud Computing and AWS",
+    date: "September 30, 2026",
+    time: "4:00 PM – 6:00 PM",
+    location: "Faculty Board Room, Faculty of Science, University of Kelaniya",
+    description:
+      "An introductory session on cloud computing and AWS fundamentals featuring guest speaker Mr. Ravindu Nirmal Fernando (Vice President of Engineering, Emojot). Covering cloud computing essentials, core AWS services, real-world applications, industry insights, and an open Q&A session. Open exclusively for University of Kelaniya students.",
+    image: "/cloudspark-event.png",
+    category: "Technical Session",
+    status: "open",
+    registrationLink:
+      "https://www.meetup.com/aws-sbg-at-university-of-kelaniya/events/316721574/?eventOrigin=group_upcoming_events",
+    registrationLinkText: "Register on Meetup",
+  },
+  {
+    id: 2,
     title: "AWS Student Community Day Sri Lanka 2026",
     date: "25 April 2026",
     time: "8 am - 6 pm",
@@ -30,7 +45,7 @@ export const events: Event[] = [
     registrationLinkText: "Event Ended",
   },
   {
-    id: 2,
+    id: 3,
     title: "Annual General Meeting 2026",
     date: "30 April 2026",
     time: "12:00 PM - 1:00 PM",
