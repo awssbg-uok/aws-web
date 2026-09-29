@@ -14,10 +14,10 @@ import {
   Info,
   RefreshCw,
   Send,
-  Sparkles,
   Users,
   ShieldAlert,
 } from "lucide-react";
+import { IconBadge } from "@/components/icon-badge";
 import { Button } from "@/components/ui/button";
 
 interface User {
@@ -432,7 +432,7 @@ export default function TeamApplicationPage() {
 
           <div className="relative z-10 space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-purple-400/40 bg-purple-500/20 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-purple-200">
-              <Sparkles className="h-3.5 w-3.5 text-[#AD5CFF]" />
+              <IconBadge name="teams" variant="primary" size="xs" />
               <span>Operations Teams Recruitment</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-ember">

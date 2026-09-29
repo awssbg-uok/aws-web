@@ -9,7 +9,6 @@ import {
   Calendar,
   ExternalLink,
   ArrowRight,
-  Sparkles,
   CheckCircle2,
   RefreshCw,
 } from "lucide-react";
@@ -264,9 +263,7 @@ export default function Dashboard() {
           className="premium-card mb-8 p-6 sm:p-8"
         >
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#AD5CFF]/30 bg-[#0c1220]/80 px-3.5 py-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.35),inset_0_1px_1px_rgba(255,255,255,0.15)] backdrop-blur-xl">
-            <span className="flex h-4 w-4 items-center justify-center rounded-md bg-[#AD5CFF]/20 text-[#AD5CFF]">
-              <Sparkles className="h-2.5 w-2.5" />
-            </span>
+            <IconBadge name="bolt" variant="primary" size="xs" />
             <span className="text-[11px] font-semibold uppercase tracking-wider text-purple-200">
               Member Dashboard
             </span>
@@ -323,9 +320,12 @@ export default function Dashboard() {
             className="mb-6 rounded-2xl border border-purple-500/30 bg-gradient-to-r from-[#AD5CFF]/15 via-[#0c1220]/90 to-[#AD5CFF]/10 p-4 sm:p-5 shadow-lg backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-4"
           >
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-purple-500/20 border border-purple-400/40 flex items-center justify-center text-[#AD5CFF] shrink-0">
-                <Sparkles className="h-5 w-5" />
-              </div>
+              <IconBadge
+                name="teams"
+                variant="primary"
+                size="lg"
+                className="shadow-md shadow-purple-950/40"
+              />
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-sm sm:text-base font-bold text-white font-ember">

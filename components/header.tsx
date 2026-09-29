@@ -527,7 +527,7 @@ export default function Header() {
                     href="/operations-teams"
                     isDark={isDark}
                     isActive={pathname === "/operations-teams"}
-                    iconName="bolt"
+                    iconName="teams"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Operations Teams
