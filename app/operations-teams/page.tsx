@@ -154,7 +154,10 @@ export default function TeamApplicationPage() {
     const storedToken = localStorage.getItem("token");
 
     if (!storedUser || !storedToken) {
-      router.push("/login");
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("post_login_redirect", "/operations-teams");
+      }
+      router.push("/login?redirect=/operations-teams");
       return;
     }
 
@@ -167,7 +170,18 @@ export default function TeamApplicationPage() {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/team-applications/me`, {
         headers: { Authorization: `Bearer ${storedToken}` },
       })
-        .then((res) => (res.ok ? res.json() : null))
+        .then((res) => {
+          if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            if (typeof window !== "undefined") {
+              sessionStorage.setItem("post_login_redirect", "/operations-teams");
+            }
+            router.push("/login?redirect=/operations-teams");
+            return null;
+          }
+          return res.ok ? res.json() : null;
+        })
         .then((data) => {
           if (data) {
             setRecruitmentOpen(Boolean(data.teamRecruitmentOpen));
@@ -223,7 +237,11 @@ export default function TeamApplicationPage() {
         });
     } catch {
       localStorage.removeItem("user");
-      router.push("/login");
+      localStorage.removeItem("token");
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("post_login_redirect", "/operations-teams");
+      }
+      router.push("/login?redirect=/operations-teams");
     }
   }, [router]);
 

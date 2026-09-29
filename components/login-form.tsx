@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +19,20 @@ import {
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "react-hot-toast";
 
+function getSafeRedirectUrl(param: string | null): string {
+  if (!param) return "/dashboard";
+  const trimmed = param.trim();
+  if (
+    trimmed.startsWith("/") &&
+    !trimmed.startsWith("//") &&
+    !trimmed.startsWith("/\\") &&
+    !trimmed.includes(":")
+  ) {
+    return trimmed;
+  }
+  return "/dashboard";
+}
+
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email." }),
   password: z
@@ -26,6 +41,7 @@ const loginSchema = z.object({
 });
 
 export default function LoginForm() {
+  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -68,7 +84,20 @@ export default function LoginForm() {
       });
 
       form.reset();
-      window.location.href = "/dashboard";
+
+      // Resolve redirect destination (query param first, then session storage, default /dashboard)
+      const redirectParam = searchParams.get("redirect");
+      const sessionRedirect =
+        typeof window !== "undefined"
+          ? sessionStorage.getItem("post_login_redirect")
+          : null;
+
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("post_login_redirect");
+      }
+
+      const target = getSafeRedirectUrl(redirectParam || sessionRedirect);
+      window.location.href = target;
     } catch (error) {
       console.error("Login error:", error);
       toast.error("Login failed", {

@@ -223,7 +223,10 @@ export default function AdminPage() {
     const storedUser = localStorage.getItem("user");
 
     if (!storedToken || !storedUser) {
-      router.push("/login");
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("post_login_redirect", "/admin");
+      }
+      router.push("/login?redirect=/admin");
       return;
     }
 
@@ -240,7 +243,10 @@ export default function AdminPage() {
     } catch {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      router.push("/login");
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("post_login_redirect", "/admin");
+      }
+      router.push("/login?redirect=/admin");
     }
   }, [router]);
 

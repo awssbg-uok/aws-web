@@ -1,9 +1,11 @@
 "use client";
 
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import LoginForm from "@/components/login-form";
-import { Sparkles } from "lucide-react";
+import { IconBadge } from "@/components/icon-badge";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   return (
@@ -36,9 +38,9 @@ export default function LoginPage() {
 
           {/* Branding Header */}
           <div className="text-center mb-8">
-            <div className="mb-3.5 inline-flex items-center gap-1.5 rounded-full border border-[#AD5CFF]/30 bg-[#AD5CFF]/10 px-3.5 py-1 text-[11px] font-semibold text-purple-200">
-              <Sparkles className="w-3.5 h-3.5 text-[#AD5CFF]" />
-              Official Builder Community Portal
+            <div className="mb-3.5 inline-flex items-center gap-1.5 rounded-full border border-[#AD5CFF]/30 bg-[#AD5CFF]/10 px-3 py-1 text-[11px] font-semibold text-purple-200">
+              <IconBadge name="key" variant="primary" size="xs" />
+              <span>Official Builder Community Portal</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white font-ember">
@@ -51,7 +53,15 @@ export default function LoginPage() {
           </div>
 
           {/* Form */}
-          <LoginForm />
+          <Suspense
+            fallback={
+              <div className="flex h-48 items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin text-[#AD5CFF]" />
+              </div>
+            }
+          >
+            <LoginForm />
+          </Suspense>
 
           {/* Bottom Join Us Redirect */}
           <div className="mt-8 pt-6 border-t border-white/[0.08] text-center">
