@@ -98,6 +98,13 @@ interface MessageItem {
   createdAt: string;
 }
 
+interface AdminTeamInterestItem {
+  team: string;
+  experienceLevel?: "beginner" | "intermediate" | "advanced";
+  answers?: { question: string; answer: string }[];
+  experience?: string;
+}
+
 interface AdminTeamApplicationItem {
   _id: string;
   applicantId: string;
@@ -106,7 +113,7 @@ interface AdminTeamApplicationItem {
     email: string;
     studentId: string;
   };
-  teamsInterested: (string | { team: string; experience?: string })[];
+  teamsInterested: (string | AdminTeamInterestItem)[];
   createdAt: string;
   updatedAt: string;
 }
@@ -131,6 +138,12 @@ const TEAM_CONFIG_MAP: Record<string, { label: string; badgeClass: string }> = {
   designing: { label: "Designing", badgeClass: "bg-purple-500/10 text-purple-400 border-purple-500/30" },
 };
 
+const EXPERIENCE_LEVEL_MAP: Record<string, { label: string; badgeClass: string }> = {
+  beginner: { label: "Beginner", badgeClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" },
+  intermediate: { label: "Intermediate", badgeClass: "bg-purple-500/10 text-purple-400 border-purple-500/30" },
+  advanced: { label: "Advanced", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/30" },
+};
+
 export default function AdminPage() {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -151,6 +164,7 @@ export default function AdminPage() {
   const [teamRecruitmentOpen, setTeamRecruitmentOpen] = useState<boolean>(false);
   const [togglingRecruitment, setTogglingRecruitment] = useState(false);
   const [teamAppSearchQuery, setTeamAppSearchQuery] = useState("");
+  const [viewingTeamApp, setViewingTeamApp] = useState<AdminTeamApplicationItem | null>(null);
 
   // Bulk Approve State
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -2295,6 +2309,7 @@ export default function AdminPage() {
                         <th className="px-6 py-4">Email</th>
                         <th className="px-6 py-4">Teams Interested</th>
                         <th className="px-6 py-4">Applied Date</th>
+                        <th className="px-6 py-4 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5 font-sans">
@@ -2322,22 +2337,33 @@ export default function AdminPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-2">
                               {item.teamsInterested?.map((interest, idx) => {
                                 const teamKey = typeof interest === "string" ? interest : interest?.team;
+                                const expLevel = typeof interest === "object" ? interest?.experienceLevel : undefined;
                                 const experience = typeof interest === "object" ? interest?.experience : "";
                                 const conf = TEAM_CONFIG_MAP[teamKey] || {
                                   label: teamKey,
                                   badgeClass: "bg-white/10 text-slate-300 border-white/10",
                                 };
+                                const levelConf = expLevel ? EXPERIENCE_LEVEL_MAP[expLevel] : null;
+
                                 return (
-                                  <span
-                                    key={idx}
-                                    title={experience ? `Experience: ${experience}` : undefined}
-                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${conf.badgeClass}`}
-                                  >
-                                    {conf.label}
-                                  </span>
+                                  <div key={idx} className="inline-flex items-center gap-1.5 bg-white/[0.02] px-2 py-1 rounded-xl border border-white/5">
+                                    <span
+                                      title={experience ? `Experience: ${experience}` : undefined}
+                                      className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold border ${conf.badgeClass}`}
+                                    >
+                                      {conf.label}
+                                    </span>
+                                    {levelConf && (
+                                      <span
+                                        className={`inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-semibold border uppercase tracking-wider ${levelConf.badgeClass}`}
+                                      >
+                                        {levelConf.label}
+                                      </span>
+                                    )}
+                                  </div>
                                 );
                               })}
                             </div>
@@ -2353,6 +2379,17 @@ export default function AdminPage() {
                                 })}
                               </span>
                             </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-xs">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setViewingTeamApp(item)}
+                              className="h-8 border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 gap-1.5 text-xs rounded-xl"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-[#AD5CFF]" />
+                              <span>View Details</span>
+                            </Button>
                           </td>
                         </tr>
                       ))}
@@ -2398,25 +2435,48 @@ export default function AdminPage() {
                         <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
                           Teams:
                         </div>
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-2">
                           {item.teamsInterested?.map((interest, idx) => {
                             const teamKey = typeof interest === "string" ? interest : interest?.team;
+                            const expLevel = typeof interest === "object" ? interest?.experienceLevel : undefined;
                             const experience = typeof interest === "object" ? interest?.experience : "";
                             const conf = TEAM_CONFIG_MAP[teamKey] || {
                               label: teamKey,
                               badgeClass: "bg-white/10 text-slate-300 border-white/10",
                             };
+                            const levelConf = expLevel ? EXPERIENCE_LEVEL_MAP[expLevel] : null;
+
                             return (
-                              <span
-                                key={idx}
-                                title={experience ? `Experience: ${experience}` : undefined}
-                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${conf.badgeClass}`}
-                              >
-                                {conf.label}
-                              </span>
+                              <div key={idx} className="inline-flex items-center gap-1.5 bg-white/[0.02] px-2 py-1 rounded-xl border border-white/5">
+                                <span
+                                  title={experience ? `Experience: ${experience}` : undefined}
+                                  className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold border ${conf.badgeClass}`}
+                                >
+                                  {conf.label}
+                                </span>
+                                {levelConf && (
+                                  <span
+                                    className={`inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-semibold border uppercase tracking-wider ${levelConf.badgeClass}`}
+                                  >
+                                    {levelConf.label}
+                                  </span>
+                                )}
+                              </div>
                             );
                           })}
                         </div>
+                      </div>
+
+                      <div className="pt-2 flex justify-end border-t border-white/5">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setViewingTeamApp(item)}
+                          className="h-7 border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 gap-1.5 text-[11px] rounded-lg"
+                        >
+                          <Eye className="w-3 h-3 text-[#AD5CFF]" />
+                          <span>View Details</span>
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -2426,6 +2486,78 @@ export default function AdminPage() {
           </section>
         )}
       </div>
+
+      {/* Detail-Review Modal for Team Application */}
+      <Dialog open={!!viewingTeamApp} onOpenChange={(open) => !open && setViewingTeamApp(null)}>
+        {viewingTeamApp && (
+          <DialogContent className="w-[calc(100%-2rem)] sm:w-full max-w-2xl max-h-[90vh] flex flex-col p-0 bg-[#0c1220]/95 border border-purple-500/30 text-[#e2e8f0] backdrop-blur-2xl rounded-3xl z-[60] overflow-hidden shadow-2xl">
+            <DialogHeader className="p-6 border-b border-white/10 text-left">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[#AD5CFF]/20 to-purple-900/30 border border-[#AD5CFF]/30 flex items-center justify-center text-lg font-bold text-[#AD5CFF] shrink-0">
+                  {(viewingTeamApp.applicantSnapshot?.fullName || "U").charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <DialogTitle className="text-xl font-extrabold text-white font-ember">
+                    {viewingTeamApp.applicantSnapshot?.fullName || "Applicant"}
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-slate-400">
+                    {viewingTeamApp.applicantSnapshot?.studentId} &bull; {viewingTeamApp.applicantSnapshot?.email}
+                  </DialogDescription>
+                </div>
+              </div>
+            </DialogHeader>
+
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 overscroll-contain">
+              <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
+                Teams Applied &bull; Responses
+              </div>
+              {viewingTeamApp.teamsInterested?.map((interest, idx) => {
+                const teamKey = typeof interest === "string" ? interest : interest?.team;
+                const expLevel = typeof interest === "object" ? interest?.experienceLevel : undefined;
+                const answers = typeof interest === "object" && Array.isArray(interest?.answers) ? interest.answers : [];
+                const legacyExp = typeof interest === "object" ? interest?.experience : "";
+                const conf = TEAM_CONFIG_MAP[teamKey] || { label: teamKey, badgeClass: "bg-white/10 text-slate-300 border-white/10" };
+                const levelConf = expLevel ? EXPERIENCE_LEVEL_MAP[expLevel] : null;
+
+                return (
+                  <div key={idx} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4 space-y-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${conf.badgeClass}`}>
+                        {conf.label}
+                      </span>
+                      {levelConf && (
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border uppercase tracking-wider ${levelConf.badgeClass}`}>
+                          Experience: {levelConf.label}
+                        </span>
+                      )}
+                    </div>
+
+                    {answers.length > 0 ? (
+                      <div className="space-y-2 pt-2 border-t border-white/5">
+                        {answers.map((ans, aIdx) => (
+                          <div key={aIdx} className="bg-white/[0.03] p-3 rounded-xl border border-white/5 space-y-1">
+                            {ans.question && (
+                              <div className="text-xs font-semibold text-[#AD5CFF]">{ans.question}</div>
+                            )}
+                            <div className="text-xs text-slate-300 leading-relaxed">&ldquo;{ans.answer}&rdquo;</div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : legacyExp ? (
+                      <div className="pt-2 border-t border-white/5 bg-white/[0.03] p-3 rounded-xl border border-white/5">
+                        <div className="text-xs font-semibold text-purple-400 mb-1">Experience:</div>
+                        <div className="text-xs text-slate-300 leading-relaxed">&ldquo;{legacyExp}&rdquo;</div>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-slate-500 italic pt-1 border-t border-white/5">No additional answers provided.</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
 
       {/* Detail-Review Modal for Pending Application */}
       <Dialog open={!!viewingApp} onOpenChange={(open) => !open && setViewingApp(null)}>

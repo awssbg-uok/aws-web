@@ -17,6 +17,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [canApplyTeams, setCanApplyTeams] = useState(false);
   const [isDark, setIsDark] = useState(true);
   const pathname = usePathname();
 
@@ -30,11 +31,34 @@ export default function Header() {
         try {
           const parsed = JSON.parse(storedUser);
           setIsAdmin(parsed?.role === "admin" || parsed?.role === "owner");
+
+          // Check recruitment availability & eligibility (1st or 2nd year)
+          const isEligibleYear = parsed?.year === 1 || parsed?.year === 2;
+          if (isEligibleYear) {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/team-applications/me`, {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+              .then((res) => (res.ok ? res.json() : null))
+              .then((data) => {
+                if (data && data.teamRecruitmentOpen) {
+                  const verifiedYear =
+                    typeof data.memberYear === "number" ? data.memberYear : parsed?.year;
+                  setCanApplyTeams(verifiedYear === 1 || verifiedYear === 2);
+                } else {
+                  setCanApplyTeams(false);
+                }
+              })
+              .catch(() => setCanApplyTeams(false));
+          } else {
+            setCanApplyTeams(false);
+          }
         } catch {
           setIsAdmin(false);
+          setCanApplyTeams(false);
         }
       } else {
         setIsAdmin(false);
+        setCanApplyTeams(false);
       }
     };
 
@@ -343,6 +367,44 @@ export default function Header() {
               </Link>
             )}
 
+            {userLoggedIn && canApplyTeams && (
+              <Link
+                href="/operations-teams"
+                onMouseEnter={() => setHoveredNav("/operations-teams")}
+                className={`relative px-3 py-1.5 text-[13.5px] xl:text-[14px] font-semibold transition-colors duration-200 z-10 select-none rounded-xl whitespace-nowrap ${
+                  pathname === "/operations-teams"
+                    ? "text-white"
+                    : hoveredNav === "/operations-teams"
+                    ? isDark
+                      ? "text-white"
+                      : "text-slate-950"
+                    : isDark
+                    ? "text-slate-300 hover:text-white"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {pathname === "/operations-teams" && (
+                  <motion.div
+                    layoutId="navActivePill"
+                    className="absolute inset-0 rounded-xl bg-[#AD5CFF] -z-10"
+                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                  />
+                )}
+                {pathname !== "/operations-teams" && hoveredNav === "/operations-teams" && (
+                  <motion.div
+                    layoutId="navHoverPill"
+                    className={`absolute inset-0 rounded-xl -z-10 ${
+                      isDark
+                        ? "bg-white/[0.08] border border-white/[0.12]"
+                        : "bg-slate-100 border border-slate-200"
+                    }`}
+                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                  />
+                )}
+                <span>Operations Teams</span>
+              </Link>
+            )}
+
             {isAdmin && (
               <Link
                 href="/admin"
@@ -458,6 +520,17 @@ export default function Header() {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Dashboard
+                  </MobileNavLink>
+                )}
+                {userLoggedIn && canApplyTeams && (
+                  <MobileNavLink
+                    href="/operations-teams"
+                    isDark={isDark}
+                    isActive={pathname === "/operations-teams"}
+                    iconName="bolt"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Operations Teams
                   </MobileNavLink>
                 )}
                 {isAdmin && (
