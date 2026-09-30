@@ -33,6 +33,8 @@ import {
   Download,
   FileSpreadsheet,
   CheckCircle2,
+  Trash2,
+  ExternalLink,
 } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
 import { Button } from "@/components/ui/button";
@@ -112,6 +114,7 @@ interface AdminTeamApplicationItem {
     fullName: string;
     email: string;
     studentId: string;
+    contactNumber?: string;
   };
   teamsInterested: (string | AdminTeamInterestItem)[];
   createdAt: string;
@@ -165,6 +168,15 @@ export default function AdminPage() {
   const [togglingRecruitment, setTogglingRecruitment] = useState(false);
   const [teamAppSearchQuery, setTeamAppSearchQuery] = useState("");
   const [viewingTeamApp, setViewingTeamApp] = useState<AdminTeamApplicationItem | null>(null);
+  const [deleteTeamAppConfirm, setDeleteTeamAppConfirm] = useState<{
+    open: boolean;
+    app: AdminTeamApplicationItem | null;
+    deleting: boolean;
+  }>({
+    open: false,
+    app: null,
+    deleting: false,
+  });
 
   // Bulk Approve State
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -460,6 +472,39 @@ export default function AdminPage() {
       toast.error(msg);
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  // Delete Team Application (Owner Only)
+  const handleDeleteTeamApp = async () => {
+    if (!token || !deleteTeamAppConfirm.app) return;
+    setDeleteTeamAppConfirm((prev) => ({ ...prev, deleting: true }));
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/admin/team-applications/${deleteTeamAppConfirm.app._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to delete team application");
+      }
+      toast.success("Team application record deleted successfully");
+      setTeamApplications((prev) =>
+        prev.filter((item) => item._id !== deleteTeamAppConfirm.app?._id)
+      );
+      if (viewingTeamApp?._id === deleteTeamAppConfirm.app._id) {
+        setViewingTeamApp(null);
+      }
+      setDeleteTeamAppConfirm({ open: false, app: null, deleting: false });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error deleting record";
+      toast.error(msg);
+      setDeleteTeamAppConfirm((prev) => ({ ...prev, deleting: false }));
     }
   };
 
@@ -2337,9 +2382,24 @@ export default function AdminPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center gap-1.5 text-xs text-slate-300">
-                              <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                              <span>{item.applicantSnapshot?.email || "N/A"}</span>
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-1.5 text-xs text-slate-300">
+                                <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                <span>{item.applicantSnapshot?.email || "N/A"}</span>
+                              </div>
+                              {item.applicantSnapshot?.contactNumber && (
+                                <a
+                                  href={`https://wa.me/${item.applicantSnapshot.contactNumber.replace(/[^0-9]/g, "")}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1.5 text-[11px] text-emerald-400 hover:text-emerald-300 font-mono transition-colors"
+                                  title="Chat / Add on WhatsApp"
+                                >
+                                  <Phone className="h-3 w-3 shrink-0" />
+                                  <span>{item.applicantSnapshot.contactNumber}</span>
+                                  <ExternalLink className="h-2.5 w-2.5 opacity-70" />
+                                </a>
+                              )}
                             </div>
                           </td>
                           <td className="px-6 py-4">
@@ -2387,15 +2447,29 @@ export default function AdminPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-xs">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setViewingTeamApp(item)}
-                              className="h-8 border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 gap-1.5 text-xs rounded-xl"
-                            >
-                              <Eye className="w-3.5 h-3.5 text-[#AD5CFF]" />
-                              <span>View Details</span>
-                            </Button>
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setViewingTeamApp(item)}
+                                className="h-8 border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 gap-1.5 text-xs rounded-xl"
+                              >
+                                <Eye className="w-3.5 h-3.5 text-[#AD5CFF]" />
+                                <span>View Details</span>
+                              </Button>
+                              {currentUserRole === "owner" && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setDeleteTeamAppConfirm({ open: true, app: item, deleting: false })}
+                                  className="h-8 border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 gap-1.5 text-xs rounded-xl transition-colors"
+                                  title="Delete application record (Owner only)"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                                  <span>Delete</span>
+                                </Button>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -2432,9 +2506,24 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      <div className="text-xs text-slate-300 flex items-center gap-1.5">
-                        <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                        <span className="truncate">{item.applicantSnapshot?.email || "N/A"}</span>
+                      <div className="space-y-1">
+                        <div className="text-xs text-slate-300 flex items-center gap-1.5">
+                          <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                          <span className="truncate">{item.applicantSnapshot?.email || "N/A"}</span>
+                        </div>
+                        {item.applicantSnapshot?.contactNumber && (
+                          <a
+                            href={`https://wa.me/${item.applicantSnapshot.contactNumber.replace(/[^0-9]/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-[11px] text-emerald-400 hover:text-emerald-300 font-mono transition-colors"
+                            title="Chat / Add on WhatsApp"
+                          >
+                            <Phone className="h-3 w-3 shrink-0" />
+                            <span>{item.applicantSnapshot.contactNumber}</span>
+                            <ExternalLink className="h-2.5 w-2.5 opacity-70" />
+                          </a>
+                        )}
                       </div>
 
                       <div className="pt-1">
@@ -2473,7 +2562,7 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      <div className="pt-2 flex justify-end border-t border-white/5">
+                      <div className="pt-2 flex items-center justify-end gap-2 border-t border-white/5">
                         <Button
                           size="sm"
                           variant="outline"
@@ -2483,6 +2572,18 @@ export default function AdminPage() {
                           <Eye className="w-3 h-3 text-[#AD5CFF]" />
                           <span>View Details</span>
                         </Button>
+                        {currentUserRole === "owner" && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setDeleteTeamAppConfirm({ open: true, app: item, deleting: false })}
+                            className="h-7 border-red-500/20 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 gap-1.5 text-[11px] rounded-lg transition-colors"
+                            title="Delete application record (Owner only)"
+                          >
+                            <Trash2 className="w-3 h-3 text-red-400" />
+                            <span>Delete</span>
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -2506,8 +2607,25 @@ export default function AdminPage() {
                   <DialogTitle className="text-xl font-extrabold text-white font-ember">
                     {viewingTeamApp.applicantSnapshot?.fullName || "Applicant"}
                   </DialogTitle>
-                  <DialogDescription className="text-xs text-slate-400">
-                    {viewingTeamApp.applicantSnapshot?.studentId} &bull; {viewingTeamApp.applicantSnapshot?.email}
+                  <DialogDescription className="text-xs text-slate-400 flex flex-wrap items-center gap-2 mt-1">
+                    <span>{viewingTeamApp.applicantSnapshot?.studentId}</span>
+                    <span>&bull;</span>
+                    <span>{viewingTeamApp.applicantSnapshot?.email}</span>
+                    {viewingTeamApp.applicantSnapshot?.contactNumber && (
+                      <>
+                        <span>&bull;</span>
+                        <a
+                          href={`https://wa.me/${viewingTeamApp.applicantSnapshot.contactNumber.replace(/[^0-9]/g, "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-medium hover:underline"
+                        >
+                          <Phone className="w-3 h-3" />
+                          <span>{viewingTeamApp.applicantSnapshot.contactNumber}</span>
+                          <ExternalLink className="w-3 h-3 ml-0.5" />
+                        </a>
+                      </>
+                    )}
                   </DialogDescription>
                 </div>
               </div>
@@ -2561,8 +2679,90 @@ export default function AdminPage() {
                 );
               })}
             </div>
+
+            {currentUserRole === "owner" && (
+              <div className="p-4 border-t border-white/10 bg-white/[0.01] flex items-center justify-between">
+                <div className="text-xs text-slate-400">
+                  Owner Privileges
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const target = viewingTeamApp;
+                    setDeleteTeamAppConfirm({ open: true, app: target, deleting: false });
+                  }}
+                  className="h-8 border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 text-xs rounded-xl gap-1.5 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete Record</span>
+                </Button>
+              </div>
+            )}
           </DialogContent>
         )}
+      </Dialog>
+
+      {/* Delete Confirmation Modal for Team Application (Owner Only) */}
+      <Dialog
+        open={deleteTeamAppConfirm.open}
+        onOpenChange={(open) => {
+          if (!open && !deleteTeamAppConfirm.deleting) {
+            setDeleteTeamAppConfirm({ open: false, app: null, deleting: false });
+          }
+        }}
+      >
+        <DialogContent className="max-w-md bg-[#0c1220]/95 border border-red-500/30 text-[#e2e8f0] backdrop-blur-2xl rounded-3xl p-6 shadow-2xl z-[70]">
+          <DialogHeader className="text-left space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 mb-2">
+              <Trash2 className="w-6 h-6" />
+            </div>
+            <DialogTitle className="text-lg font-bold text-white font-ember">
+              Delete Team Application Record
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-300 leading-relaxed">
+              Are you sure you want to permanently delete the operations team application for{" "}
+              <strong className="text-white">
+                {deleteTeamAppConfirm.app?.applicantSnapshot?.fullName || "this applicant"}
+              </strong>{" "}
+              ({deleteTeamAppConfirm.app?.applicantSnapshot?.studentId})?
+              <br />
+              <span className="text-red-400/90 block mt-2 font-medium">
+                This action is irreversible. All team selections and answers will be permanently deleted.
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-white/10">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteTeamAppConfirm({ open: false, app: null, deleting: false })}
+              disabled={deleteTeamAppConfirm.deleting}
+              className="border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 text-xs rounded-xl h-9 px-4"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleDeleteTeamApp}
+              disabled={deleteTeamAppConfirm.deleting}
+              className="bg-red-600 hover:bg-red-500 text-white font-semibold text-xs rounded-xl h-9 px-4 gap-1.5 shadow-lg shadow-red-950/40"
+            >
+              {deleteTeamAppConfirm.deleting ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>Deleting...</span>
+                </>
+              ) : (
+                <>
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Delete Record</span>
+                </>
+              )}
+            </Button>
+          </div>
+        </DialogContent>
       </Dialog>
 
       {/* Detail-Review Modal for Pending Application */}

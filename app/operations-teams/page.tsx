@@ -92,12 +92,12 @@ const AVAILABLE_TEAMS = [
   },
   {
     id: "designing",
-    title: "UI/UX & Designing Team",
+    title: "Designing Team",
     category: "Creative & Brand",
-    description: "Visual identity, event banners, UI design for web projects, social flyers, and multimedia assets.",
+    description: "Visual identity, event banners, graphics for web projects, social flyers, and multimedia assets.",
     questions: [
       "What design software or tools (e.g. Figma, Canva, Adobe Creative Cloud) are you proficient in?",
-      "Share a link or describe a design project, graphic, or UI mockup you are proud of creating.",
+      "Share a link or describe a design project, graphic, or artwork you are proud of creating.",
     ],
   },
 ];
@@ -482,204 +482,180 @@ export default function TeamApplicationPage() {
               Join the student leadership driving cloud computing, hands-on architectures, and community initiatives at the University of Kelaniya.
             </p>
 
-            {/* Stepper Progress Indicator */}
-            <div className="pt-4 flex items-center gap-3">
-              <div
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
-                  currentStep === 1
-                    ? "bg-[#AD5CFF] border-[#AD5CFF] text-white shadow-md shadow-purple-950/40"
-                    : "bg-white/5 border-white/10 text-slate-400"
-                }`}
-              >
-                <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[11px]">1</span>
-                <span>Team Selection</span>
+            {/* Stepper or Submitted Status */}
+            {existingApp && !submitSuccess ? (
+              <div className="pt-4 flex items-center gap-2 text-xs font-semibold text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-xl w-fit">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Application Recorded &bull; Single Submission Policy</span>
               </div>
-              <div className="h-0.5 w-8 bg-white/10" />
-              <div
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
-                  currentStep === 2
-                    ? "bg-[#AD5CFF] border-[#AD5CFF] text-white shadow-md shadow-purple-950/40"
-                    : "bg-white/5 border-white/10 text-slate-400"
-                }`}
-              >
-                <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[11px]">2</span>
-                <span>Experience & Questions</span>
+            ) : (
+              <div className="pt-4 flex items-center gap-3">
+                <div
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
+                    currentStep === 1
+                      ? "bg-[#AD5CFF] border-[#AD5CFF] text-white shadow-md shadow-purple-950/40"
+                      : "bg-white/5 border-white/10 text-slate-400"
+                  }`}
+                >
+                  <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[11px]">1</span>
+                  <span>Team Selection</span>
+                </div>
+                <div className="h-0.5 w-8 bg-white/10" />
+                <div
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all ${
+                    currentStep === 2
+                      ? "bg-[#AD5CFF] border-[#AD5CFF] text-white shadow-md shadow-purple-950/40"
+                      : "bg-white/5 border-white/10 text-slate-400"
+                  }`}
+                >
+                  <span className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[11px]">2</span>
+                  <span>Experience & Questions</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
-        {/* Success Banner */}
-        {submitSuccess && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="rounded-3xl border border-emerald-500/40 bg-gradient-to-b from-emerald-500/15 via-[#0c1220]/90 to-[#0c1220]/95 p-6 sm:p-8 space-y-4 shadow-xl backdrop-blur-xl"
-          >
-            <div className="flex items-center gap-3 text-emerald-300">
-              <CheckCircle2 className="w-6 h-6 shrink-0" />
-              <h3 className="text-lg font-bold text-white font-ember">
-                Application Received!
-              </h3>
+        {/* Existing Application Already Submitted View */}
+        {existingApp && !submitSuccess && (
+          <div className="rounded-3xl border border-purple-500/30 bg-gradient-to-b from-[#AD5CFF]/15 via-[#0c1220]/90 to-[#0c1220]/95 p-8 sm:p-12 text-center space-y-6 shadow-2xl backdrop-blur-xl">
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-purple-500/20 border border-[#AD5CFF]/40 flex items-center justify-center text-[#AD5CFF]">
+              <CheckCircle2 className="w-8 h-8" />
             </div>
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
-              Your application for{" "}
-              <strong className="text-white">
-                {lastSubmittedTeamNames.join(", ")}
-              </strong>{" "}
-              has been received. You&apos;ll be added to your requested groups soon. Our team will manually review your submission.
-            </p>
-            {user?.email && (
-              <p className="text-xs text-slate-400">
-                A confirmation email has also been sent to <strong className="text-slate-300">{user.email}</strong>.
+            <div className="space-y-2">
+              <h3 className="text-2xl font-bold text-white font-ember">
+                Application Already Submitted
+              </h3>
+              <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                You have already submitted an application for the Operations Teams. Each member is permitted one submission. Our executive committee will review your submission and add you to the respective groups soon.
               </p>
-            )}
-            <div className="pt-2 flex items-center gap-3">
+            </div>
+
+            {/* Display submitted teams */}
+            <div className="max-w-xl mx-auto pt-2">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
+                Your Requested Teams
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-2.5">
+                {existingApp.teamsInterested?.map((interest, idx) => {
+                  const teamKey = typeof interest === "string" ? interest : interest?.team;
+                  const expLevel = typeof interest === "object" ? interest?.experienceLevel : undefined;
+                  const teamInfo = AVAILABLE_TEAMS.find((t) => t.id === teamKey);
+                  return (
+                    <div
+                      key={idx}
+                      className="inline-flex items-center gap-2 bg-white/5 border border-purple-500/30 px-3.5 py-1.5 rounded-xl text-xs"
+                    >
+                      <span className="font-semibold text-white">
+                        {teamInfo?.title || teamKey?.toUpperCase()}
+                      </span>
+                      {expLevel && (
+                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40">
+                          {expLevel}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-4 flex justify-center">
               <Link href="/dashboard">
                 <Button className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs h-10 px-6 shadow-lg shadow-purple-950/40">
                   Return to Dashboard
                 </Button>
               </Link>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* STEP 1: Team Selection */}
-        {currentStep === 1 && (
+        {!existingApp && !submitSuccess && currentStep === 1 && (
           <motion.div
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 10 }}
             className="space-y-6"
           >
-            {AVAILABLE_TEAMS.length > 0 &&
-            AVAILABLE_TEAMS.every((team) =>
-              alreadyRequestedTeams.includes(team.id.toLowerCase())
-            ) ? (
-              <div className="rounded-3xl border border-purple-500/30 bg-gradient-to-b from-[#AD5CFF]/15 via-[#0c1220]/90 to-[#0c1220]/95 p-8 sm:p-12 text-center space-y-5 shadow-2xl backdrop-blur-xl">
-                <div className="w-16 h-16 mx-auto rounded-2xl bg-purple-500/20 border border-[#AD5CFF]/40 flex items-center justify-center text-[#AD5CFF]">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-bold text-white font-ember">
-                    You&apos;ve applied to all available teams!
-                  </h3>
-                  <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
-                    You have already requested to join every operations team. Our executive team will manually review your applications and add you to the respective groups soon.
-                  </p>
-                </div>
-                <div className="pt-3 flex justify-center">
-                  <Link href="/dashboard">
-                    <Button className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs h-10 px-6 shadow-lg shadow-purple-950/40">
-                      Return to Dashboard
-                    </Button>
-                  </Link>
-                </div>
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <h2 className="text-xl font-bold text-white font-ember">
+                  Step 1: Choose Your Teams
+                </h2>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Select one or more teams you wish to apply for.
+                </p>
               </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <div>
-                    <h2 className="text-xl font-bold text-white font-ember">
-                      Step 1: Choose Your Teams
-                    </h2>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      Select one or more teams you wish to apply for.
-                    </p>
-                  </div>
-                  <div className="text-xs font-semibold text-purple-300">
-                    {selectedTeams.length} selected
-                  </div>
-                </div>
+              <div className="text-xs font-semibold text-purple-300">
+                {selectedTeams.length} selected
+              </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {AVAILABLE_TEAMS.map((team) => {
-                    const isAlreadyRequested = alreadyRequestedTeams.includes(team.id.toLowerCase());
-                    const isSelected = selectedTeams.includes(team.id);
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {AVAILABLE_TEAMS.map((team) => {
+                const isSelected = selectedTeams.includes(team.id);
 
-                    return (
-                      <div
-                        key={team.id}
-                        onClick={() => {
-                          if (!isAlreadyRequested) {
-                            toggleTeam(team.id);
-                          }
-                        }}
-                        className={`rounded-2xl border p-5 transition-all duration-200 flex flex-col justify-between select-none ${
-                          isAlreadyRequested
-                            ? "opacity-55 bg-white/[0.02] border-white/5 cursor-not-allowed"
-                            : isSelected
-                            ? "cursor-pointer bg-purple-500/15 border-[#AD5CFF] shadow-[0_0_24px_rgba(173,92,255,0.25)]"
-                            : "cursor-pointer bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.05]"
-                        }`}
-                      >
-                        <div className="space-y-2.5">
-                          <div className="flex items-center justify-between gap-2">
-                            <span
-                              className={`text-xs font-bold uppercase tracking-wider ${
-                                isAlreadyRequested ? "text-slate-500" : "text-purple-300"
-                              }`}
-                            >
-                              {team.category}
-                            </span>
-                            {isAlreadyRequested ? (
-                              <span className="inline-flex items-center gap-1 rounded-full border border-purple-400/30 bg-purple-500/15 px-2.5 py-0.5 text-[11px] font-semibold text-purple-300 shrink-0">
-                                <Check className="w-3 h-3 text-[#AD5CFF]" />
-                                Already Requested
-                              </span>
-                            ) : (
-                              <div
-                                className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
-                                  isSelected
-                                    ? "bg-[#AD5CFF] border-[#AD5CFF] text-white"
-                                    : "border-slate-500 bg-white/5"
-                                }`}
-                              >
-                                {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-                              </div>
-                            )}
-                          </div>
-                          <h3
-                            className={`text-base font-bold font-ember ${
-                              isAlreadyRequested ? "text-slate-400" : "text-white"
-                            }`}
-                          >
-                            {team.title}
-                          </h3>
-                          <p className="text-xs text-slate-400 leading-relaxed">
-                            {team.description}
-                          </p>
+                return (
+                  <div
+                    key={team.id}
+                    onClick={() => toggleTeam(team.id)}
+                    className={`rounded-2xl border p-5 transition-all duration-200 flex flex-col justify-between select-none cursor-pointer ${
+                      isSelected
+                        ? "bg-purple-500/15 border-[#AD5CFF] shadow-[0_0_24px_rgba(173,92,255,0.25)]"
+                        : "bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.05]"
+                    }`}
+                  >
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold uppercase tracking-wider text-purple-300">
+                          {team.category}
+                        </span>
+                        <div
+                          className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                            isSelected
+                              ? "bg-[#AD5CFF] border-[#AD5CFF] text-white"
+                              : "border-slate-500 bg-white/5"
+                          }`}
+                        >
+                          {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-
-                <div className="flex items-center justify-between pt-6 border-t border-white/10">
-                  <div className="text-xs text-slate-400">
-                    {selectedTeams.length === 0 ? (
-                      <span className="text-slate-400">Select at least one new team above to proceed.</span>
-                    ) : (
-                      <span className="text-purple-300 font-medium">Selected {selectedTeams.length} new team(s)</span>
-                    )}
+                      <h3 className="text-base font-bold font-ember text-white">
+                        {team.title}
+                      </h3>
+                      <p className="text-xs text-slate-400 leading-relaxed">
+                        {team.description}
+                      </p>
+                    </div>
                   </div>
-                  <Button
-                    type="button"
-                    onClick={handleProceedToStep2}
-                    disabled={selectedTeams.length === 0}
-                    className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs gap-2 px-6 h-11 shadow-lg shadow-purple-950/40 disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    <span>Continue to Experience & Questions</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </>
-            )}
+                );
+              })}
+            </div>
+
+            <div className="flex items-center justify-between pt-6 border-t border-white/10">
+              <div className="text-xs text-slate-400">
+                {selectedTeams.length === 0 ? (
+                  <span className="text-slate-400">Select at least one team above to proceed.</span>
+                ) : (
+                  <span className="text-purple-300 font-medium">Selected {selectedTeams.length} team(s)</span>
+                )}
+              </div>
+              <Button
+                type="button"
+                onClick={handleProceedToStep2}
+                disabled={selectedTeams.length === 0}
+                className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs gap-2 px-6 h-11 shadow-lg shadow-purple-950/40 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <span>Continue to Experience & Questions</span>
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
           </motion.div>
         )}
 
         {/* STEP 2: Experience & Questions */}
-        {currentStep === 2 && (
+        {!existingApp && !submitSuccess && currentStep === 2 && (
           <motion.div
             initial={{ opacity: 0, x: 10 }}
             animate={{ opacity: 1, x: 0 }}

@@ -65,9 +65,9 @@ const AVAILABLE_TEAMS = [
   },
   {
     id: "designing",
-    title: "UI/UX & Designing Team",
+    title: "Designing Team",
     category: "Creative & Brand",
-    description: "Visual identity, event banners, UI design for web projects, and flyers.",
+    description: "Visual identity, event banners, graphics for web projects, and flyers.",
   },
 ];
 
