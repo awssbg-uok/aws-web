@@ -4,8 +4,7 @@ import { Suspense } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import LoginForm from "@/components/login-form";
-import { IconBadge } from "@/components/icon-badge";
-import { Loader2 } from "lucide-react";
+import { KeyRound, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   return (
@@ -38,8 +37,8 @@ export default function LoginPage() {
 
           {/* Branding Header */}
           <div className="text-center mb-8">
-            <div className="mb-3.5 inline-flex items-center gap-1.5 rounded-full border border-[#AD5CFF]/30 bg-[#AD5CFF]/10 px-3 py-1 text-[11px] font-semibold text-purple-200">
-              <IconBadge name="key" variant="primary" size="xs" />
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-3.5 py-1.5 text-xs font-semibold text-purple-200">
+              <KeyRound className="w-3.5 h-3.5 text-[#AD5CFF] shrink-0" />
               <span>Official Builder Community Portal</span>
             </div>
 

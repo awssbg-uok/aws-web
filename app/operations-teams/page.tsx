@@ -128,18 +128,17 @@ const EXPERIENCE_LEVELS: {
   },
 ];
 
-const OFFICIAL_WHATSAPP_CHANNEL = "https://whatsapp.com/channel/0029VaPlaceholderAWS";
-
 export default function TeamApplicationPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Recruitment Status
+  // Recruitment Status & Existing Applications
   const [recruitmentOpen, setRecruitmentOpen] = useState(false);
   const [memberYear, setMemberYear] = useState<number | null>(null);
   const [existingApp, setExistingApp] = useState<TeamAppInfo | null>(null);
+  const [alreadyRequestedTeams, setAlreadyRequestedTeams] = useState<string[]>([]);
 
   // Multi-step Flow State
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
@@ -148,6 +147,7 @@ export default function TeamApplicationPage() {
   const [answersMap, setAnswersMap] = useState<Record<string, Record<string, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [lastSubmittedTeamNames, setLastSubmittedTeamNames] = useState<string[]>([]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -192,39 +192,21 @@ export default function TeamApplicationPage() {
               setExistingApp(data.application);
               const app = data.application;
               if (Array.isArray(app.teamsInterested)) {
-                const teams: string[] = [];
-                const levels: Record<string, "beginner" | "intermediate" | "advanced"> = {};
-                const answers: Record<string, Record<string, string>> = {};
-
+                const requested: string[] = [];
                 app.teamsInterested.forEach((item: string | StoredTeamInterest) => {
-                  if (typeof item === "string") {
-                    teams.push(item);
-                    levels[item] = "beginner";
-                  } else if (item && typeof item === "object" && item.team) {
-                    teams.push(item.team);
-                    if (item.experienceLevel) {
-                      levels[item.team] = item.experienceLevel;
-                    }
-                    if (Array.isArray(item.answers)) {
-                      answers[item.team] = {};
-                      item.answers.forEach((qa) => {
-                        if (qa.question) {
-                          answers[item.team][qa.question] = qa.answer || "";
-                        }
-                      });
-                    } else if (item.experience) {
-                      // Legacy experience fallback
-                      const teamConfig = AVAILABLE_TEAMS.find((t) => t.id === item.team);
-                      const firstQ = teamConfig?.questions[0] || "Experience";
-                      answers[item.team] = { [firstQ]: item.experience };
+                  const teamKey = typeof item === "string" ? item : item?.team;
+                  if (teamKey) {
+                    const normalized = teamKey.toLowerCase().trim();
+                    if (!requested.includes(normalized)) {
+                      requested.push(normalized);
                     }
                   }
                 });
-
-                setSelectedTeams(teams);
-                setExperienceLevels(levels);
-                setAnswersMap(answers);
+                setAlreadyRequestedTeams(requested);
               }
+            } else {
+              setExistingApp(null);
+              setAlreadyRequestedTeams([]);
             }
           }
         })
@@ -246,6 +228,7 @@ export default function TeamApplicationPage() {
   }, [router]);
 
   const toggleTeam = (teamId: string) => {
+    if (alreadyRequestedTeams.includes(teamId.toLowerCase())) return;
     setSelectedTeams((prev) =>
       prev.includes(teamId)
         ? prev.filter((id) => id !== teamId)
@@ -271,14 +254,17 @@ export default function TeamApplicationPage() {
   };
 
   const handleProceedToStep2 = () => {
-    if (selectedTeams.length === 0) {
-      toast.error("Please select at least one team to continue.");
+    const validTeams = selectedTeams.filter(
+      (t) => !alreadyRequestedTeams.includes(t.toLowerCase())
+    );
+    if (validTeams.length === 0) {
+      toast.error("Please select at least one new team to continue.");
       return;
     }
     // Set default experience level if not set
     setExperienceLevels((prev) => {
       const updated = { ...prev };
-      selectedTeams.forEach((t) => {
+      validTeams.forEach((t) => {
         if (!updated[t]) {
           updated[t] = "beginner";
         }
@@ -292,8 +278,17 @@ export default function TeamApplicationPage() {
   const handleSubmit = async () => {
     if (!token) return;
 
+    const validNewTeams = selectedTeams.filter(
+      (id) => !alreadyRequestedTeams.includes(id.toLowerCase())
+    );
+
+    if (validNewTeams.length === 0) {
+      toast.error("Please select at least one new team to apply for.");
+      return;
+    }
+
     // Validate that experienceLevel is set for every selected team
-    for (const teamId of selectedTeams) {
+    for (const teamId of validNewTeams) {
       const level = experienceLevels[teamId];
       if (!level || !["beginner", "intermediate", "advanced"].includes(level)) {
         toast.error(`Please select your experience level for ${teamId.toUpperCase()}.`);
@@ -304,7 +299,7 @@ export default function TeamApplicationPage() {
     setSubmitting(true);
     try {
       const payload = {
-        teamsInterested: selectedTeams.map((teamId) => {
+        teamsInterested: validNewTeams.map((teamId) => {
           const teamConfig = AVAILABLE_TEAMS.find((t) => t.id === teamId);
           const rawAnswers = answersMap[teamId] || {};
           const answersList: TeamQAPair[] = [];
@@ -346,7 +341,31 @@ export default function TeamApplicationPage() {
       toast.success(data.message || "Application submitted successfully!");
       if (data.application) {
         setExistingApp(data.application);
+        if (Array.isArray(data.application.teamsInterested)) {
+          const updatedRequested: string[] = [];
+          data.application.teamsInterested.forEach((item: string | StoredTeamInterest) => {
+            const teamKey = typeof item === "string" ? item : item?.team;
+            if (teamKey) {
+              const normalized = teamKey.toLowerCase().trim();
+              if (!updatedRequested.includes(normalized)) {
+                updatedRequested.push(normalized);
+              }
+            }
+          });
+          setAlreadyRequestedTeams(updatedRequested);
+        }
+      } else {
+        setAlreadyRequestedTeams((prev) => [
+          ...prev,
+          ...validNewTeams.map((t) => t.toLowerCase()),
+        ]);
       }
+
+      setLastSubmittedTeamNames(
+        validNewTeams.map((id) => AVAILABLE_TEAMS.find((t) => t.id === id)?.title || id)
+      );
+      setSelectedTeams([]);
+      setCurrentStep(1);
       setSubmitSuccess(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err: unknown) {
@@ -436,10 +455,13 @@ export default function TeamApplicationPage() {
             <span>Back to Dashboard</span>
           </Link>
 
-          {existingApp && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Application Active</span>
+          {alreadyRequestedTeams.length > 0 && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-semibold">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#AD5CFF]" />
+              <span>
+                {alreadyRequestedTeams.length}{" "}
+                {alreadyRequestedTeams.length === 1 ? "Team" : "Teams"} Requested
+              </span>
             </div>
           )}
         </div>
@@ -492,38 +514,29 @@ export default function TeamApplicationPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-3xl border border-emerald-500/40 bg-emerald-500/15 p-6 sm:p-8 space-y-4 shadow-xl"
+            className="rounded-3xl border border-emerald-500/40 bg-gradient-to-b from-emerald-500/15 via-[#0c1220]/90 to-[#0c1220]/95 p-6 sm:p-8 space-y-4 shadow-xl backdrop-blur-xl"
           >
             <div className="flex items-center gap-3 text-emerald-300">
               <CheckCircle2 className="w-6 h-6 shrink-0" />
               <h3 className="text-lg font-bold text-white font-ember">
-                Application Successfully Recorded!
+                Application Received!
               </h3>
             </div>
             <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
-              We received your preferences for{" "}
-              <strong>
-                {selectedTeams
-                  .map((id) => AVAILABLE_TEAMS.find((t) => t.id === id)?.title || id)
-                  .join(", ")}
-              </strong>
-              . A confirmation email has been dispatched to <strong>{user?.email}</strong>.
+              Your application for{" "}
+              <strong className="text-white">
+                {lastSubmittedTeamNames.join(", ")}
+              </strong>{" "}
+              has been received. You&apos;ll be added to your requested groups soon. Our team will manually review your submission.
             </p>
-            <div className="pt-2 flex flex-wrap items-center gap-3">
-              <a
-                href={OFFICIAL_WHATSAPP_CHANNEL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold transition-all shadow-lg shadow-emerald-950/30"
-              >
-                <span>Join Official WhatsApp Channel</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+            {user?.email && (
+              <p className="text-xs text-slate-400">
+                A confirmation email has also been sent to <strong className="text-slate-300">{user.email}</strong>.
+              </p>
+            )}
+            <div className="pt-2 flex items-center gap-3">
               <Link href="/dashboard">
-                <Button
-                  variant="outline"
-                  className="border-white/15 bg-white/5 hover:bg-white/10 text-slate-200 text-xs rounded-xl h-10 px-5"
-                >
+                <Button className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs h-10 px-6 shadow-lg shadow-purple-950/40">
                   Return to Dashboard
                 </Button>
               </Link>
@@ -539,78 +552,129 @@ export default function TeamApplicationPage() {
             exit={{ opacity: 0, x: 10 }}
             className="space-y-6"
           >
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <div>
-                <h2 className="text-xl font-bold text-white font-ember">
-                  Step 1: Choose Your Teams
-                </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Select one or more teams you wish to apply for.
-                </p>
+            {AVAILABLE_TEAMS.length > 0 &&
+            AVAILABLE_TEAMS.every((team) =>
+              alreadyRequestedTeams.includes(team.id.toLowerCase())
+            ) ? (
+              <div className="rounded-3xl border border-purple-500/30 bg-gradient-to-b from-[#AD5CFF]/15 via-[#0c1220]/90 to-[#0c1220]/95 p-8 sm:p-12 text-center space-y-5 shadow-2xl backdrop-blur-xl">
+                <div className="w-16 h-16 mx-auto rounded-2xl bg-purple-500/20 border border-[#AD5CFF]/40 flex items-center justify-center text-[#AD5CFF]">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-bold text-white font-ember">
+                    You&apos;ve applied to all available teams!
+                  </h3>
+                  <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                    You have already requested to join every operations team. Our executive team will manually review your applications and add you to the respective groups soon.
+                  </p>
+                </div>
+                <div className="pt-3 flex justify-center">
+                  <Link href="/dashboard">
+                    <Button className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs h-10 px-6 shadow-lg shadow-purple-950/40">
+                      Return to Dashboard
+                    </Button>
+                  </Link>
+                </div>
               </div>
-              <div className="text-xs font-semibold text-purple-300">
-                {selectedTeams.length} selected
-              </div>
-            </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-white font-ember">
+                      Step 1: Choose Your Teams
+                    </h2>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Select one or more teams you wish to apply for.
+                    </p>
+                  </div>
+                  <div className="text-xs font-semibold text-purple-300">
+                    {selectedTeams.length} selected
+                  </div>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {AVAILABLE_TEAMS.map((team) => {
-                const isSelected = selectedTeams.includes(team.id);
-                return (
-                  <div
-                    key={team.id}
-                    onClick={() => toggleTeam(team.id)}
-                    className={`cursor-pointer rounded-2xl border p-5 transition-all duration-200 flex flex-col justify-between select-none ${
-                      isSelected
-                        ? "bg-purple-500/15 border-[#AD5CFF] shadow-[0_0_24px_rgba(173,92,255,0.25)]"
-                        : "bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.05]"
-                    }`}
-                  >
-                    <div className="space-y-2.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold uppercase tracking-wider text-purple-300">
-                          {team.category}
-                        </span>
-                        <div
-                          className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
-                            isSelected
-                              ? "bg-[#AD5CFF] border-[#AD5CFF] text-white"
-                              : "border-slate-500 bg-white/5"
-                          }`}
-                        >
-                          {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {AVAILABLE_TEAMS.map((team) => {
+                    const isAlreadyRequested = alreadyRequestedTeams.includes(team.id.toLowerCase());
+                    const isSelected = selectedTeams.includes(team.id);
+
+                    return (
+                      <div
+                        key={team.id}
+                        onClick={() => {
+                          if (!isAlreadyRequested) {
+                            toggleTeam(team.id);
+                          }
+                        }}
+                        className={`rounded-2xl border p-5 transition-all duration-200 flex flex-col justify-between select-none ${
+                          isAlreadyRequested
+                            ? "opacity-55 bg-white/[0.02] border-white/5 cursor-not-allowed"
+                            : isSelected
+                            ? "cursor-pointer bg-purple-500/15 border-[#AD5CFF] shadow-[0_0_24px_rgba(173,92,255,0.25)]"
+                            : "cursor-pointer bg-white/[0.03] border-white/10 hover:border-white/20 hover:bg-white/[0.05]"
+                        }`}
+                      >
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between gap-2">
+                            <span
+                              className={`text-xs font-bold uppercase tracking-wider ${
+                                isAlreadyRequested ? "text-slate-500" : "text-purple-300"
+                              }`}
+                            >
+                              {team.category}
+                            </span>
+                            {isAlreadyRequested ? (
+                              <span className="inline-flex items-center gap-1 rounded-full border border-purple-400/30 bg-purple-500/15 px-2.5 py-0.5 text-[11px] font-semibold text-purple-300 shrink-0">
+                                <Check className="w-3 h-3 text-[#AD5CFF]" />
+                                Already Requested
+                              </span>
+                            ) : (
+                              <div
+                                className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
+                                  isSelected
+                                    ? "bg-[#AD5CFF] border-[#AD5CFF] text-white"
+                                    : "border-slate-500 bg-white/5"
+                                }`}
+                              >
+                                {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                              </div>
+                            )}
+                          </div>
+                          <h3
+                            className={`text-base font-bold font-ember ${
+                              isAlreadyRequested ? "text-slate-400" : "text-white"
+                            }`}
+                          >
+                            {team.title}
+                          </h3>
+                          <p className="text-xs text-slate-400 leading-relaxed">
+                            {team.description}
+                          </p>
                         </div>
                       </div>
-                      <h3 className="text-base font-bold text-white font-ember">
-                        {team.title}
-                      </h3>
-                      <p className="text-xs text-slate-400 leading-relaxed">
-                        {team.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                    );
+                  })}
+                </div>
 
-            <div className="flex items-center justify-between pt-6 border-t border-white/10">
-              <div className="text-xs text-slate-400">
-                {selectedTeams.length === 0 ? (
-                  <span className="text-amber-300">Select at least one team above to proceed.</span>
-                ) : (
-                  <span>Selected {selectedTeams.length} team(s)</span>
-                )}
-              </div>
-              <Button
-                type="button"
-                onClick={handleProceedToStep2}
-                disabled={selectedTeams.length === 0}
-                className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs gap-2 px-6 h-11 shadow-lg shadow-purple-950/40 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span>Continue to Experience & Questions</span>
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
+                <div className="flex items-center justify-between pt-6 border-t border-white/10">
+                  <div className="text-xs text-slate-400">
+                    {selectedTeams.length === 0 ? (
+                      <span className="text-slate-400">Select at least one new team above to proceed.</span>
+                    ) : (
+                      <span className="text-purple-300 font-medium">Selected {selectedTeams.length} new team(s)</span>
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={handleProceedToStep2}
+                    disabled={selectedTeams.length === 0}
+                    className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs gap-2 px-6 h-11 shadow-lg shadow-purple-950/40 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <span>Continue to Experience & Questions</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </>
+            )}
           </motion.div>
         )}
 
@@ -767,23 +831,22 @@ export default function TeamApplicationPage() {
               <Button
                 type="button"
                 onClick={handleSubmit}
-                disabled={submitting}
-                className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs gap-2 px-8 h-11 shadow-lg shadow-purple-950/40"
+                disabled={submitting || selectedTeams.length === 0}
+                className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs gap-2 px-8 h-11 shadow-lg shadow-purple-950/40 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {submitting ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
                     <span>Submitting Application...</span>
                   </>
-                ) : existingApp ? (
-                  <>
-                    <Send className="w-4 h-4" />
-                    <span>Update Application</span>
-                  </>
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    <span>Submit Application</span>
+                    <span>
+                      {alreadyRequestedTeams.length > 0
+                        ? "Submit Additional Teams"
+                        : "Submit Application"}
+                    </span>
                   </>
                 )}
               </Button>
