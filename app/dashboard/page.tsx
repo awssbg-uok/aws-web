@@ -329,7 +329,7 @@ export default function Dashboard() {
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-sm sm:text-base font-bold text-white font-ember">
-                    Operations Team recruitment is open — apply now
+                    Operations Team recruitment is open
                   </span>
                   {existingTeamApp && (
                     <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold">
@@ -347,7 +347,7 @@ export default function Dashboard() {
             <div className="flex items-center gap-2 shrink-0">
               <Link href="/operations-teams">
                 <Button className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs gap-2 px-5 h-9 shadow-md shadow-purple-950/30">
-                  <span>{existingTeamApp ? "View / Edit Application" : "Apply Now"}</span>
+                  <span>{existingTeamApp ? "View Application" : "Apply Now"}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Button>
               </Link>
