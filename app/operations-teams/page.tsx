@@ -16,6 +16,7 @@ import {
   Send,
   Users,
   ShieldAlert,
+  Sparkles,
 } from "lucide-react";
 import { IconBadge } from "@/components/icon-badge";
 import { Button } from "@/components/ui/button";
@@ -483,7 +484,12 @@ export default function TeamApplicationPage() {
             </p>
 
             {/* Stepper or Submitted Status */}
-            {existingApp && !submitSuccess ? (
+            {submitSuccess ? (
+              <div className="pt-4 flex items-center gap-2 text-xs font-semibold text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-xl w-fit">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Application Submitted Successfully</span>
+              </div>
+            ) : existingApp ? (
               <div className="pt-4 flex items-center gap-2 text-xs font-semibold text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-xl w-fit">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 <span>Application Recorded &bull; Single Submission Policy</span>
@@ -516,7 +522,82 @@ export default function TeamApplicationPage() {
           </div>
         </div>
 
-        {/* Existing Application Already Submitted View */}
+        {/* Immediate Post-Submission Success Screen */}
+        {submitSuccess && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="rounded-3xl border border-emerald-500/30 bg-gradient-to-b from-emerald-500/15 via-[#0c1220]/90 to-[#0c1220]/95 p-8 sm:p-12 text-center space-y-6 shadow-2xl backdrop-blur-xl"
+          >
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-lg shadow-emerald-950/40">
+              <CheckCircle2 className="w-8 h-8" />
+            </div>
+
+            <div className="space-y-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-semibold uppercase tracking-wider">
+                Application Received
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-white font-ember">
+                Application Successfully Submitted!
+              </h3>
+              <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                Thank you for applying to the Operations Teams. A confirmation email has been dispatched to{" "}
+                <strong className="text-white">{user?.email}</strong>.
+              </p>
+            </div>
+
+            {/* Approval / Review Notice */}
+            <div className="max-w-xl mx-auto rounded-2xl border border-emerald-500/30 bg-[#060a12]/80 p-4 text-xs text-slate-300 space-y-1.5 leading-relaxed text-left sm:text-center">
+              <div className="flex items-center justify-center gap-2 text-emerald-400 font-semibold">
+                <Sparkles className="w-4 h-4" />
+                <span>What Happens Next</span>
+              </div>
+              <p>
+                Our executive committee will review all submissions. Once approved, our team will manually add you to the respective team WhatsApp groups soon.
+              </p>
+            </div>
+
+            {/* Display submitted teams */}
+            <div className="max-w-xl mx-auto pt-2">
+              <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">
+                Your Requested Teams
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-2.5">
+                {(existingApp?.teamsInterested || []).map((interest, idx) => {
+                  const teamKey = typeof interest === "string" ? interest : interest?.team;
+                  const expLevel = typeof interest === "object" ? interest?.experienceLevel : undefined;
+                  const teamInfo = AVAILABLE_TEAMS.find((t) => t.id === teamKey);
+                  return (
+                    <div
+                      key={idx}
+                      className="inline-flex items-center gap-2 bg-white/5 border border-emerald-500/30 px-3.5 py-1.5 rounded-xl text-xs"
+                    >
+                      <span className="font-semibold text-white">
+                        {teamInfo?.title || teamKey?.toUpperCase()}
+                      </span>
+                      {expLevel && (
+                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                          {expLevel}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pt-4 flex justify-center">
+              <Link href="/dashboard">
+                <Button className="bg-[#AD5CFF] hover:bg-[#9745ea] text-white font-semibold rounded-xl text-xs h-10 px-6 shadow-lg shadow-purple-950/40">
+                  Return to Dashboard
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Existing Application Already Submitted View (On Page Load / Revisit) */}
         {existingApp && !submitSuccess && (
           <div className="rounded-3xl border border-purple-500/30 bg-gradient-to-b from-[#AD5CFF]/15 via-[#0c1220]/90 to-[#0c1220]/95 p-8 sm:p-12 text-center space-y-6 shadow-2xl backdrop-blur-xl">
             <div className="w-16 h-16 mx-auto rounded-2xl bg-purple-500/20 border border-[#AD5CFF]/40 flex items-center justify-center text-[#AD5CFF]">
