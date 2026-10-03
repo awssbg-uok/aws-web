@@ -25,10 +25,9 @@ export const events: Event[] = [
       "An introductory session on cloud computing and AWS fundamentals featuring guest speaker Mr. Ravindu Nirmal Fernando (Vice President of Engineering, Emojot). Covering cloud computing essentials, core AWS services, real-world applications, industry insights, and an open Q&A session. Open exclusively for University of Kelaniya students.",
     image: "/cloudspark-event.png",
     category: "Technical Session",
-    status: "open",
-    registrationLink:
-      "https://www.meetup.com/aws-sbg-at-university-of-kelaniya/events/316721574/?eventOrigin=group_upcoming_events",
-    registrationLinkText: "Register on Meetup",
+    status: "ended",
+    registrationLink: "#",
+    registrationLinkText: "Event Ended",
   },
   {
     id: 2,
