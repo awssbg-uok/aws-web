@@ -82,6 +82,16 @@ const AVAILABLE_TEAMS = [
     ],
   },
   {
+    id: "er",
+    title: "External Relations (ER) Team",
+    category: "Corporate & Partnerships",
+    description: "Company partnerships, corporate sponsorships, industry speaker relations, and collaborative external initiatives.",
+    questions: [
+      "What experience do you have with professional outreach, corporate communications, or securing sponsorships/partnerships?",
+      "How would you approach bringing new sponsors, partners, or guest speakers to AWS SBG events?",
+    ],
+  },
+  {
     id: "content",
     title: "Content & Editorial Team",
     category: "Publications & Copy",

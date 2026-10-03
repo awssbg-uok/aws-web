@@ -58,6 +58,12 @@ const AVAILABLE_TEAMS = [
     description: "Internal team culture, meeting facilitation, and volunteer onboarding.",
   },
   {
+    id: "er",
+    title: "External Relations (ER) Team",
+    category: "Corporate & Partnerships",
+    description: "Company partnerships, corporate sponsorships, and industry collaborations.",
+  },
+  {
     id: "content",
     title: "Content & Editorial Team",
     category: "Publications & Copy",

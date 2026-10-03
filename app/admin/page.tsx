@@ -137,6 +137,7 @@ const TEAM_CONFIG_MAP: Record<string, { label: string; badgeClass: string }> = {
   tech: { label: "Technical", badgeClass: "bg-sky-500/10 text-sky-400 border-sky-500/30" },
   pr: { label: "Public Relations", badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/30" },
   hr: { label: "Human Resources", badgeClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" },
+  er: { label: "External Relations", badgeClass: "bg-indigo-500/10 text-indigo-400 border-indigo-500/30" },
   content: { label: "Content Creation", badgeClass: "bg-pink-500/10 text-pink-400 border-pink-500/30" },
   designing: { label: "Designing", badgeClass: "bg-purple-500/10 text-purple-400 border-purple-500/30" },
 };
@@ -2307,6 +2308,7 @@ export default function AdminPage() {
                   { id: "tech", label: "Technical" },
                   { id: "pr", label: "PR" },
                   { id: "hr", label: "HR" },
+                  { id: "er", label: "ER" },
                   { id: "content", label: "Content" },
                   { id: "designing", label: "Designing" },
                 ].map((pill) => {
