@@ -16,6 +16,20 @@ export interface Event {
 
 export const events: Event[] = [
   {
+    id: 4,
+    title: "Containers 101: From Code to Containers with Docker",
+    date: "October 25, 2026",
+    time: "4:00 PM – 6:00 PM",
+    location: "Online via Zoom",
+    description:
+      "Join the AWS Student Builder Group at the University of Kelaniya for an exciting session introducing you to Docker and containerization! Featuring guest speaker Mr. Nikila Fernando (DevOps Engineer at Sysco LABS), discover how Docker helps developers package, run, and deploy applications across environments with practical insights and an interactive Q&A.",
+    image: "/docker-containers-event.png",
+    category: "Technical Session",
+    status: "open",
+    registrationLink: "https://www.meetup.com/aws-sbg-at-university-of-kelaniya/events/317036582/",
+    registrationLinkText: "RSVP on Meetup",
+  },
+  {
     id: 1,
     title: "CloudSpark – An Introduction to Cloud Computing and AWS",
     date: "September 30, 2026",
