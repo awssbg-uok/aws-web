@@ -25,9 +25,9 @@ export const events: Event[] = [
       "Join the AWS Student Builder Group at the University of Kelaniya for an exciting session introducing you to Docker and containerization! Featuring guest speaker Mr. Nikila Fernando (DevOps Engineer at Sysco LABS), discover how Docker helps developers package, run, and deploy applications across environments with practical insights and an interactive Q&A.",
     image: "/docker-containers-event.png",
     category: "Technical Session",
-    status: "open",
-    registrationLink: "https://www.meetup.com/aws-sbg-at-university-of-kelaniya/events/317036582/",
-    registrationLinkText: "RSVP on Meetup",
+    status: "ended",
+    registrationLink: "#",
+    registrationLinkText: "Event Ended",
   },
   {
     id: 1,
